@@ -17,14 +17,33 @@ import kotlinx.android.synthetic.main.gupsik_detail.*
 
 
 class DetailActivity : AppCompatActivity() {
+
     val commentList = mutableListOf<Comment>()
     var postId: String? = "";
+    var boardKey: String? = ""
+    var schoolCode = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.gupsik_detail)
 
         postId = intent.getStringExtra("postId")
+        boardKey = intent.getStringExtra("boardKey")
+
+        intent.getStringExtra("schoolCode")?.let {
+            schoolCode = intent.getStringExtra("schoolCode")!!
+            boardKey = boardKey + "/$schoolCode"
+        }
+
+        deleteButton.setOnClickListener {
+            val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
+            postRef.removeValue()
+
+            val commentRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId")
+            commentRef.removeValue()
+
+            finish()
+        }
 
         val layoutManager = LinearLayoutManager(this@DetailActivity)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
@@ -32,7 +51,7 @@ class DetailActivity : AppCompatActivity() {
         recycler_view.adapter = MyAdapter()
 
 
-        FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+        FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
             .addValueEventListener(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
                 }
@@ -47,7 +66,7 @@ class DetailActivity : AppCompatActivity() {
                 }
             })
 
-        FirebaseDatabase.getInstance().getReference("/Comments/$postId").addChildEventListener(object
+        FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId").addChildEventListener(object
             :ChildEventListener {
             override fun onCancelled(error: DatabaseError) {
                 error?.toException()?.printStackTrace()
@@ -115,7 +134,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         // hitsCountText 갱신해준다.
-        val postRef = FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+        val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
 
         postRef.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -134,7 +153,7 @@ class DetailActivity : AppCompatActivity() {
 
         register_button.setOnClickListener {
             val comment = Comment()
-            val newRef = FirebaseDatabase.getInstance().getReference("Comments/$postId").push()
+            val newRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId").push()
 
             comment.writeTime = ServerValue.TIMESTAMP
             comment.message = comments.text.toString()
@@ -144,7 +163,7 @@ class DetailActivity : AppCompatActivity() {
 
             newRef.setValue(comment)
 
-            val postRef = FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+            val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
 
             // post의 댓글 개수 불러와서 거기다가 1을 더해준다.
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
@@ -168,7 +187,7 @@ class DetailActivity : AppCompatActivity() {
 
         likeButton.setOnClickListener {
             // post의 좋아요 개수 불러와서 거기다가 1을 더해준다.
-            val postRef = FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+            val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
 
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -217,10 +236,10 @@ class DetailActivity : AppCompatActivity() {
 
             holder.deleteTextVew.setOnClickListener {
                 val commentId = comment.commentId
-                val commentRef = FirebaseDatabase.getInstance().getReference("/Comments/$postId/$commentId")
+                val commentRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId/$commentId")
                 commentRef.removeValue()
 
-                val postRef = FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+                val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
 
                 // post의 댓글 개수 불러와서 거기다가 1을 빼준다.
                 postRef.addListenerForSingleValueEvent(object: ValueEventListener {
@@ -263,8 +282,11 @@ class DetailActivity : AppCompatActivity() {
             }
 
             R.id.delete -> {
-                val postRef = FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+                val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
                 postRef.removeValue()
+
+                val commentRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId")
+                commentRef.removeValue()
 
                 finish()
                 return true

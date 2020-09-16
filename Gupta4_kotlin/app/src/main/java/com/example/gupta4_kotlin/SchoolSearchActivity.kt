@@ -16,9 +16,6 @@ class SchoolSearchActivity : AppCompatActivity() {
     val schoolCodeMap = mutableMapOf<String, String>()
     val districtCodeMap = mutableMapOf<String, String>()
 
-    val districtCodeKey = "districtCode"
-    val schoolCodeKey = "schoolCode"
-    val schoolNameKey = "schoolName"
     val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,14 +57,14 @@ class SchoolSearchActivity : AppCompatActivity() {
             Toast.makeText(this@SchoolSearchActivity, schoolCodeMap.size.toString(), Toast.LENGTH_SHORT).show()
             Toast.makeText(this@SchoolSearchActivity, districtCodeMap.size.toString(), Toast.LENGTH_SHORT).show()
 
-            preference.edit().putString(schoolCodeKey, schoolCodeMap.get(keyword)).apply()
-            preference.edit().putString(districtCodeKey, districtCodeMap.get(keyword)).apply()
-            preference.edit().putString(schoolNameKey, keyword).apply()
+            preference.edit().putString(Utils.schoolCodeKey, schoolCodeMap.get(keyword)).apply()
+            preference.edit().putString(Utils.districtCodeKey, districtCodeMap.get(keyword)).apply()
+            preference.edit().putString(Utils.schoolNameKey, keyword).apply()
 
             Log.d("tkandpf", schoolCodeMap.get(keyword).toString())
             Log.d("tkandpf", districtCodeMap.get(keyword).toString())
-            Log.d("tkandpf", preference.getString(districtCodeKey, "").toString())
-            Log.d("tkandpf", preference.getString(schoolCodeKey, "").toString())
+            Log.d("tkandpf", preference.getString(Utils.districtCodeKey, "").toString())
+            Log.d("tkandpf", preference.getString(Utils.schoolCodeKey, "").toString())
 
         }
         searchBar.autoCompleteTextView.setText("")
