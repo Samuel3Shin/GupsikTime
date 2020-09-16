@@ -19,31 +19,42 @@ import kotlinx.android.synthetic.main.activity_community.buttonUpper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.gupsik_post.view.*
 
-class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+class CommunityCareerActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     val posts: MutableList<Post> = mutableListOf()
-    var boardKey = "bamboo"
+    var boardKey = "career"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_community)
 
+        // 버튼 토글해주는 거 추가
+        Utils.toggleButton(careerButton)
+        Utils.toggleButton(careerPressedButton)
+
+
+        if(bambooButton.visibility == View.INVISIBLE) {
+            Utils.toggleButton(bambooButton)
+            Utils.toggleButton(bambooPressedButton)
+        } else if(mySchoolButton.visibility == View.INVISIBLE) {
+            Utils.toggleButton(mySchoolButton)
+            Utils.toggleButton(mySchoolPressedButton)
+        }
+
         buttonUpper.setOnClickListener {
-            val popup = PopupMenu(this@CommunityActivity, it)
-            popup.setOnMenuItemClickListener(this@CommunityActivity)
+            val popup = PopupMenu(this@CommunityCareerActivity, it)
+            popup.setOnMenuItemClickListener(this@CommunityCareerActivity)
             popup.inflate(R.menu.main)
             popup.show()
         }
 
         writeButton.setOnClickListener {
-            val intent = Intent(this@CommunityActivity, WriteActivity::class.java)
+            val intent = Intent(this@CommunityCareerActivity, WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
 
-
-
-        val layoutManager = LinearLayoutManager(this@CommunityActivity)
+        val layoutManager = LinearLayoutManager(this@CommunityCareerActivity)
 
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
@@ -119,22 +130,20 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
                 }
             })
 
-        careerButton.setOnClickListener {
-            boardKey = "career"
-            val intent = Intent(this@CommunityActivity, CommunityCareerActivity::class.java)
+        bambooButton.setOnClickListener {
+            boardKey = "bamboo"
+            val intent = Intent(this@CommunityCareerActivity, CommunityActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra("boardKey", boardKey)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
         }
 
         mySchoolButton.setOnClickListener{
             boardKey = "mySchool"
-            val intent = Intent(this@CommunityActivity, CommunityMySchoolActivity::class.java)
+            val intent = Intent(this@CommunityCareerActivity, CommunityMySchoolActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra("boardKey", boardKey)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
 
@@ -153,7 +162,7 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
     inner class MyAdapter: RecyclerView.Adapter<MyViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             return MyViewHolder(
-                LayoutInflater.from(this@CommunityActivity)
+                LayoutInflater.from(this@CommunityCareerActivity)
                 .inflate(R.layout.gupsik_post, parent, false))
         }
 
@@ -173,7 +182,7 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
 
 
             holder.itemView.setOnClickListener {
-                val intent = Intent(this@CommunityActivity, DetailActivity::class.java)
+                val intent = Intent(this@CommunityCareerActivity, DetailActivity::class.java)
                 intent.putExtra("boardKey", boardKey)
                 intent.putExtra("postId", post.postId)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -202,7 +211,7 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                Toast.makeText(this@CommunityActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CommunityCareerActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
@@ -210,12 +219,12 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             }
 
             R.id.menu_board ->  {
-                Toast.makeText(this@CommunityActivity, "게시판!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CommunityCareerActivity, "게시판!", Toast.LENGTH_SHORT).show()
                 return true
             }
 
             R.id.menu_myPage ->  {
-                Toast.makeText(this@CommunityActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CommunityCareerActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MySettingActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
