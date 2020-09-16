@@ -1,5 +1,6 @@
 package com.example.gupta4_kotlin
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,9 +12,19 @@ import kotlinx.android.synthetic.main.activity_community.buttonUpper
 import kotlinx.android.synthetic.main.activity_my_setting.*
 
 class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_setting)
+
+        mySchoolInfoTextView.setText(preference.getString(Utils.schoolNameKey, ""))
+
+        myPostsTab.setOnClickListener {
+            val intent = Intent(this, MyPostsActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            startActivity(intent)
+        }
 
         buttonUpper.setOnClickListener {
             val popup = PopupMenu(this@MySettingActivity, it)
