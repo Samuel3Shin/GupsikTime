@@ -1,5 +1,7 @@
 package com.example.gupta4_kotlin
 
+import android.content.Context
+import android.view.View
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
@@ -8,6 +10,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Utils {
+
+    val districtCodeKey = "districtCode"
+    val schoolCodeKey = "schoolCode"
+    val schoolNameKey = "schoolName"
 
     fun getDiffTimeText(targetTime: Long): String {
         val curDateTime = DateTime()
@@ -30,6 +36,14 @@ object Utils {
         } else {
             val format = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm")
             return format.format(Date(targetTime))
+        }
+    }
+
+    fun toggleButton(view: View) {
+        if(view.visibility == View.VISIBLE) {
+            view.visibility = View.INVISIBLE
+        } else {
+            view.visibility = View.VISIBLE
         }
     }
 }

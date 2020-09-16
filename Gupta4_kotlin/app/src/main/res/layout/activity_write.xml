@@ -177,6 +177,17 @@
         app:layout_constraintEnd_toEndOf="@+id/buttonUpper"
         app:layout_constraintTop_toTopOf="@+id/buttonUpper" />
 
+    <TextView
+        android:id="@+id/boardNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="급식메뉴"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonUpper"
+        app:layout_constraintStart_toStartOf="@+id/buttonUpper"
+        app:layout_constraintTop_toTopOf="@+id/buttonUpper" />
+
     <include
         android:id="@+id/nickname_box"
         layout="@layout/content_rectangle"

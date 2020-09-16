@@ -17,6 +17,8 @@ import java.io.StringReader
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
+
+
     var serviceUrl: String = "https://open.neis.go.kr/hub/mealServiceDietInfo"
     var serviceKey: String = "ce674eea5a53470680157d24c26d07a4"
 
@@ -173,14 +175,15 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             R.id.menu_board ->  {
                 Toast.makeText(this@MainActivity, "게시판!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, CommunityActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-
                 return true
             }
 
             R.id.menu_myPage ->  {
                 Toast.makeText(this@MainActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MySettingActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
                 return true
             }
