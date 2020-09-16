@@ -25,6 +25,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         mySchoolInfoEditButton.setOnClickListener {
             Toast.makeText(this@MySettingActivity, "학교 수정!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, SchoolSearchActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
     }
@@ -34,6 +35,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             R.id.menu_mealInfo ->  {
                 Toast.makeText(this@MySettingActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
                 return true
             }
@@ -41,6 +43,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             R.id.menu_board ->  {
                 Toast.makeText(this@MySettingActivity, "게시판!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, CommunityActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
                 return true

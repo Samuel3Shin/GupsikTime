@@ -14,6 +14,9 @@ class WriteActivity : AppCompatActivity() {
 
     var mode = "post"
     var postId = ""
+    var boardName = ""
+    var boardKey = ""
+    var schoolCode = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -24,10 +27,32 @@ class WriteActivity : AppCompatActivity() {
             finish()
         }
 
-        intent.getStringExtra("mode")?.let {
-            mode = intent.getStringExtra("mode")!!
-            postId = intent.getStringExtra("postId")!!
+        intent.getStringExtra("boardKey")?.let {
+            boardKey = intent.getStringExtra("boardKey")!!
         }
+
+
+        when(boardKey) {
+            "bamboo" -> {
+                boardName = "대나무숲"
+            }
+
+            "career" -> {
+                boardName = "진로고민"
+            }
+
+            "mySchool" -> {
+                boardName = "우리학교"
+            }
+        }
+
+        intent.getStringExtra("schoolCode")?.let {
+            schoolCode = intent.getStringExtra("schoolCode")!!
+            boardKey = boardKey + "/$schoolCode"
+        }
+
+        boardNameTextView.setText(boardName)
+        Toast.makeText(applicationContext, boardName, Toast.LENGTH_SHORT).show()
 
         when(mode) {
             "post" -> {
@@ -36,15 +61,12 @@ class WriteActivity : AppCompatActivity() {
             "editPost" -> {
                 supportActionBar?.title = "글 수정"
             }
-            else -> {
-                supportActionBar?.title = "댓글 쓰기"
-            }
         }
 
 
         if(mode=="editPost") {
 
-            val postRef = FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+            val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
 
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -65,7 +87,7 @@ class WriteActivity : AppCompatActivity() {
             }
             if(mode=="post") {
                 val post = Post()
-                val newRef = FirebaseDatabase.getInstance().getReference("Posts").push()
+                val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts").push()
                 post.writeTime = ServerValue.TIMESTAMP
                 post.message = input.text.toString()
                 post.writerId = getMyId()
@@ -74,13 +96,13 @@ class WriteActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "공유 되었습니다.", Toast.LENGTH_SHORT).show()
                 finish()
             } else if (mode=="editPost") {
-                val postRef = FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey//Posts/$postId")
                 postRef.child("message").setValue(input.text.toString())
                 finish()
 
             } else {
                 val comment = Comment()
-                val newRef = FirebaseDatabase.getInstance().getReference("Comments/$postId").push()
+                val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").push()
 
                 comment.writeTime = ServerValue.TIMESTAMP
                 comment.message = input.text.toString()
@@ -90,7 +112,7 @@ class WriteActivity : AppCompatActivity() {
 
                 newRef.setValue(comment)
 
-                val postRef = FirebaseDatabase.getInstance().getReference("/Posts/$postId")
+                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey//Posts/$postId")
 
                 // post의 댓글 개수 불러와서 거기다가 1을 더해준다.
                 postRef.addListenerForSingleValueEvent(object: ValueEventListener {
