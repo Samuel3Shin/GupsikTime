@@ -1,5 +1,6 @@
 package com.example.gupta4_kotlin
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,31 +20,51 @@ import kotlinx.android.synthetic.main.activity_community.buttonUpper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.gupsik_post.view.*
 
-class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+class CommunityMySchoolActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     val posts: MutableList<Post> = mutableListOf()
-    var boardKey = "bamboo"
+    var boardKey = "mySchool"
+    var schoolCode = ""
+
+    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_community)
 
+        // 버튼 토글해주는 거 추가
+        Utils.toggleButton(mySchoolButton)
+        Utils.toggleButton(mySchoolPressedButton)
+
+        if(bambooButton.visibility == View.INVISIBLE) {
+            Utils.toggleButton(bambooButton)
+            Utils.toggleButton(bambooPressedButton)
+        } else if(careerButton.visibility == View.INVISIBLE) {
+            Utils.toggleButton(careerButton)
+            Utils.toggleButton(careerPressedButton)
+        }
+
+        //TODO: 각 학교의 코드를 DB 디토리에 추가해줘야한다.
+        schoolCode = preference.getString(Utils.schoolCodeKey, "").toString()
+        Toast.makeText(applicationContext, schoolCode, Toast.LENGTH_SHORT).show()
+
         buttonUpper.setOnClickListener {
-            val popup = PopupMenu(this@CommunityActivity, it)
-            popup.setOnMenuItemClickListener(this@CommunityActivity)
+            val popup = PopupMenu(this@CommunityMySchoolActivity, it)
+            popup.setOnMenuItemClickListener(this@CommunityMySchoolActivity)
             popup.inflate(R.menu.main)
             popup.show()
         }
 
         writeButton.setOnClickListener {
-            val intent = Intent(this@CommunityActivity, WriteActivity::class.java)
+            val intent = Intent(this@CommunityMySchoolActivity, WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
+            intent.putExtra("schoolCode", schoolCode)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
 
 
 
-        val layoutManager = LinearLayoutManager(this@CommunityActivity)
+        val layoutManager = LinearLayoutManager(this@CommunityMySchoolActivity)
 
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
@@ -51,7 +72,7 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = MyAdapter()
 
-        FirebaseDatabase.getInstance().getReference("$boardKey/Posts")
+        FirebaseDatabase.getInstance().getReference("$boardKey/$schoolCode/Posts")
             .orderByChild("writeTime").addChildEventListener(object: ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                     snapshot?.let { snapshot ->
@@ -119,23 +140,23 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
                 }
             })
 
-        careerButton.setOnClickListener {
-            boardKey = "career"
-            val intent = Intent(this@CommunityActivity, CommunityCareerActivity::class.java)
+        bambooButton.setOnClickListener {
+            boardKey = "bamboo"
+            val intent = Intent(this@CommunityMySchoolActivity, CommunityActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra("boardKey", boardKey)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
         }
 
-        mySchoolButton.setOnClickListener{
-            boardKey = "mySchool"
-            val intent = Intent(this@CommunityActivity, CommunityMySchoolActivity::class.java)
+        careerButton.setOnClickListener {
+            boardKey = "career"
+            val intent = Intent(this@CommunityMySchoolActivity, CommunityCareerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra("boardKey", boardKey)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+
         }
 
     }
@@ -153,7 +174,7 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
     inner class MyAdapter: RecyclerView.Adapter<MyViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             return MyViewHolder(
-                LayoutInflater.from(this@CommunityActivity)
+                LayoutInflater.from(this@CommunityMySchoolActivity)
                 .inflate(R.layout.gupsik_post, parent, false))
         }
 
@@ -173,15 +194,16 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
 
 
             holder.itemView.setOnClickListener {
-                val intent = Intent(this@CommunityActivity, DetailActivity::class.java)
+                val intent = Intent(this@CommunityMySchoolActivity, DetailActivity::class.java)
                 intent.putExtra("boardKey", boardKey)
+                intent.putExtra("schoolCode", schoolCode)
                 intent.putExtra("postId", post.postId)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
                 // hits 개수 늘려주기 추가
                 val id = post.postId
-                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$id")
+                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/$schoolCode/Posts/$id")
 
                 postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                     override fun onCancelled(error: DatabaseError) {
@@ -202,7 +224,7 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                Toast.makeText(this@CommunityActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CommunityMySchoolActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
@@ -210,12 +232,12 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             }
 
             R.id.menu_board ->  {
-                Toast.makeText(this@CommunityActivity, "게시판!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CommunityMySchoolActivity, "게시판!", Toast.LENGTH_SHORT).show()
                 return true
             }
 
             R.id.menu_myPage ->  {
-                Toast.makeText(this@CommunityActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CommunityMySchoolActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MySettingActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
