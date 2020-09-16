@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".MySettingActivity">
+
+    <include
+        android:id="@+id/default_lines"
+        layout="@layout/default_lines"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <include
+        android:id="@+id/buttonUpper"
+        layout="@layout/content_rectangle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline0"
+        app:layout_constraintTop_toBottomOf="@+id/guideline1" />
+
+    <include
+        android:id="@+id/button_upper_inside"
+        layout="@layout/button_template_unpressed"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_margin="2dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonUpper"
+        app:layout_constraintEnd_toEndOf="@+id/buttonUpper"
+        app:layout_constraintTop_toTopOf="@+id/buttonUpper" />
+
+
+    <TextView
+        android:id="@+id/menuTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="내 페이지"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonUpper"
+        app:layout_constraintStart_toStartOf="@+id/buttonUpper"
+        app:layout_constraintTop_toTopOf="@+id/guideline1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <View
+        android:id="@+id/black_line_at_the_bottom_of_menu_button"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+
+    <View
+        android:id="@+id/white_line_at_the_bottom_of_menu_button"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/black_line_at_the_bottom_of_menu_button"
+        app:layout_constraintEnd_toEndOf="@+id/black_line_at_the_bottom_of_menu_button"
+        app:layout_constraintStart_toStartOf="@+id/black_line_at_the_bottom_of_menu_button" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.72" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="176dp" />
+
+    <include
+        android:id="@+id/my_page_box"
+        layout="@layout/my_page_lines"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toTopOf="@+id/guideline4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+
+    <include
+        android:id="@+id/settingTab"
+        layout="@layout/my_page_setting_tab"
+        android:layout_width="120dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline4"
+        app:layout_constraintStart_toEndOf="@+id/myPostsTab" />
+
+
+    <TextView
+        android:id="@+id/settingTabTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="설정"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="@+id/settingTab"
+        app:layout_constraintBottom_toBottomOf="@+id/settingTab"
+        app:layout_constraintStart_toStartOf="@+id/settingTab"
+        app:layout_constraintEnd_toEndOf="@+id/settingTab" />
+
+
+
+    <include
+        android:id="@+id/myPostsTab"
+        layout="@layout/my_page_setting_tab2"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="@+id/my_page_box" />
+
+    <TextView
+        android:id="@+id/myPostsTabTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="내가 쓴 글"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="@+id/myPostsTab"
+        app:layout_constraintBottom_toBottomOf="@+id/myPostsTab"
+        app:layout_constraintStart_toStartOf="@+id/myPostsTab"
+        app:layout_constraintEnd_toEndOf="@+id/myPostsTab" />
+
+
+    <View
+        android:id="@+id/white_line_at_the_top_of_my_page_box"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/guideline4"
+        app:layout_constraintEnd_toStartOf="@+id/settingTab"
+        app:layout_constraintStart_toStartOf="@+id/my_page_box" />
+
+    <View
+        android:id="@+id/white_line_at_the_top_of_my_page_box2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/guideline4"
+        app:layout_constraintEnd_toEndOf="@+id/my_page_box"
+        app:layout_constraintStart_toEndOf="@+id/settingTab" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.08" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.92" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_title_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.16" />
+
+
+    <include
+        android:id="@+id/mySchoolInfoBox"
+        layout="@layout/my_page_info_box"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toTopOf="@+id/my_page_box"
+        app:layout_constraintBottom_toTopOf="@+id/myAllergyInfoBox"
+        app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2"  />
+
+    <View
+        android:id="@+id/grey_line1_for_my_school_info_box"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="4dp"
+        android:background="@color/grey"
+        app:layout_constraintEnd_toStartOf="@+id/mySchoolTextView"
+        app:layout_constraintStart_toStartOf="@+id/mySchoolInfoBox"
+        app:layout_constraintTop_toTopOf="@+id/mySchoolInfoBox" />
+
+    <TextView
+        android:id="@+id/mySchoolInfoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="이화여자대학교 사범대학 부속 이화 금란 고등학교"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/mySchoolInfoBox"
+        app:layout_constraintTop_toTopOf="@+id/mySchoolInfoBox" />
+
+
+    <TextView
+        android:id="@+id/mySchoolTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="내 학교"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/mySchoolInfoBox"
+        app:layout_constraintStart_toStartOf="@+id/guideline_title_start"
+        app:layout_constraintTop_toTopOf="@+id/mySchoolInfoBox" />
+
+    <View
+        android:id="@+id/grey_line2_for_my_school_info_box"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="4dp"
+        android:background="@color/grey"
+        app:layout_constraintEnd_toEndOf="@+id/mySchoolInfoBox"
+        app:layout_constraintStart_toEndOf="@+id/mySchoolTextView"
+        app:layout_constraintTop_toTopOf="@+id/mySchoolInfoBox" />
+
+
+
+    <include
+        android:id="@+id/mySchoolInfoEditButton"
+        layout="@layout/button_template_unpressed"
+        android:layout_width="66dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="16dp"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/mySchoolInfoBox"
+        app:layout_constraintEnd_toEndOf="@+id/mySchoolInfoBox"  />
+
+    <TextView
+        android:id="@+id/mySchoolInfoEditButtonTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="수정"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="@+id/mySchoolInfoEditButton"
+        app:layout_constraintBottom_toBottomOf="@+id/mySchoolInfoEditButton"
+        app:layout_constraintStart_toStartOf="@+id/mySchoolInfoEditButton"
+        app:layout_constraintEnd_toEndOf="@+id/mySchoolInfoEditButton" />
+
+
+    <include
+        android:id="@+id/myAllergyInfoBox"
+        layout="@layout/my_page_info_box"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/mySchoolInfoBox"
+        app:layout_constraintBottom_toBottomOf="@+id/my_page_box"
+        app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2"  />
+
+    <View
+        android:id="@+id/grey_line1_for_my_allergy_info_box"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="4dp"
+        android:background="@color/grey"
+        app:layout_constraintEnd_toStartOf="@+id/myAllergyTextView"
+        app:layout_constraintStart_toStartOf="@+id/myAllergyInfoBox"
+        app:layout_constraintTop_toTopOf="@+id/myAllergyInfoBox" />
+
+
+    <TextView
+        android:id="@+id/myAllergyTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="알러지"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/myAllergyInfoBox"
+        app:layout_constraintStart_toStartOf="@+id/guideline_title_start"
+        app:layout_constraintTop_toTopOf="@+id/myAllergyInfoBox" />
+
+    <View
+        android:id="@+id/grey_line2_for_my_allergy_info_box"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="4dp"
+        android:background="@color/grey"
+        app:layout_constraintEnd_toEndOf="@+id/myAllergyInfoBox"
+        app:layout_constraintStart_toEndOf="@+id/myAllergyTextView"
+        app:layout_constraintTop_toTopOf="@+id/myAllergyInfoBox" />
+
+    <include
+        android:id="@+id/myAllergyInfoEditButton"
+        layout="@layout/button_template_unpressed"
+        android:layout_width="66dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="16dp"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/myAllergyInfoBox"
+        app:layout_constraintEnd_toEndOf="@+id/myAllergyInfoBox"  />
+
+    <TextView
+        android:id="@+id/myAllergyInfoEditButtonTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="수정"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="@+id/myAllergyInfoEditButton"
+        app:layout_constraintBottom_toBottomOf="@+id/myAllergyInfoEditButton"
+        app:layout_constraintStart_toStartOf="@+id/myAllergyInfoEditButton"
+        app:layout_constraintEnd_toEndOf="@+id/myAllergyInfoEditButton" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
