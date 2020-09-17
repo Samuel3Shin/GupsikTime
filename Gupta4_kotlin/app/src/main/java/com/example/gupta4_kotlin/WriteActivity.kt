@@ -1,5 +1,6 @@
 package com.example.gupta4_kotlin
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -10,7 +11,6 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_write.*
 
 class WriteActivity : AppCompatActivity() {
-    var currentBgPosition = 0
 
     var mode = "post"
     var postId = ""
@@ -63,7 +63,6 @@ class WriteActivity : AppCompatActivity() {
             }
         }
 
-
         if(mode=="editPost") {
 
             val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
@@ -93,10 +92,17 @@ class WriteActivity : AppCompatActivity() {
                 post.writerId = getMyId()
                 post.postId = newRef.key.toString()
                 newRef.setValue(post)
+
+                // post아이디를 shared preference에 저장. ','를 구분자로 저장함.
+                val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+                var myPostIdsStr: String = preference.getString(Utils.myPostIdsKey, "").toString()
+                myPostIdsStr = myPostIdsStr + "$boardKey/Posts/" + post.postId + ","
+                preference.edit().putString(Utils.myPostIdsKey, myPostIdsStr).apply()
                 Toast.makeText(applicationContext, "공유 되었습니다.", Toast.LENGTH_SHORT).show()
                 finish()
+
             } else if (mode=="editPost") {
-                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey//Posts/$postId")
+                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
                 postRef.child("message").setValue(input.text.toString())
                 finish()
 
@@ -123,7 +129,7 @@ class WriteActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         var commentNum = snapshot.child("commentCount").value as Long
                         postRef.child("commentCount").setValue(commentNum + 1)
-                        Log.d("tkandpf", commentNum.toString())
+//                        Log.d("tkandpf", commentNum.toString())
                     }
                 })
 

@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         district_code = preference.getString("districtCode", district_code).toString()
         school_code = preference.getString("schoolCode", school_code).toString()
 
-        Log.d("tkandpf", district_code)
-        Log.d("tkandpf", school_code)
+//        Log.d("tkandpf", district_code)
+//        Log.d("tkandpf", school_code)
 
         buttonUpper.setOnClickListener {
             val popup = PopupMenu(this@MainActivity, it)
