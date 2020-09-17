@@ -61,10 +61,10 @@ class SchoolSearchActivity : AppCompatActivity() {
             preference.edit().putString(Utils.districtCodeKey, districtCodeMap.get(keyword)).apply()
             preference.edit().putString(Utils.schoolNameKey, keyword).apply()
 
-            Log.d("tkandpf", schoolCodeMap.get(keyword).toString())
-            Log.d("tkandpf", districtCodeMap.get(keyword).toString())
-            Log.d("tkandpf", preference.getString(Utils.districtCodeKey, "").toString())
-            Log.d("tkandpf", preference.getString(Utils.schoolCodeKey, "").toString())
+//            Log.d("tkandpf", schoolCodeMap.get(keyword).toString())
+//            Log.d("tkandpf", districtCodeMap.get(keyword).toString())
+//            Log.d("tkandpf", preference.getString(Utils.districtCodeKey, "").toString())
+//            Log.d("tkandpf", preference.getString(Utils.schoolCodeKey, "").toString())
 
         }
         searchBar.autoCompleteTextView.setText("")

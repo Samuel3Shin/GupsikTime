@@ -190,7 +190,7 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
 
                     override fun onDataChange(snapshot: DataSnapshot) {
                         var hitsNum = snapshot.child("hitsCount").value as Long
-                        Log.d("tkandpf", hitsNum.toString())
+//                        Log.d("tkandpf", hitsNum.toString())
                         postRef.child("hitsCount").setValue(hitsNum + 1)
                     }
                 })
