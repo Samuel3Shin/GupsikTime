@@ -14,6 +14,8 @@ object Utils {
     val districtCodeKey = "districtCode"
     val schoolCodeKey = "schoolCode"
     val schoolNameKey = "schoolName"
+    val myPostIdsKey = "myPostIds"
+    val myCommentIdsKey = "myCommentIds"
 
     fun getDiffTimeText(targetTime: Long): String {
         val curDateTime = DateTime()
