@@ -45,6 +45,7 @@
             android:layout_marginEnd="8dp"
             android:text="삭제"
             android:clickable="true"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/nickname"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/nickname" />
