@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ class DetailActivity : AppCompatActivity() {
     var postId: String? = "";
     var boardKey: String? = ""
     var schoolCode = ""
+    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +37,31 @@ class DetailActivity : AppCompatActivity() {
             boardKey = boardKey + "/$schoolCode"
         }
 
+        var myPostIdsStr: String = preference.getString(Utils.myPostIdsKey, "").toString()
+        var postFullId = "$boardKey/Posts/$postId"
+
+//        Log.d("tkandpf", "내가 쓴 글:" + myPostIdsStr)
+//        Log.d("tkandpf", "포스트 아이디:" + postFullId)
+
+        if(myPostIdsStr.indexOf(postFullId, 0) != -1) {
+            Toast.makeText(applicationContext, "있습니다!", Toast.LENGTH_SHORT).show()
+            deleteButton.visibility = View.VISIBLE
+            deleteTextView.visibility = View.VISIBLE
+        }
+
+
         deleteButton.setOnClickListener {
-            val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
+            val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
             postRef.removeValue()
 
-            val commentRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId")
+            // preference에서 post ID를 없애줘야함.
+            myPostIdsStr = myPostIdsStr.replace("$boardKey/Posts/$postId,", "")
+            preference.edit().putString(Utils.myPostIdsKey, myPostIdsStr).apply()
+
+            val commentRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId")
             commentRef.removeValue()
+
+            //TODO: 게시글이 삭제될 때, 댓글도 같이 삭제되도록 구현한건데, 이 상황에서 댓글 id를 모아놓은 shared preference에서 그 댓글 id를 삭제할 방법을 찾아야한다.
 
             finish()
         }
@@ -50,8 +71,7 @@ class DetailActivity : AppCompatActivity() {
         recycler_view.layoutManager = layoutManager
         recycler_view.adapter = MyAdapter()
 
-
-        FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
+        FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
             .addValueEventListener(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
                 }
@@ -66,7 +86,7 @@ class DetailActivity : AppCompatActivity() {
                 }
             })
 
-        FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId").addChildEventListener(object
+        FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").addChildEventListener(object
             :ChildEventListener {
             override fun onCancelled(error: DatabaseError) {
                 error?.toException()?.printStackTrace()
@@ -134,7 +154,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         // hitsCountText 갱신해준다.
-        val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
+        val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
 
         postRef.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -153,7 +173,7 @@ class DetailActivity : AppCompatActivity() {
 
         register_button.setOnClickListener {
             val comment = Comment()
-            val newRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId").push()
+            val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").push()
 
             comment.writeTime = ServerValue.TIMESTAMP
             comment.message = comments.text.toString()
@@ -163,7 +183,12 @@ class DetailActivity : AppCompatActivity() {
 
             newRef.setValue(comment)
 
-            val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
+            // 댓글 id를 shared preference에 저장
+            var myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
+            myCommentIdsStr = myCommentIdsStr + "$boardKey/Comments/$postId/" + comment.commentId + ","
+            preference.edit().putString(Utils.myCommentIdsKey, myCommentIdsStr).apply()
+
+            val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
 
             // post의 댓글 개수 불러와서 거기다가 1을 더해준다.
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
@@ -174,7 +199,7 @@ class DetailActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var commentNum = snapshot.child("commentCount").value as Long
                     postRef.child("commentCount").setValue(commentNum + 1)
-                    Log.d("tkandpf", commentNum.toString())
+//                    Log.d("tkandpf", commentNum.toString())
                 }
             })
 
@@ -187,7 +212,7 @@ class DetailActivity : AppCompatActivity() {
 
         likeButton.setOnClickListener {
             // post의 좋아요 개수 불러와서 거기다가 1을 더해준다.
-            val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
+            val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
 
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -197,7 +222,7 @@ class DetailActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var commentNum = snapshot.child("likesCount").value as Long
                     postRef.child("likesCount").setValue(commentNum + 1)
-                    Log.d("tkandpf", commentNum.toString())
+//                    Log.d("tkandpf", commentNum.toString())
                 }
             })
 
@@ -213,7 +238,7 @@ class DetailActivity : AppCompatActivity() {
         val commentText = itemView.findViewById<TextView>(R.id.comment_text)
         val commentWriteTime = itemView.dateTextView
         val commentNickname = itemView.nickname
-        val deleteTextVew = itemView.deleteTextView
+        val deleteTextView = itemView.deleteTextView
     }
 
     inner class MyAdapter: RecyclerView.Adapter<MyViewHolder>() {
@@ -222,7 +247,6 @@ class DetailActivity : AppCompatActivity() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             return MyViewHolder(LayoutInflater.from(this@DetailActivity)
                 .inflate(R.layout.gupsik_comment, parent, false))
-
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -231,15 +255,31 @@ class DetailActivity : AppCompatActivity() {
                 holder.commentText.text = comment.message
                 holder.commentWriteTime.text = Utils.getDiffTimeText(comment.writeTime as Long)
                 // 여기에 익명1, 익명2을 id값에 따라 mapping해주는 것이 필요함.
-//                holder.commentNickname.text = comment.nickname
+                // holder.commentNickname.text = comment.nickname
             }
 
-            holder.deleteTextVew.setOnClickListener {
-                val commentId = comment.commentId
-                val commentRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId/$commentId")
+            // 본인이 쓴 댓글이면 삭제 버튼이 보이도록 해야함.
+            val myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
+            val commentId = comment.commentId
+
+            Log.d("tkandpf", "내가 쓴 댓글:" + myCommentIdsStr)
+            Log.d("tkandpf", "댓글 아이디:" + "$boardKey/Comments/$postId/$commentId")
+
+            if(myCommentIdsStr.indexOf("$boardKey/Comments/$postId/$commentId", 0) != -1) {
+                holder.deleteTextView.visibility = View.VISIBLE
+            }
+
+            holder.deleteTextView.setOnClickListener {
+
+                val commentRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId/$commentId")
                 commentRef.removeValue()
 
-                val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
+                // 댓글 id를 shared preference에서 빼줘야 함
+                var myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
+                myCommentIdsStr = myCommentIdsStr.replace("$boardKey/Comments/$postId/$commentId,", "")
+                preference.edit().putString(Utils.myCommentIdsKey, myCommentIdsStr).apply()
+
+                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
 
                 // post의 댓글 개수 불러와서 거기다가 1을 빼준다.
                 postRef.addListenerForSingleValueEvent(object: ValueEventListener {
@@ -250,11 +290,10 @@ class DetailActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         var commentNum = snapshot.child("commentCount").value as Long
                         postRef.child("commentCount").setValue(commentNum - 1)
-                        Log.d("tkandpf", commentNum.toString())
+//                        Log.d("tkandpf", commentNum.toString())
                     }
                 })
             }
-
 
         }
 
@@ -282,10 +321,10 @@ class DetailActivity : AppCompatActivity() {
             }
 
             R.id.delete -> {
-                val postRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Posts/$postId")
+                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
                 postRef.removeValue()
 
-                val commentRef = FirebaseDatabase.getInstance().getReference("/$boardKey/Comments/$postId")
+                val commentRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId")
                 commentRef.removeValue()
 
                 finish()
