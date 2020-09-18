@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_begin="64dp" />
 
     <include
         android:id="@+id/buttonUpper"
@@ -37,7 +37,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="100dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/guideline0"
@@ -54,6 +55,17 @@
         app:layout_constraintEnd_toEndOf="@+id/buttonUpper"
         app:layout_constraintTop_toTopOf="@+id/buttonUpper" />
 
+    <ImageView
+        android:id="@+id/downArrowImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:srcCompat="@drawable/ic_down_arrow"
+        app:layout_constraintTop_toTopOf="@+id/button_upper_inside"
+        app:layout_constraintBottom_toBottomOf="@+id/button_upper_inside"
+        app:layout_constraintStart_toStartOf="@+id/button_upper_inside"
+        app:layout_constraintEnd_toEndOf="@+id/button_upper_inside" />
+
     <TextView
         android:id="@+id/menuTextView"
         android:layout_width="wrap_content"
@@ -63,38 +75,40 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/buttonUpper"
         app:layout_constraintStart_toStartOf="@+id/buttonUpper"
-        app:layout_constraintTop_toTopOf="@+id/guideline1" />
+        app:layout_constraintTop_toTopOf="@+id/buttonUpper" />
 
     <include
         android:id="@+id/writeButton"
         layout="@layout/button_template_unpressed"
         android:layout_width="80dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
         android:layout_marginEnd="12dp"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline1" />
 
-
-    <TextView
-        android:id="@+id/writeButtonTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="글 작성"
-        android:textColor="@color/black"
+    <ImageView
+        android:id="@+id/writeImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:srcCompat="@drawable/ic_write"
         app:layout_constraintTop_toTopOf="@+id/writeButton"
         app:layout_constraintBottom_toBottomOf="@+id/writeButton"
         app:layout_constraintStart_toStartOf="@+id/writeButton"
-        app:layout_constraintEnd_toEndOf="@+id/writeButton" />
+        app:layout_constraintEnd_toEndOf="@+id/writeButton"  />
+
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_begin="108dp" />
 
     <View
         android:id="@+id/black_line_at_the_bottom_of_menu_button"
@@ -256,7 +270,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.21" />
+        app:layout_constraintGuide_begin="160dp" />
 
 
     <include
