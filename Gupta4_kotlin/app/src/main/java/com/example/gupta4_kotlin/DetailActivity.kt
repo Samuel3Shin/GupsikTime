@@ -46,7 +46,7 @@ class DetailActivity : AppCompatActivity() {
         if(myPostIdsStr.indexOf(postFullId, 0) != -1) {
             Toast.makeText(applicationContext, "있습니다!", Toast.LENGTH_SHORT).show()
             deleteButton.visibility = View.VISIBLE
-            deleteTextView.visibility = View.VISIBLE
+            deleteImageView.visibility = View.VISIBLE
         }
 
 
