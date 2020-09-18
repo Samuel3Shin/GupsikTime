@@ -90,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:textColor="@color/black"
+        android:textSize="16sp"
         android:text="학교를 알려주세요 :)"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +101,7 @@
         layout="@layout/content_rectangle"
         android:layout_width="300dp"
         android:layout_height="30dp"
-        android:layout_marginTop="16dp"
+        android:layout_margin="16dp"
         android:background="@color/pink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,11 +112,13 @@
         layout="@layout/button_template_unpressed"
         android:layout_height="0dp"
         android:layout_width="60dp"
-        android:layout_margin="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="2dp"
         app:layout_constraintBottom_toBottomOf="@+id/schoolSearchBox"
         app:layout_constraintEnd_toEndOf="@+id/schoolSearchBox"
         app:layout_constraintTop_toTopOf="@+id/schoolSearchBox" />
-
 
     <TextView
         android:id="@+id/menuTextView"
@@ -132,13 +135,14 @@
         android:id="@+id/searchBar"
         layout="@layout/search_bar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="2dp"
         app:layout_constraintEnd_toStartOf="@+id/button_upper_inside"
         app:layout_constraintStart_toStartOf="@+id/schoolSearchBox"
         app:layout_constraintTop_toTopOf="@+id/schoolSearchBox"
         app:layout_constraintBottom_toBottomOf="@+id/schoolSearchBox" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

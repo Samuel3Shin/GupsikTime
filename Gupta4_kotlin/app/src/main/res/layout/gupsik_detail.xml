@@ -28,19 +28,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_begin="64dp" />
 
-    <ImageButton
+    <include
         android:id="@+id/backButton"
-        style="@android:style/Widget.DeviceDefault.ImageButton"
-        android:layout_width="wrap_content"
+        layout="@layout/button_template_unpressed"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/transparent"
-        android:foreground="?attr/selectableItemBackground"
-        app:layout_constraintStart_toStartOf="@+id/guideline0"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@+id/guideline1"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
@@ -60,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_begin="108dp" />
 
     <View
         android:id="@+id/black_line_at_the_bottom_of_menu_button"
@@ -99,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.04" />
+                app:layout_constraintGuide_percent="0.04136253" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_vertical_2"
@@ -156,16 +157,16 @@
                 app:layout_constraintEnd_toStartOf="@+id/deleteButton"
                 app:layout_constraintTop_toBottomOf="@+id/dateTextView" />
 
-            <TextView
-                android:id="@+id/editTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="수정"
-                android:textColor="@color/black"
+            <ImageView
+                android:id="@+id/editImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="4dp"
+                app:srcCompat="@drawable/ic_edit"
                 app:layout_constraintTop_toTopOf="@+id/editButton"
                 app:layout_constraintBottom_toBottomOf="@+id/editButton"
                 app:layout_constraintStart_toStartOf="@+id/editButton"
-                app:layout_constraintEnd_toEndOf="@+id/editButton" />
+                app:layout_constraintEnd_toEndOf="@+id/editButton"  />
 
             <include
                 android:id="@+id/deleteButton"
@@ -176,31 +177,30 @@
                 android:layout_marginBottom="2dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="8dp"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/editButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/editButton" />
 
-            <TextView
-                android:id="@+id/deleteTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="삭제"
-                android:textColor="@color/black"
-                android:visibility="invisible"
+            <ImageView
+                android:id="@+id/deleteImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="4dp"
+                app:srcCompat="@drawable/ic_garbage_can"
                 app:layout_constraintTop_toTopOf="@+id/deleteButton"
                 app:layout_constraintBottom_toBottomOf="@+id/deleteButton"
                 app:layout_constraintStart_toStartOf="@+id/deleteButton"
                 app:layout_constraintEnd_toEndOf="@+id/deleteButton" />
 
+
             <TextView
                 android:id="@+id/contents"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:text="게시물 내용"
                 app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
-                app:layout_constraintTop_toBottomOf="@+id/nickname" />
+                app:layout_constraintTop_toBottomOf="@+id/editButton" />
 
 
             <ImageButton
