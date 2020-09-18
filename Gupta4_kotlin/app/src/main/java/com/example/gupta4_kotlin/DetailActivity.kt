@@ -171,7 +171,7 @@ class DetailActivity : AppCompatActivity() {
             }
         })
 
-        register_button.setOnClickListener {
+        registerButton.setOnClickListener {
             val comment = Comment()
             val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").push()
 

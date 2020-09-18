@@ -230,8 +230,8 @@
         layout="@layout/my_page_info_box"
         android:layout_width="0dp"
         android:layout_height="100dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintTop_toTopOf="@+id/my_page_box"
-        app:layout_constraintBottom_toTopOf="@+id/myAllergyInfoBox"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
         app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2"  />
 
@@ -252,6 +252,8 @@
         android:layout_margin="16dp"
         android:text="이화여자대학교 사범대학 부속 이화 금란 고등학교"
         android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/mySchoolInfoEditButton"
+        app:layout_constraintEnd_toEndOf="@+id/mySchoolInfoBox"
         app:layout_constraintStart_toStartOf="@+id/mySchoolInfoBox"
         app:layout_constraintTop_toTopOf="@+id/mySchoolInfoBox" />
 
@@ -274,7 +276,7 @@
         android:background="@color/grey"
         app:layout_constraintEnd_toEndOf="@+id/mySchoolInfoBox"
         app:layout_constraintStart_toEndOf="@+id/mySchoolTextView"
-        app:layout_constraintTop_toTopOf="@+id/mySchoolInfoBox" />
+        app:layout_constraintTop_toTopOf="@+id/mySchoolInfoBox"/>
 
 
 
@@ -299,16 +301,30 @@
         app:layout_constraintStart_toStartOf="@+id/mySchoolInfoEditButton"
         app:layout_constraintEnd_toEndOf="@+id/mySchoolInfoEditButton" />
 
-
     <include
         android:id="@+id/myAllergyInfoBox"
         layout="@layout/my_page_info_box"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintTop_toBottomOf="@+id/mySchoolInfoBox"
-        app:layout_constraintBottom_toBottomOf="@+id/my_page_box"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
-        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2"  />
+        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2" />
+
+    <TextView
+        android:id="@+id/myAllergyInfoTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:text="난류, 우유, 땅콩, 대두, 호두, 메밀, 밀, 복숭아, 토마토, 닭꼬기, 쇠고기, 돼지고기, 새우, 게, 고등어, 오징어, 조개류(굴,전복,홍합"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2"
+        app:layout_constraintTop_toTopOf="@+id/myAllergyInfoBox"
+ />
+
 
     <View
         android:id="@+id/grey_line1_for_my_allergy_info_box"
