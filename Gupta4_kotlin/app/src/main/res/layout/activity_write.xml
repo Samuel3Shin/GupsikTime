@@ -30,20 +30,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_begin="64dp" />
 
-
-    <ImageButton
+    <include
         android:id="@+id/backButton"
-        style="@android:style/Widget.DeviceDefault.ImageButton"
-        android:layout_width="wrap_content"
+        layout="@layout/button_template_unpressed"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/transparent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
         android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
         app:layout_constraintTop_toBottomOf="@+id/guideline1"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
+ />
+
+    <ImageView
+        android:id="@+id/backButtonImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        app:srcCompat="@drawable/ic_close"
+        app:layout_constraintTop_toTopOf="@+id/backButton"
+        app:layout_constraintBottom_toBottomOf="@+id/backButton"
+        app:layout_constraintStart_toStartOf="@+id/backButton"
+        app:layout_constraintEnd_toEndOf="@+id/backButton"  />
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/backButton"-->
+<!--        style="@android:style/Widget.DeviceDefault.ImageButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:foreground="?attr/selectableItemBackground"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/guideline0"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/guideline1"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/guideline2"-->
+<!--        app:srcCompat="@drawable/ic_cancel" />-->
 
 
     <TextView
@@ -53,20 +78,38 @@
         android:text="글쓰기"
         android:textColor="@color/black"
         android:gravity="center"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline1"
         app:layout_constraintBottom_toTopOf="@+id/guideline2" />
 
-    <Button
+    <include
         android:id="@+id/registerButton"
-        android:layout_width="wrap_content"
+        layout="@layout/button_template_unpressed"
+        android:layout_width="60dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
-        android:text="등록"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toEndOf="@+id/board_name"
         app:layout_constraintTop_toBottomOf="@+id/guideline1" />
+
+    <TextView
+        android:id="@+id/registerTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="등록"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/registerButton"
+        app:layout_constraintEnd_toEndOf="@+id/registerButton"
+        app:layout_constraintStart_toStartOf="@+id/registerButton"
+        app:layout_constraintTop_toTopOf="@+id/registerButton" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -74,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_begin="108dp" />
 
     <View
         android:id="@+id/black_line_at_the_bottom_of_menu_button"
@@ -123,7 +166,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:text="게시판"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/buttonUpper"
         app:layout_constraintEnd_toStartOf="@+id/buttonUpper"
@@ -135,7 +178,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:text="닉네임"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/nickname_box"
         app:layout_constraintEnd_toStartOf="@+id/nickname_box"
@@ -147,7 +190,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:text="제목"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/title_box"
         app:layout_constraintEnd_toStartOf="@+id/title_box"
@@ -176,6 +219,17 @@
         app:layout_constraintBottom_toBottomOf="@+id/buttonUpper"
         app:layout_constraintEnd_toEndOf="@+id/buttonUpper"
         app:layout_constraintTop_toTopOf="@+id/buttonUpper" />
+
+    <ImageView
+        android:id="@+id/downArrowImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:srcCompat="@drawable/ic_down_arrow"
+        app:layout_constraintTop_toTopOf="@+id/button_upper_inside"
+        app:layout_constraintBottom_toBottomOf="@+id/button_upper_inside"
+        app:layout_constraintStart_toStartOf="@+id/button_upper_inside"
+        app:layout_constraintEnd_toEndOf="@+id/button_upper_inside" />
 
     <TextView
         android:id="@+id/boardNameTextView"
@@ -217,7 +271,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_begin="238dp" />
 
 
     <include
