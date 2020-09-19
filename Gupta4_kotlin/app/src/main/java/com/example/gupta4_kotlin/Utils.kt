@@ -16,6 +16,7 @@ object Utils {
     val schoolNameKey = "schoolName"
     val myPostIdsKey = "myPostIds"
     val myCommentIdsKey = "myCommentIds"
+    val myLikedPostIdsKey = "myLikedPostIds"
     val isAllergyInfoInsertedKey = "isAllergyInfoInserted"
     val myAllergy1Key = "myAllergy1"
     val myAllergy2Key = "myAllergy2"

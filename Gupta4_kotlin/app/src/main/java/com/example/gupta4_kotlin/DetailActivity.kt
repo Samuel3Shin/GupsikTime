@@ -40,13 +40,13 @@ class DetailActivity : AppCompatActivity() {
         var myPostIdsStr: String = preference.getString(Utils.myPostIdsKey, "").toString()
         var postFullId = "$boardKey/Posts/$postId"
 
-//        Log.d("tkandpf", "내가 쓴 글:" + myPostIdsStr)
-//        Log.d("tkandpf", "포스트 아이디:" + postFullId)
 
         if(myPostIdsStr.indexOf(postFullId, 0) != -1) {
-            Toast.makeText(applicationContext, "있습니다!", Toast.LENGTH_SHORT).show()
             deleteButton.visibility = View.VISIBLE
             deleteImageView.visibility = View.VISIBLE
+
+            editButton.visibility = View.VISIBLE
+            editImageView.visibility = View.VISIBLE
         }
 
 
@@ -210,10 +210,23 @@ class DetailActivity : AppCompatActivity() {
 
         }
 
-        likeButton.setOnClickListener {
-            // post의 좋아요 개수 불러와서 거기다가 1을 더해준다.
-            val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
+        var myLikedPostIdsStr: String = preference.getString(Utils.myLikedPostIdsKey, "").toString()
 
+        // 이미 like한 포스트면, likeButton을 누른 상태로 보여줘야함.
+        if(myLikedPostIdsStr.indexOf(postFullId, 0) != -1) {
+            likeButtonPressed.visibility = View.VISIBLE
+            likeButtonUnpressed.visibility = View.INVISIBLE
+        }
+
+        likeButtonUnpressed.setOnClickListener {
+            Utils.toggleButton(likeButtonUnpressed)
+            Utils.toggleButton(likeButtonPressed)
+
+            myLikedPostIdsStr = myLikedPostIdsStr + postFullId + ","
+            preference.edit().putString(Utils.myLikedPostIdsKey, myLikedPostIdsStr).apply()
+
+            // post의 좋아요 개수 불러와서 거기다가 1을 더해준다.
+            val postRef = FirebaseDatabase.getInstance().getReference(postFullId)
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
@@ -222,7 +235,29 @@ class DetailActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var commentNum = snapshot.child("likesCount").value as Long
                     postRef.child("likesCount").setValue(commentNum + 1)
-//                    Log.d("tkandpf", commentNum.toString())
+                }
+            })
+
+        }
+
+        likeButtonPressed.setOnClickListener {
+            Utils.toggleButton(likeButtonUnpressed)
+            Utils.toggleButton(likeButtonPressed)
+
+            // 댓글 id를 shared preference에서 빼줘야 함
+            myLikedPostIdsStr = myLikedPostIdsStr.replace(postFullId + ",", "")
+            preference.edit().putString(Utils.myLikedPostIdsKey, myLikedPostIdsStr).apply()
+
+            // post의 좋아요 개수 불러와서 거기다가 1을 빼준다.
+            val postRef = FirebaseDatabase.getInstance().getReference(postFullId)
+            postRef.addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var commentNum = snapshot.child("likesCount").value as Long
+                    postRef.child("likesCount").setValue(commentNum - 1)
                 }
             })
 
