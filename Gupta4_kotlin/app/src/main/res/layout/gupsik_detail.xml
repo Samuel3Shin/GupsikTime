@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:ignore="contentDescription"
     android:background="@color/colorPrimary" >
 
     <include
@@ -170,6 +171,7 @@
                 android:layout_marginBottom="2dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="8dp"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toStartOf="@+id/deleteButton"
                 app:layout_constraintTop_toBottomOf="@+id/dateTextView" />
 
@@ -178,6 +180,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="7dp"
+                android:visibility="invisible"
                 app:srcCompat="@drawable/ic_edit"
                 app:layout_constraintTop_toTopOf="@+id/editButton"
                 app:layout_constraintBottom_toBottomOf="@+id/editButton"
@@ -193,7 +196,7 @@
                 android:layout_marginBottom="2dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="8dp"
-                android:visibility="visible"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/editButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/editButton" />
@@ -203,6 +206,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="7dp"
+                android:visibility="invisible"
                 app:srcCompat="@drawable/ic_garbage_can"
                 app:layout_constraintTop_toTopOf="@+id/deleteButton"
                 app:layout_constraintBottom_toBottomOf="@+id/deleteButton"
@@ -220,7 +224,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/editButton" />
 
             <include
-                android:id="@+id/likeButton"
+                android:id="@+id/likeButtonUnpressed"
                 layout="@layout/button_template_unpressed"
                 android:layout_width="60dp"
                 android:layout_height="28dp"
@@ -232,16 +236,30 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/contents" />
 
+
+            <include
+                android:id="@+id/likeButtonPressed"
+                layout="@layout/button_template_pressed"
+                android:layout_width="60dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="16dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+                app:layout_constraintEnd_toStartOf="@+id/shareButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contents" />
+
             <ImageView
                 android:id="@+id/likeImageView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="8dp"
                 app:srcCompat="@drawable/ic_like"
-                app:layout_constraintTop_toTopOf="@+id/likeButton"
-                app:layout_constraintBottom_toBottomOf="@+id/likeButton"
-                app:layout_constraintStart_toStartOf="@+id/likeButton"
-                app:layout_constraintEnd_toEndOf="@+id/likeButton" />
+                app:layout_constraintTop_toTopOf="@+id/likeButtonUnpressed"
+                app:layout_constraintBottom_toBottomOf="@+id/likeButtonUnpressed"
+                app:layout_constraintStart_toStartOf="@+id/likeButtonUnpressed"
+                app:layout_constraintEnd_toEndOf="@+id/likeButtonUnpressed" />
 
             <include
                 android:id="@+id/shareButton"
@@ -250,10 +268,10 @@
                 android:layout_height="28dp"
                 android:layout_marginEnd="100dp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/likeButton"
+                app:layout_constraintBottom_toBottomOf="@+id/likeButtonUnpressed"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/likeButton"
-                app:layout_constraintTop_toTopOf="@+id/likeButton" />
+                app:layout_constraintStart_toEndOf="@+id/likeButtonUnpressed"
+                app:layout_constraintTop_toTopOf="@+id/likeButtonUnpressed" />
 
             <ImageView
                 android:id="@+id/shareImageView"
@@ -277,7 +295,7 @@
                 android:background="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/likeButton" />
+                app:layout_constraintTop_toBottomOf="@+id/likeButtonUnpressed" />
 
             <View
                 android:id="@+id/white_line_at_the_bottom_of_content"
@@ -350,14 +368,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.04" />
+            app:layout_constraintGuide_begin="16dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_vertical_2_dup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.96" />
+            app:layout_constraintGuide_end="16dp" />
 
         <include
             android:id="@+id/comment_box"
@@ -382,16 +400,19 @@
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/comment_box"
             app:layout_constraintStart_toStartOf="@+id/comment_box"
-            app:layout_constraintTop_toTopOf="@+id/comment_box" />
+            app:layout_constraintTop_toTopOf="@+id/comment_box"
+            android:inputType="text" />
 
         <include
             android:id="@+id/registerButton"
             layout="@layout/button_template_unpressed"
             android:layout_width="66dp"
             android:layout_height="28dp"
+            android:layout_marginStart="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2_dup"  />
+            app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2_dup"
+            app:layout_constraintStart_toEndOf="@+id/comment_box"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/registerButtonTextView"
