@@ -9,18 +9,16 @@ import kotlinx.android.synthetic.main.activity_my_allergy.*
 
 class MyAllergyActivity : AppCompatActivity() {
     val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
-    val allergyKeyList: MutableList<String> = mutableListOf()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_allergy)
+        var isLanding: Boolean = intent.getBooleanExtra("isLanding", false)
 
-        allergyKeyList.addAll(listOf(Utils.myAllergy1Key, Utils.myAllergy2Key, Utils.myAllergy3Key, Utils.myAllergy4Key, Utils.myAllergy5Key, Utils.myAllergy6Key,
-            Utils.myAllergy7Key, Utils.myAllergy8Key, Utils.myAllergy9Key, Utils.myAllergy10Key, Utils.myAllergy11Key, Utils.myAllergy12Key, Utils.myAllergy13Key,
-            Utils.myAllergy14Key, Utils.myAllergy15Key, Utils.myAllergy16Key, Utils.myAllergy17Key, Utils.myAllergy18Key))
-
-
+        if(isLanding) {
+            cancelButton.visibility = View.INVISIBLE
+            cancelButtonTextView.visibility = View.INVISIBLE
+        }
 
         preference.getInt(Utils.myAllergy1Key, 0).let {
             if(it != 0) {
@@ -249,9 +247,18 @@ class MyAllergyActivity : AppCompatActivity() {
             }
 
             finish()
-            val intent = Intent(this, MySettingActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            startActivity(intent)
+
+            if(isLanding) {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                preference.edit().putBoolean(Utils.isSetSchoolKey, true).apply()
+                startActivity(intent)
+            } else {
+                val intent = Intent(this, MySettingActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(intent)
+            }
+
         }
 
 
