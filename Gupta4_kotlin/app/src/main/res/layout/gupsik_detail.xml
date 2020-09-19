@@ -43,17 +43,29 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/backImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="12dp"
+        app:srcCompat="@drawable/ic_left_chevron"
+        app:layout_constraintTop_toTopOf="@+id/backButton"
+        app:layout_constraintBottom_toBottomOf="@+id/backButton"
+        app:layout_constraintStart_toStartOf="@+id/backButton"
+        app:layout_constraintEnd_toEndOf="@+id/backButton"  />
+
 
     <TextView
         android:id="@+id/board_name"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:text="대나무숲"
         android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="대나무숲"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline1"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline1" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -115,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="이게 제목이고"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -124,6 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="익명의 닉네임"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
                 app:layout_constraintTop_toBottomOf="@+id/post_title" />
 
@@ -133,6 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="0"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toEndOf="@+id/nickname"
                 app:layout_constraintTop_toTopOf="@+id/nickname" />
 
@@ -142,6 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="2020년 9월 5일"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toEndOf="@+id/hitsCountText"
                 app:layout_constraintTop_toTopOf="@+id/nickname" />
 
@@ -161,7 +177,7 @@
                 android:id="@+id/editImageView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_margin="4dp"
+                android:layout_margin="7dp"
                 app:srcCompat="@drawable/ic_edit"
                 app:layout_constraintTop_toTopOf="@+id/editButton"
                 app:layout_constraintBottom_toBottomOf="@+id/editButton"
@@ -171,8 +187,8 @@
             <include
                 android:id="@+id/deleteButton"
                 layout="@layout/button_template_unpressed"
-                android:layout_height="28dp"
                 android:layout_width="48dp"
+                android:layout_height="28dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:layout_marginStart="2dp"
@@ -186,7 +202,7 @@
                 android:id="@+id/deleteImageView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_margin="4dp"
+                android:layout_margin="7dp"
                 app:srcCompat="@drawable/ic_garbage_can"
                 app:layout_constraintTop_toTopOf="@+id/deleteButton"
                 app:layout_constraintBottom_toBottomOf="@+id/deleteButton"
@@ -199,20 +215,57 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="게시물 내용"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
                 app:layout_constraintTop_toBottomOf="@+id/editButton" />
 
-
-            <ImageButton
+            <include
                 android:id="@+id/likeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                layout="@layout/button_template_unpressed"
+                android:layout_width="60dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="100dp"
                 android:layout_marginTop="16dp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@+id/recycler_view"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/shareButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contents"
-                app:srcCompat="@drawable/ic_baseline_thumb_up_24" />
+                app:layout_constraintTop_toBottomOf="@+id/contents" />
+
+            <ImageView
+                android:id="@+id/likeImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                app:srcCompat="@drawable/ic_like"
+                app:layout_constraintTop_toTopOf="@+id/likeButton"
+                app:layout_constraintBottom_toBottomOf="@+id/likeButton"
+                app:layout_constraintStart_toStartOf="@+id/likeButton"
+                app:layout_constraintEnd_toEndOf="@+id/likeButton" />
+
+            <include
+                android:id="@+id/shareButton"
+                layout="@layout/button_template_unpressed"
+                android:layout_width="60dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="100dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/likeButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/likeButton"
+                app:layout_constraintTop_toTopOf="@+id/likeButton" />
+
+            <ImageView
+                android:id="@+id/shareImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                app:srcCompat="@drawable/ic_share"
+                app:layout_constraintTop_toTopOf="@+id/shareButton"
+                app:layout_constraintBottom_toBottomOf="@+id/shareButton"
+                app:layout_constraintStart_toStartOf="@+id/shareButton"
+                app:layout_constraintEnd_toEndOf="@+id/shareButton" />
+
 
             <View
                 android:id="@+id/black_line_at_the_bottom_of_content"
@@ -220,6 +273,7 @@
                 android:layout_height="1dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
                 android:background="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -240,7 +294,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
                 app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2"
-                app:layout_constraintTop_toBottomOf="@+id/likeButton" />
+                app:layout_constraintTop_toBottomOf="@+id/white_line_at_the_bottom_of_content" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
@@ -250,7 +304,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.92" />
+        app:layout_constraintGuide_end="50dp" />
 
     <View
         android:id="@+id/pink_line_at_the_top_of_comment_box"
@@ -317,7 +371,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1_dup"
-            app:layout_constraintEnd_toStartOf="@+id/register_button" />
+            app:layout_constraintEnd_toStartOf="@+id/registerButton" />
 
         <EditText
             android:id="@+id/comments"
@@ -325,18 +379,32 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:hint="댓글을 입력해주세요 :D"
-            app:layout_constraintTop_toTopOf="@+id/comment_box"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/comment_box"
-            app:layout_constraintStart_toStartOf="@+id/comment_box" />
+            app:layout_constraintStart_toStartOf="@+id/comment_box"
+            app:layout_constraintTop_toTopOf="@+id/comment_box" />
 
-        <Button
-            android:id="@+id/register_button"
+        <include
+            android:id="@+id/registerButton"
+            layout="@layout/button_template_unpressed"
+            android:layout_width="66dp"
+            android:layout_height="28dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2_dup"  />
+
+        <TextView
+            android:id="@+id/registerButtonTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="등록"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2_dup" />
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="@+id/registerButton"
+            app:layout_constraintBottom_toBottomOf="@+id/registerButton"
+            app:layout_constraintStart_toStartOf="@+id/registerButton"
+            app:layout_constraintEnd_toEndOf="@+id/registerButton" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

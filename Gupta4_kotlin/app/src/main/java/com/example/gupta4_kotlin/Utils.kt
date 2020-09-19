@@ -16,6 +16,26 @@ object Utils {
     val schoolNameKey = "schoolName"
     val myPostIdsKey = "myPostIds"
     val myCommentIdsKey = "myCommentIds"
+    val isAllergyInfoInsertedKey = "isAllergyInfoInserted"
+    val myAllergy1Key = "myAllergy1"
+    val myAllergy2Key = "myAllergy2"
+    val myAllergy3Key = "myAllergy3"
+    val myAllergy4Key = "myAllergy4"
+    val myAllergy5Key = "myAllergy5"
+    val myAllergy6Key = "myAllergy6"
+    val myAllergy7Key = "myAllergy7"
+    val myAllergy8Key = "myAllergy8"
+    val myAllergy9Key = "myAllergy9"
+    val myAllergy10Key = "myAllergy10"
+    val myAllergy11Key = "myAllergy11"
+    val myAllergy12Key = "myAllergy12"
+    val myAllergy13Key = "myAllergy13"
+    val myAllergy14Key = "myAllergy14"
+    val myAllergy15Key = "myAllergy15"
+    val myAllergy16Key = "myAllergy16"
+    val myAllergy17Key = "myAllergy17"
+    val myAllergy18Key = "myAllergy18"
+
 
     fun getDiffTimeText(targetTime: Long): String {
         val curDateTime = DateTime()
