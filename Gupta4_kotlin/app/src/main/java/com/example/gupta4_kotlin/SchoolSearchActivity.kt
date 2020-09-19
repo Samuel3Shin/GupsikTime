@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
@@ -22,6 +23,13 @@ class SchoolSearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_school_search)
+
+        var isLanding: Boolean = intent.getBooleanExtra("isLanding", false)
+
+        if(isLanding) {
+            cancelButton.visibility = View.INVISIBLE
+            cancelButtonTextView.visibility = View.INVISIBLE
+        }
 
         val rows: List<List<String>> = csvReader().readAll(getAssets().open("school_info.csv"))
 
@@ -66,9 +74,18 @@ class SchoolSearchActivity : AppCompatActivity() {
                 preference.edit().putString(Utils.schoolNameKey, keyword).apply()
 
                 finish()
-                val intent = Intent(this, MySettingActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                startActivity(intent)
+
+                if(isLanding) {
+                    val intent = Intent(this, MyAllergyActivity::class.java)
+                    intent.putExtra("isLanding", true)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(intent)
+                } else {
+                    val intent = Intent(this, MySettingActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(intent)
+                }
+
             }
         }
     }

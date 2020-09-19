@@ -49,7 +49,6 @@ class DetailActivity : AppCompatActivity() {
             editImageView.visibility = View.VISIBLE
         }
 
-
         deleteButton.setOnClickListener {
             val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
             postRef.removeValue()
@@ -62,7 +61,6 @@ class DetailActivity : AppCompatActivity() {
             commentRef.removeValue()
 
             //TODO: 게시글이 삭제될 때, 댓글도 같이 삭제되도록 구현한건데, 이 상황에서 댓글 id를 모아놓은 shared preference에서 그 댓글 id를 삭제할 방법을 찾아야한다.
-
             finish()
         }
 
