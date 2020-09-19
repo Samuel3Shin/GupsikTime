@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Utils {
-
+    val isSetSchoolKey = "isSetSchool"
     val districtCodeKey = "districtCode"
     val schoolCodeKey = "schoolCode"
     val schoolNameKey = "schoolName"
