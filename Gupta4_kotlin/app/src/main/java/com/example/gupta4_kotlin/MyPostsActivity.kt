@@ -52,12 +52,12 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         val myPostIdsStr = preference.getString(Utils.myPostIdsKey, "").toString()
         var myPostIdsList = myPostIdsStr.split(",")
-        Log.d("tkandpf", "my Post Ids length: " + myPostIdsList.size.toString())
+//        Log.d("tkandpf", "my Post Ids length: " + myPostIdsList.size.toString())
 
         for(i in 0 until myPostIdsList.size - 1) {
 
             // 일단 올리기에는 성공. 근데 이후에 아이템 정보 변경에 대해서는 handling 못 함.
-            Log.d("tkandpf", i.toString() + ":" + myPostIdsList.get(i))
+//            Log.d("tkandpf", i.toString() + ":" + myPostIdsList.get(i))
             val postRef = FirebaseDatabase.getInstance().getReference(myPostIdsList.get(i))
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -67,7 +67,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                             posts.add(it)
                             boardKeys.add(myPostIdsList.get(i).split("/Posts/").get(0))
                             recyclerView.adapter?.notifyItemInserted(posts.size - 1)
-                            Log.d("tkandpf", "posts size: " + posts.size.toString())
+//                            Log.d("tkandpf", "posts size: " + posts.size.toString())
                         }
                     }
                 }
