@@ -9,5 +9,6 @@
     <color name="black">#000000</color>
     <color name="white">#FEF5FF</color>
     <color name="mint">#E5E5E5</color>
+    <color name="allergy">#FF7FFF</color>
 
 </resources>
