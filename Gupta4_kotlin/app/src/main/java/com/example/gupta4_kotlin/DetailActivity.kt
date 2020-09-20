@@ -295,8 +295,8 @@ class DetailActivity : AppCompatActivity() {
             val myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
             val commentId = comment.commentId
 
-            Log.d("tkandpf", "내가 쓴 댓글:" + myCommentIdsStr)
-            Log.d("tkandpf", "댓글 아이디:" + "$boardKey/Comments/$postId/$commentId")
+//            Log.d("tkandpf", "내가 쓴 댓글:" + myCommentIdsStr)
+//            Log.d("tkandpf", "댓글 아이디:" + "$boardKey/Comments/$postId/$commentId")
 
             if(myCommentIdsStr.indexOf("$boardKey/Comments/$postId/$commentId", 0) != -1) {
                 holder.deleteTextView.visibility = View.VISIBLE
