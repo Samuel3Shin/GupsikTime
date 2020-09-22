@@ -129,7 +129,6 @@ class WriteActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         var commentNum = snapshot.child("commentCount").value as Long
                         postRef.child("commentCount").setValue(commentNum + 1)
-//                        Log.d("tkandpf", commentNum.toString())
                     }
                 })
 

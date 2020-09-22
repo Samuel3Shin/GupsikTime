@@ -163,7 +163,6 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             val post = posts[position]
             holder.contentsText.text = post.message
-//            Log.d("tkandpf", post.writeTime.toString())
             holder.timeTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
             holder.commentCountText.text = post.commentCount.toString()
             holder.hitsCountText.text = post.hitsCount.toString()
@@ -190,7 +189,6 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
 
                     override fun onDataChange(snapshot: DataSnapshot) {
                         var hitsNum = snapshot.child("hitsCount").value as Long
-//                        Log.d("tkandpf", hitsNum.toString())
                         postRef.child("hitsCount").setValue(hitsNum + 1)
                     }
                 })
