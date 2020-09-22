@@ -15,6 +15,20 @@ android {
         vectorDrawables.useSupportLibrary=true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+    }
+
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    viewBinding {
+        enabled = true
     }
 
     buildTypes {
@@ -42,7 +56,8 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'net.danlew:android.joda:2.9.9.3'
     implementation "com.github.doyaaaaaken:kotlin-csv-jvm:0.11.0"
-
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+    implementation 'com.github.kizitonwose:CalendarView:0.4.4'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -4,19 +4,33 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
+import com.example.gupta4_kotlin.databinding.CalendarHeaderBinding
+import com.example.gupta4_kotlin.databinding.CalendarDayBinding
+import com.example.gupta4_kotlin.databinding.ActivityMainBinding
+import com.kizitonwose.calendarview.model.CalendarDay
+import com.kizitonwose.calendarview.model.CalendarMonth
+import com.kizitonwose.calendarview.model.DayOwner
+import com.kizitonwose.calendarview.ui.DayBinder
+import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
+import com.kizitonwose.calendarview.ui.ViewContainer
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.IOException
 import java.io.StringReader
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.temporal.WeekFields
+import java.util.*
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
@@ -36,9 +50,16 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var dinnerTextViewList: MutableList<TextView> = mutableListOf()
     val allergyKeyList: MutableList<String> = mutableListOf()
 
+
+    private lateinit var binding: ActivityMainBinding
+    private val today = LocalDate.now()
+    private var selectedDate: LocalDate? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         // shared preference에서 교육청 코드와 학교 코드 불러오는데, 만약에 없으면 그냥 위의 default값(안산동산고등학교 코드) 내뱉음.
         district_code = preference.getString("districtCode", district_code).toString()
@@ -75,29 +96,111 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             popup.show()
         }
 
-        calendarView.setOnDateChangeListener { calendarView, i, i1, i2 ->
+        todayButton.setOnClickListener {
+            Utils.toggleButton(todayPressedButton)
+            Utils.toggleButton(todayButton)
 
-            var date = i.toString() + "/" + (i1 + 1) + "/" + i2
-            var ii1 = i.toString()
-            var ii2 = (i1 + 1).toString()
-            var ii3 = i2.toString()
-            if (i1 + 1 < 10) {
-                ii2 = "0$ii2"
+            selectDate(today)
+        }
+
+        // Customized Calendar
+        val daysOfWeek = daysOfWeekFromLocale()
+        val currentMonth = YearMonth.now()
+        binding.calendarView.apply {
+            setup(currentMonth.minusMonths(10), currentMonth.plusMonths(10), daysOfWeek.first())
+            scrollToMonth(currentMonth)
+        }
+
+        if (savedInstanceState == null) {
+            binding.calendarView.post {
+                // Show today's events initially.
+                selectDate(today)
             }
-            if (i2 < 10) {
-                ii3 = "0$ii3"
+        }
+
+        class DayViewContainer(view: View) : ViewContainer(view) {
+            lateinit var day: CalendarDay // Will be set when this container is bound.
+            val binding = CalendarDayBinding.bind(view)
+
+            init {
+                view.setOnClickListener {
+                    if (day.owner == DayOwner.THIS_MONTH) {
+                        selectDate(day.date)
+                    }
+                }
             }
-            var date3 = ii1 + ii2 + ii3
+        }
 
-            var dateList = date.split("/")
-//            dateTextView.setText(dateList.get(1) + "월 " + dateList.get(2)+ "일")
+        binding.calendarView.dayBinder = object : DayBinder<DayViewContainer> {
+            override fun create(view: View) = DayViewContainer(view)
+            override fun bind(container: DayViewContainer, day: CalendarDay) {
+                container.day = day
+                val textView = container.binding.dayText
 
-            // 아침, 점심, 저녁 따로 호출하려면 아래의 코드를 추가해야함.
-            // String which_meal_code = "1";
-            val date_code = date3
-            strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$date_code"
-            run()
+                textView.text = day.date.dayOfMonth.toString()
 
+                if (day.owner == DayOwner.THIS_MONTH) {
+                    textView.makeVisible()
+                    when (day.date) {
+                        today -> {
+                            textView.setTextColorRes(R.color.allergy)
+//                            textView.setBackgroundResource(R.drawable.calendar_today_bg)
+                        }
+                        selectedDate -> {
+                            textView.setTextColorRes(R.color.allergy)
+                            textView.setBackgroundResource(R.drawable.calendar_selected_bg)
+                        }
+                        else -> {
+                            textView.setTextColorRes(R.color.black)
+                            textView.background = null
+                        }
+                    }
+                } else {
+                    textView.makeInVisible()
+                }
+            }
+        }
+
+        binding.calendarView.monthScrollListener = {
+//            homeActivityToolbar.title = if (it.year == today.year) {
+//                titleSameYearFormatter.format(it.yearMonth)
+//            } else {
+//                titleFormatter.format(it.yearMonth)
+//            }
+
+            // Select the first day of the month when
+            // we scroll to a new month.
+//            selectDate(it.yearMonth.atDay(1))
+        }
+
+        class MonthViewContainer(view: View) : ViewContainer(view) {
+            val legendLayout = CalendarHeaderBinding.bind(view).legendLayout.root
+        }
+
+        binding.calendarView.monthHeaderBinder = object :
+            MonthHeaderFooterBinder<MonthViewContainer> {
+            override fun create(view: View) = MonthViewContainer(view)
+            override fun bind(container: MonthViewContainer, month: CalendarMonth) {
+                // Setup each header day text if we have not done that already.
+                if (container.legendLayout.tag == null) {
+                    container.legendLayout.tag = month.yearMonth
+                    container.legendLayout.children.map { it as TextView }.forEachIndexed { index, tv ->
+                        tv.text = daysOfWeek[index].name.let {
+                            when(it) {
+                                "MONDAY" -> "월"
+                                "TUESDAY" -> "화"
+                                "WEDNESDAY" -> "수"
+                                "THURSDAY" -> "목"
+                                "FRIDAY" -> "금"
+                                "SATURDAY" -> "토"
+                                "SUNDAY" -> "일"
+                                else -> ""
+                            }
+                        }
+                        tv.setTextColorRes(R.color.black)
+                    }
+                }
+            }
         }
 
         var childCnt: Int = gupsikInfoGroup.getChildCount()
@@ -117,12 +220,81 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menu_mealInfo -> {
+                Toast.makeText(this@MainActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
+                return true
+            }
+
+            R.id.menu_board -> {
+                Toast.makeText(this@MainActivity, "게시판!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, CommunityActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(intent)
+                return true
+            }
+
+            R.id.menu_myPage -> {
+                Toast.makeText(this@MainActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MySettingActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(intent)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item!!)
+    }
+
+    private fun updateAdapterForDate(date: LocalDate) {
+//        binding.exThreeSelectedDateText.text = selectionFormatter.format(date)
+    }
+
+    fun daysOfWeekFromLocale(): Array<DayOfWeek> {
+        val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        var daysOfWeek = DayOfWeek.values()
+        // Order `daysOfWeek` array so that firstDayOfWeek is at index 0.
+        // Only necessary if firstDayOfWeek != DayOfWeek.MONDAY which has ordinal 0.
+        if (firstDayOfWeek != DayOfWeek.MONDAY) {
+            val rhs = daysOfWeek.sliceArray(firstDayOfWeek.ordinal..daysOfWeek.indices.last)
+            val lhs = daysOfWeek.sliceArray(0 until firstDayOfWeek.ordinal)
+            daysOfWeek = rhs + lhs
+        }
+        return daysOfWeek
+    }
+
+    private fun selectDate(date: LocalDate) {
+        if (selectedDate != date) {
+            val oldDate = selectedDate
+            selectedDate = date
+            oldDate?.let { binding.calendarView.notifyDateChanged(it) }
+            binding.calendarView.notifyDateChanged(date)
+            updateAdapterForDate(date)
+
+            if(date != today) {
+                todayButton.visibility = View.VISIBLE
+                todayPressedButton.visibility = View.INVISIBLE
+            } else {
+                todayButton.visibility = View.INVISIBLE
+                todayPressedButton.visibility = View.VISIBLE
+            }
+
+            var date_code = date.toString().replace("-", "")
+            showMealInfo(date_code)
+        }
+    }
+
+    private fun showMealInfo(date_code: String) {
+        strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$date_code"
+        run()
+    }
+
     val client = OkHttpClient()
 
     fun run() {
         val request = Request.Builder()
-                .url(strUrl)
-                .build()
+            .url(strUrl)
+            .build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -266,8 +438,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
 
                     }
-//                    Log.d("tkandpf", "dish: " + dish.toString())
-//                    Log.d("tkandpf", "dishList size: " + dishList.size.toString())
 
                     for(i in dishList.size until 12) {
                         tmpTextViewList.get(i).visibility = View.GONE
@@ -280,32 +450,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             eventType = xmlpp.next()
         }
 
-    }
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.menu_mealInfo -> {
-                Toast.makeText(this@MainActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
-                return true
-            }
-
-            R.id.menu_board -> {
-                Toast.makeText(this@MainActivity, "게시판!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, CommunityActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                startActivity(intent)
-                return true
-            }
-
-            R.id.menu_myPage -> {
-                Toast.makeText(this@MainActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MySettingActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                startActivity(intent)
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item!!)
     }
 
 }
