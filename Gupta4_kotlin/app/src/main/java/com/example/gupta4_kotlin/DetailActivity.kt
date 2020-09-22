@@ -197,7 +197,6 @@ class DetailActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var commentNum = snapshot.child("commentCount").value as Long
                     postRef.child("commentCount").setValue(commentNum + 1)
-//                    Log.d("tkandpf", commentNum.toString())
                 }
             })
 
@@ -287,16 +286,14 @@ class DetailActivity : AppCompatActivity() {
             comment?.let {
                 holder.commentText.text = comment.message
                 holder.commentWriteTime.text = Utils.getDiffTimeText(comment.writeTime as Long)
-                // 여기에 익명1, 익명2을 id값에 따라 mapping해주는 것이 필요함.
+
+                //TODO: 여기에 익명1, 익명2을 id값에 따라 mapping해주는 것이 필요함.
                 // holder.commentNickname.text = comment.nickname
             }
 
             // 본인이 쓴 댓글이면 삭제 버튼이 보이도록 해야함.
             val myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
             val commentId = comment.commentId
-
-//            Log.d("tkandpf", "내가 쓴 댓글:" + myCommentIdsStr)
-//            Log.d("tkandpf", "댓글 아이디:" + "$boardKey/Comments/$postId/$commentId")
 
             if(myCommentIdsStr.indexOf("$boardKey/Comments/$postId/$commentId", 0) != -1) {
                 holder.deleteTextView.visibility = View.VISIBLE
@@ -323,7 +320,6 @@ class DetailActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         var commentNum = snapshot.child("commentCount").value as Long
                         postRef.child("commentCount").setValue(commentNum - 1)
-//                        Log.d("tkandpf", commentNum.toString())
                     }
                 })
             }
