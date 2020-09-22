@@ -266,8 +266,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
 
                     }
-                    Log.d("tkandpf", "dish: " + dish.toString())
-                    Log.d("tkandpf", "dishList size: " + dishList.size.toString())
+//                    Log.d("tkandpf", "dish: " + dish.toString())
+//                    Log.d("tkandpf", "dishList size: " + dishList.size.toString())
 
                     for(i in dishList.size until 12) {
                         tmpTextViewList.get(i).visibility = View.GONE
