@@ -261,7 +261,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             R.id.menu_myPage -> {
                 Toast.makeText(this@MainActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MySettingActivity::class.java)
+                val intent = Intent(this, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
                 return true
