@@ -79,18 +79,9 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     }
 
-    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val contentsText: TextView = itemView.contentsText
-        val timeTextView: TextView = itemView.timeTextView
-        val commentCountText: TextView = itemView.commentCountText
-        val hitsCountText: TextView = itemView.hitsCountText
-        val nicknameText: TextView = itemView.nicknameTextView
-        val likesCountText: TextView = itemView.likesCountText
-    }
-
-    inner class MyAdapter: RecyclerView.Adapter<MyViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            return MyViewHolder(
+    inner class MyAdapter: RecyclerView.Adapter<CommunityViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityViewHolder {
+            return CommunityViewHolder(
                 LayoutInflater.from(this@MyPostsActivity)
                     .inflate(R.layout.gupsik_post, parent, false))
         }
@@ -99,7 +90,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             return posts.size
         }
 
-        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: CommunityViewHolder, position: Int) {
             val post = posts[position]
             holder.contentsText.text = post.message
             holder.timeTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
@@ -111,7 +102,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             holder.itemView.setOnClickListener {
                 val intent = Intent(this@MyPostsActivity, DetailActivity::class.java)
-                val boardKey = boardKeys.get(position)
+                var boardKey = boardKeys.get(position)
 
                 intent.putExtra("boardKey", boardKey)
                 intent.putExtra("postId", post.postId)
