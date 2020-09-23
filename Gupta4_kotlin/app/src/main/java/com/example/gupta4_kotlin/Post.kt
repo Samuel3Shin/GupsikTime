@@ -10,6 +10,6 @@ class Post {
     var commentCount = 0
     var hitsCount = 0
     var likesCount = 0
-    var nickName = "익명의 닉네임"
+    var nickName = "익명"
 
 }
