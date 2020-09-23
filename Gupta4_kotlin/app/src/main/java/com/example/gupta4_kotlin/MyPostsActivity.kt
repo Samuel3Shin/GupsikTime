@@ -84,7 +84,6 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val timeTextView: TextView = itemView.timeTextView
         val commentCountText: TextView = itemView.commentCountText
         val hitsCountText: TextView = itemView.hitsCountText
-        val titleText: TextView = itemView.titleTextView
         val nicknameText: TextView = itemView.nicknameTextView
         val likesCountText: TextView = itemView.likesCountText
     }
@@ -106,7 +105,6 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             holder.timeTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
             holder.commentCountText.text = post.commentCount.toString()
             holder.hitsCountText.text = post.hitsCount.toString()
-            holder.titleText.text = post.title
             holder.nicknameText.text = post.nickName
             holder.likesCountText.text = post.likesCount.toString()
 

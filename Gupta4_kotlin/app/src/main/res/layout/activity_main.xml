@@ -247,6 +247,7 @@
         android:id="@+id/calendarScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_margin="2dp"
         app:layout_constraintTop_toTopOf="@+id/meal_info_box"
         app:layout_constraintBottom_toBottomOf="@+id/meal_info_box"
         app:layout_constraintEnd_toEndOf="@+id/meal_info_box"
@@ -301,8 +302,6 @@
                 android:id="@+id/upper_breakfast_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
@@ -328,7 +327,8 @@
                 android:id="@+id/down_breakfast_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_margin="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:layerType="software"
                 android:src="@drawable/dotted_line_horizontal_wider"
                 app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_1"
@@ -464,8 +464,6 @@
                 android:id="@+id/upper_lunch_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
@@ -490,7 +488,8 @@
                 android:id="@+id/down_lunch_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_margin="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:layerType="software"
                 android:src="@drawable/dotted_line_horizontal_wider"
                 app:layout_constraintBottom_toTopOf="@+id/lunchTextView_1"
@@ -626,8 +625,6 @@
                 android:id="@+id/upper_dinner_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
@@ -652,7 +649,8 @@
                 android:id="@+id/down_dinner_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_margin="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:layerType="software"
                 android:src="@drawable/dotted_line_horizontal_wider"
                 app:layout_constraintTop_toBottomOf="@+id/dinner"
@@ -786,8 +784,6 @@
                 android:id="@+id/last_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
@@ -802,14 +798,14 @@
 
     </ScrollView>
 
-    <ImageView
-        android:id="@+id/testImageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:srcCompat="@drawable/bg_grid"
-        app:layout_constraintStart_toEndOf="@+id/calendar_box"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/calendar_box"
-        app:layout_constraintBottom_toTopOf="@+id/todayPressedButton" />
+<!--    <ImageView-->
+<!--        android:id="@+id/testImageView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:srcCompat="@drawable/bg_grid"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/calendar_box"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/calendar_box"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/todayPressedButton" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

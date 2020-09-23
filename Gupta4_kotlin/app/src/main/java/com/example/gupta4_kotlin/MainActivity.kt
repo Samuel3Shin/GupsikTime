@@ -104,10 +104,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         shareButton.setOnClickListener {
             gupsikInfoGroup.isDrawingCacheEnabled = true
             gupsikInfoGroup.buildDrawingCache()
-
-
             val bitmap = gupsikInfoGroup.getDrawingCache()
-            testImageView.setImageBitmap(bitmap)
+//            testImageView.setImageBitmap(bitmap)
 
             var bitmapURI = Utils.getImageUri(this@MainActivity, bitmap)
             //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
