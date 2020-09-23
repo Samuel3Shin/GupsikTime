@@ -3,20 +3,16 @@ package com.example.gupta4_kotlin
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.gupsik_post.view.*
 
-class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val boardKey: String): RecyclerView.Adapter<MyViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
+class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val boardKey: String): RecyclerView.Adapter<CommunityViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityViewHolder {
+        return CommunityViewHolder(
             LayoutInflater.from(context)
                 .inflate(R.layout.gupsik_post, parent, false))
     }
@@ -25,7 +21,7 @@ class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val b
         return posts.size
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CommunityViewHolder, position: Int) {
         val post = posts[position]
         holder.contentsText.text = post.message
         holder.timeTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
@@ -34,9 +30,9 @@ class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val b
         holder.nicknameText.text = post.nickName
         holder.likesCountText.text = post.likesCount.toString()
 
-
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java)
+
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("postId", post.postId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -61,13 +57,4 @@ class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val b
     }
 
 
-}
-
-class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val contentsText: TextView = itemView.contentsText
-    val timeTextView: TextView = itemView.timeTextView
-    val commentCountText: TextView = itemView.commentCountText
-    val hitsCountText: TextView = itemView.hitsCountText
-    val nicknameText: TextView = itemView.nicknameTextView
-    val likesCountText: TextView = itemView.likesCountText
 }
