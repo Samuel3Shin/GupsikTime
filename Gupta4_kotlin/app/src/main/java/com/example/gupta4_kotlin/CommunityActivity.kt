@@ -3,29 +3,24 @@ package com.example.gupta4_kotlin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_community.*
 import kotlinx.android.synthetic.main.activity_community.buttonUpper
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.gupsik_post.view.*
 
-class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     val posts: MutableList<Post> = mutableListOf()
-    var boardKey = "bamboo"
+    open var boardKey = "bamboo"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_community)
+
+        // background image alpha값 조절
+        recyclerView.background.alpha = 95
 
         buttonUpper.setOnClickListener {
             val popup = PopupMenu(this@CommunityActivity, it)
@@ -116,6 +111,14 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
                 }
             })
 
+        bambooButton.setOnClickListener {
+            boardKey = "bamboo"
+            val intent = Intent(this@CommunityActivity, CommunityActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.putExtra("boardKey", boardKey)
+            startActivity(intent)
+
+        }
         careerButton.setOnClickListener {
             boardKey = "career"
             val intent = Intent(this@CommunityActivity, CommunityCareerActivity::class.java)
@@ -154,7 +157,7 @@ class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
 
             R.id.menu_myPage ->  {
                 Toast.makeText(this@CommunityActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MySettingActivity::class.java)
+                val intent = Intent(this, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
                 return true

@@ -16,7 +16,6 @@ class WriteActivity : AppCompatActivity() {
     var postId = ""
     var boardName = ""
     var boardKey = ""
-    var schoolCode = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -41,14 +40,9 @@ class WriteActivity : AppCompatActivity() {
                 boardName = "진로고민"
             }
 
-            "mySchool" -> {
+            else -> {
                 boardName = "우리학교"
             }
-        }
-
-        intent.getStringExtra("schoolCode")?.let {
-            schoolCode = intent.getStringExtra("schoolCode")!!
-            boardKey = boardKey + "/$schoolCode"
         }
 
         boardNameTextView.setText(boardName)
