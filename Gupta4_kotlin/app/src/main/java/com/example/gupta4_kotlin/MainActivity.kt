@@ -1,9 +1,14 @@
 package com.example.gupta4_kotlin
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -24,8 +29,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import java.io.IOException
-import java.io.StringReader
+import java.io.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -94,6 +98,28 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             popup.setOnMenuItemClickListener(this@MainActivity)
             popup.inflate(R.menu.main)
             popup.show()
+        }
+
+
+        shareButton.setOnClickListener {
+            gupsikInfoGroup.isDrawingCacheEnabled = true
+            gupsikInfoGroup.buildDrawingCache()
+
+
+            val bitmap = gupsikInfoGroup.getDrawingCache()
+            testImageView.setImageBitmap(bitmap)
+
+            var bitmapURI = Utils.getImageUri(this@MainActivity, bitmap)
+            //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
+            //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "image/jpeg"
+                putExtra(Intent.EXTRA_STREAM, bitmapURI)
+                putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
+            }
+            startActivity(Intent.createChooser(shareIntent, "share image and text!"))
+
         }
 
         todayButton.setOnClickListener {
