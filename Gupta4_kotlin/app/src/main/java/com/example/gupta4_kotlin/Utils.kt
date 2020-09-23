@@ -1,11 +1,16 @@
 package com.example.gupta4_kotlin
 
+import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
 import android.view.View
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
 import org.joda.time.Minutes
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -69,4 +74,12 @@ object Utils {
             view.visibility = View.VISIBLE
         }
     }
+
+    fun getImageUri(inContext: Activity, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "급식정보", null)
+        return Uri.parse(path)
+    }
+
 }
