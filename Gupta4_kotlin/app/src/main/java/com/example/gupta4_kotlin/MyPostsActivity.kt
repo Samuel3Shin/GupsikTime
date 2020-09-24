@@ -96,7 +96,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             holder.timeTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
             holder.commentCountText.text = post.commentCount.toString()
             holder.hitsCountText.text = post.hitsCount.toString()
-            holder.nicknameText.text = post.nickName
+            holder.nicknameText.text = post.nickname
             holder.likesCountText.text = post.likesCount.toString()
 
 

@@ -27,7 +27,8 @@ class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val b
         holder.timeTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
         holder.commentCountText.text = post.commentCount.toString()
         holder.hitsCountText.text = post.hitsCount.toString()
-        holder.nicknameText.text = post.nickName
+        holder.titleTextView.text = post.title
+        holder.nicknameText.text = post.nickname
         holder.likesCountText.text = post.likesCount.toString()
 
         holder.itemView.setOnClickListener {
@@ -53,8 +54,5 @@ class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val b
                 }
             })
         }
-
     }
-
-
 }

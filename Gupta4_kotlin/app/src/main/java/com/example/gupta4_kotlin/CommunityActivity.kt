@@ -29,6 +29,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         writeButton.setOnClickListener {
             val intent = Intent(this@CommunityActivity, WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
+            intent.putExtra("mode", "post")
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
