@@ -237,6 +237,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:text="급식메뉴"
+        android:textSize="16dp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/buttonUpper"
         app:layout_constraintStart_toStartOf="@+id/buttonUpper"
@@ -254,6 +255,19 @@
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical_center"
         app:layout_constraintTop_toBottomOf="@+id/buttonUpper" />
 
+    <EditText
+        android:id="@+id/nicknameTextView_write"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:background="@android:color/transparent"
+        android:text="익명"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/nickname_box"
+        app:layout_constraintStart_toStartOf="@+id/nickname_box"
+        app:layout_constraintTop_toTopOf="@+id/nickname_box" />
+
     <include
         android:id="@+id/title_box"
         layout="@layout/content_rectangle"
@@ -265,6 +279,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical_center"
         app:layout_constraintTop_toBottomOf="@+id/nickname_box" />
+
+    <EditText
+        android:id="@+id/titleTextView_write"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:background="@android:color/transparent"
+        android:text="무제"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/title_box"
+        app:layout_constraintStart_toStartOf="@+id/title_box"
+        app:layout_constraintTop_toTopOf="@+id/title_box" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_horizontal"
