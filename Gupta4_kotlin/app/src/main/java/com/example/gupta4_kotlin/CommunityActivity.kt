@@ -19,9 +19,6 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_community)
 
-        // background image alpha값 조절
-        recyclerView.background.alpha = 95
-
         buttonUpper.setOnClickListener {
             val popup = PopupMenu(this@CommunityActivity, it)
             popup.setOnMenuItemClickListener(this@CommunityActivity)

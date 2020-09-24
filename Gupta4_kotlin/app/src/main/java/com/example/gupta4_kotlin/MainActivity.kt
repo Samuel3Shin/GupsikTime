@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var dinnerTextViewList: MutableList<TextView> = mutableListOf()
     val allergyKeyList: MutableList<String> = mutableListOf()
 
+    var date_code = ""
 
     private lateinit var binding: ActivityMainBinding
     private val today = LocalDate.now()
@@ -65,9 +67,23 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val view = binding.root
         setContentView(view)
 
+        schoolName.setText(preference.getString(Utils.schoolNameKey, ""))
+
         // shared preference에서 교육청 코드와 학교 코드 불러오는데, 만약에 없으면 그냥 위의 default값(안산동산고등학교 코드) 내뱉음.
         district_code = preference.getString("districtCode", district_code).toString()
         school_code = preference.getString("schoolCode", school_code).toString()
+
+        var childCnt: Int = gupsikInfoGroup.getChildCount()
+        for(i in 0 until childCnt) {
+            var viewId = gupsikInfoGroup.getChildAt(i).getResources().getResourceEntryName(gupsikInfoGroup.getChildAt(i).id).toString()
+            if(viewId.startsWith("breakfastTextView_")) {
+                breakfastTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
+            } else if(viewId.startsWith("lunchTextView_")) {
+                lunchTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
+            } else if(viewId.startsWith("dinnerTextView_")) {
+                dinnerTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
+            }
+        }
 
         allergyKeyList.addAll(
             listOf(
@@ -100,7 +116,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             popup.show()
         }
 
-
         shareButton.setOnClickListener {
             gupsikInfoGroup.isDrawingCacheEnabled = true
             gupsikInfoGroup.buildDrawingCache()
@@ -125,6 +140,48 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             Utils.toggleButton(todayButton)
 
             selectDate(today)
+        }
+
+        var tmpDate = ""
+        highlighterButton.setOnClickListener {
+            Utils.toggleButton(highlighterButton)
+            Utils.toggleButton(highlighterImageView)
+            Utils.toggleButton(highlighterPressedButton)
+            Utils.toggleButton(highlighterPressedImageView)
+
+            var alphaValue = 0.3F
+            calendar_box.alpha = alphaValue
+            calendarView.alpha = alphaValue
+            todayButton.alpha = alphaValue
+            todayPressedButton.alpha = alphaValue
+            todayTextView.alpha = alphaValue
+            shareButton.alpha = alphaValue
+            shareImageView.alpha = alphaValue
+
+            tmpDate = dateTextView.text.toString()
+            dateTextView.setText("좋아하는 메뉴를 눌러 하이라이트!")
+            dateTextView.setTextColor(getResources().getColor(R.color.windowBlue))
+            schoolName.makeGone()
+
+        }
+
+        highlighterPressedButton.setOnClickListener {
+            Utils.toggleButton(highlighterButton)
+            Utils.toggleButton(highlighterImageView)
+            Utils.toggleButton(highlighterPressedButton)
+            Utils.toggleButton(highlighterPressedImageView)
+
+            calendar_box.alpha = 1F
+            calendarView.alpha = 1F
+            todayButton.alpha = 1F
+            todayPressedButton.alpha = 1F
+            todayTextView.alpha = 1F
+            shareButton.alpha = 1F
+            shareImageView.alpha = 1F
+
+            dateTextView.setText(tmpDate)
+            dateTextView.setTextColor(getResources().getColor(R.color.black))
+            schoolName.makeVisible()
         }
 
         // Customized Calendar
@@ -227,21 +284,72 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         }
 
-        var childCnt: Int = gupsikInfoGroup.getChildCount()
-        for(i in 0 until childCnt) {
-            var viewId = gupsikInfoGroup.getChildAt(i).getResources().getResourceEntryName(
-                gupsikInfoGroup.getChildAt(
-                    i
-                ).id
-            ).toString()
-            if(viewId.startsWith("breakfastTextView_")) {
-                breakfastTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
-            } else if(viewId.startsWith("lunchTextView_")) {
-                lunchTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
-            } else if(viewId.startsWith("dinnerTextView_")) {
-                dinnerTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
+        var highlightedTextViews = ""
+        for(i in 0 until breakfastTextViewList.size) {
+            breakfastTextViewList.get(i).setOnClickListener {it as TextView
+
+                if(highlighterPressedButton.visibility == View.VISIBLE) {
+                    highlightedTextViews = preference.getString(date_code + "breakfast", "").toString()
+                    // 클릭했을 때,
+
+                    if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
+                        it.setBackgroundResource(android.R.color.transparent)
+                        highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
+                        preference.edit().putString(date_code + "breakfast", highlightedTextViews).apply()
+
+                    } else {
+                        highlightedTextViews = highlightedTextViews + i.toString() + ","
+                        preference.edit().putString(date_code + "breakfast", highlightedTextViews).apply()
+                        it.background = getResources().getDrawable(R.drawable.highlight)
+
+                    }
+                }
             }
         }
+
+        for(i in 0 until lunchTextViewList.size) {
+            lunchTextViewList.get(i).setOnClickListener {it as TextView
+
+                if(highlighterPressedButton.visibility == View.VISIBLE) {
+                    highlightedTextViews = preference.getString(date_code + "lunch", "").toString()
+
+                    if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
+                        it.setBackgroundResource(android.R.color.transparent)
+                        highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
+                        preference.edit().putString(date_code + "lunch", highlightedTextViews).apply()
+
+                    } else {
+                        highlightedTextViews = highlightedTextViews + i.toString() + ","
+                        preference.edit().putString(date_code + "lunch", highlightedTextViews).apply()
+                        it.background = getResources().getDrawable(R.drawable.highlight)
+
+                    }
+                }
+            }
+        }
+
+        for(i in 0 until dinnerTextViewList.size) {
+            dinnerTextViewList.get(i).setOnClickListener {it as TextView
+
+                if(highlighterPressedButton.visibility == View.VISIBLE) {
+                    highlightedTextViews = preference.getString(date_code + "dinner", "").toString()
+
+                    if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
+                        it.setBackgroundResource(android.R.color.transparent)
+                        highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
+                        preference.edit().putString(date_code + "dinner", highlightedTextViews).apply()
+
+                    } else {
+                        highlightedTextViews = highlightedTextViews + i.toString() + ","
+                        preference.edit().putString(date_code + "dinner", highlightedTextViews).apply()
+                        it.background = getResources().getDrawable(R.drawable.highlight)
+
+                    }
+                }
+            }
+        }
+
+
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -303,8 +411,11 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 todayPressedButton.visibility = View.VISIBLE
             }
 
-            var date_code = date.toString().replace("-", "")
+            date_code = date.toString().replace("-", "")
             showMealInfo(date_code)
+
+            dateTextView.setText(date_code)
+
         }
     }
 
@@ -354,8 +465,11 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         var meal_date = false
         var meal_bld = false
         var meal_dish = false
+        var isBreakfastExist = false
+        var isLunchExist = false
+        var isDinnerExist = false
 
-        schoolName.setText("")
+//        schoolName.setText("")
 
         val factory = XmlPullParserFactory.newInstance()
         val xmlpp = factory.newPullParser()
@@ -377,12 +491,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             } else if (eventType == XmlPullParser.TEXT) {
                 if (meal_school) {
                     school = xmlpp.text
-                    schoolName.setText(school + "\n")
+//                    schoolName.setText(school + "\n")
                     meal_school = false
                 }
                 if (meal_date) {
                     date = xmlpp.text
-                    dateTextView.setText(date)
+//                    dateTextView.setText(date)
                     meal_date = false
                 }
                 if (meal_bld) {
@@ -395,19 +509,35 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                     var dishList: List<String> = dish.split("<br/>")
                     var tmpTextViewList: MutableList<TextView> = mutableListOf()
+                    var whichMeal: String = ""
                     when(bld) {
                         "조식" -> {
                             tmpTextViewList = breakfastTextViewList
+                            whichMeal = "breakfast"
+                            isBreakfastExist = true
                         }
                         "중식" -> {
                             tmpTextViewList = lunchTextViewList
+                            whichMeal = "lunch"
+                            isLunchExist = true
                         }
                         "석식" -> {
                             tmpTextViewList = dinnerTextViewList
+                            whichMeal = "dinner"
+                            isDinnerExist = true
                         }
                     }
 
+                    var highlightedTextViews = preference.getString(date_code + whichMeal, "")
+
                     for(i in 0 until dishList.size)  {
+                        // 하이라이트 저장된 거 불러오기
+                        if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
+                            tmpTextViewList.get(i).background = getResources().getDrawable(R.drawable.highlight)
+                        } else {
+                            tmpTextViewList.get(i).setBackgroundResource(android.R.color.transparent)
+                        }
+
                         // View.visibility 초기화
                         tmpTextViewList.get(i).visibility = View.VISIBLE
 
@@ -472,6 +602,24 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             }
             eventType = xmlpp.next()
+        }
+
+        if(!isBreakfastExist) {
+            for(i in 0 until breakfastTextViewList.size) {
+                breakfastTextViewList.get(i).makeGone()
+            }
+        }
+
+        if(!isLunchExist) {
+            for(i in 0 until lunchTextViewList.size) {
+                lunchTextViewList.get(i).makeGone()
+            }
+        }
+
+        if(!isDinnerExist) {
+            for(i in 0 until dinnerTextViewList.size) {
+                dinnerTextViewList.get(i).makeGone()
+            }
         }
 
     }
