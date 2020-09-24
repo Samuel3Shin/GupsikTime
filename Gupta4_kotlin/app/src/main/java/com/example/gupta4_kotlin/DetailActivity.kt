@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_community.*
 import kotlinx.android.synthetic.main.gupsik_comment.view.*
 import kotlinx.android.synthetic.main.gupsik_detail.*
 
@@ -64,6 +65,16 @@ class DetailActivity : AppCompatActivity() {
             finish()
         }
 
+        editButton.setOnClickListener {
+
+            val intent = Intent(this@DetailActivity, WriteActivity::class.java)
+            intent.putExtra("boardKey", boardKey)
+            intent.putExtra("mode", "editPost")
+            intent.putExtra("postId", postId)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            startActivity(intent)
+        }
+
         val layoutManager = LinearLayoutManager(this@DetailActivity)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         recycler_view.layoutManager = layoutManager
@@ -78,11 +89,31 @@ class DetailActivity : AppCompatActivity() {
                     snapshot?.let {
                         val post = it.getValue(Post::class.java)
                         post?.let {
+                            post_title.text = post.title
+                            nickname.text = post.nickname
                             contents.text = post.message
                         }
                     }
                 }
             })
+
+        // hitsCountText 갱신해준다.
+        val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
+
+        postRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val hitsCount = snapshot.child("hitsCount").getValue()
+                hitsCountText.setText(hitsCount.toString())
+
+                val writeTime = snapshot.child("writeTime").getValue()
+                val date = Utils.getDiffTimeText(writeTime as Long)
+                dateTextView.setText(date)
+            }
+        })
 
         FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").addChildEventListener(object
             :ChildEventListener {
@@ -150,24 +181,6 @@ class DetailActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
         }
-
-        // hitsCountText 갱신해준다.
-        val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-
-        postRef.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val hitsCount = snapshot.child("hitsCount").getValue()
-                hitsCountText.setText(hitsCount.toString())
-
-                val writeTime = snapshot.child("writeTime").getValue()
-                val date = Utils.getDiffTimeText(writeTime as Long)
-                dateTextView.setText(date)
-            }
-        })
 
         registerButton.setOnClickListener {
             val comment = Comment()

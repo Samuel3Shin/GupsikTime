@@ -29,7 +29,10 @@ class WriteActivity : AppCompatActivity() {
         intent.getStringExtra("boardKey")?.let {
             boardKey = intent.getStringExtra("boardKey")!!
         }
-
+        intent.getStringExtra("postId")?.let {
+            postId = intent.getStringExtra("postId")!!
+        }
+        mode = intent.getStringExtra("mode").toString()
 
         when(boardKey) {
             "bamboo" -> {
@@ -48,15 +51,6 @@ class WriteActivity : AppCompatActivity() {
         boardNameTextView.setText(boardName)
         Toast.makeText(applicationContext, boardName, Toast.LENGTH_SHORT).show()
 
-        when(mode) {
-            "post" -> {
-                supportActionBar?.title = "글쓰기"
-            }
-            "editPost" -> {
-                supportActionBar?.title = "글 수정"
-            }
-        }
-
         if(mode=="editPost") {
 
             val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
@@ -67,6 +61,12 @@ class WriteActivity : AppCompatActivity() {
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    val title = snapshot.child("title").getValue()
+                    titleTextView_write.setText(title.toString())
+
+                    val nickname = snapshot.child("nickname").getValue()
+                    nicknameTextView_write.setText(nickname.toString())
+
                     val text = snapshot.child("message").getValue()
                     input.setText(text.toString())
                 }
@@ -85,6 +85,8 @@ class WriteActivity : AppCompatActivity() {
                 post.message = input.text.toString()
                 post.writerId = getMyId()
                 post.postId = newRef.key.toString()
+                post.title = titleTextView_write.text.toString()
+                post.nickname = nicknameTextView_write.text.toString()
                 newRef.setValue(post)
 
                 // post아이디를 shared preference에 저장. ','를 구분자로 저장함.
@@ -97,37 +99,12 @@ class WriteActivity : AppCompatActivity() {
 
             } else if (mode=="editPost") {
                 val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
+                postRef.child("title").setValue(titleTextView_write.text.toString())
+                postRef.child("nickname").setValue(nicknameTextView_write.text.toString())
                 postRef.child("message").setValue(input.text.toString())
+
                 finish()
 
-            } else {
-                val comment = Comment()
-                val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").push()
-
-                comment.writeTime = ServerValue.TIMESTAMP
-                comment.message = input.text.toString()
-                comment.writerId = getMyId()
-                comment.commentId = newRef.key.toString()
-                comment.postId = postId
-
-                newRef.setValue(comment)
-
-                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey//Posts/$postId")
-
-                // post의 댓글 개수 불러와서 거기다가 1을 더해준다.
-                postRef.addListenerForSingleValueEvent(object: ValueEventListener {
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        var commentNum = snapshot.child("commentCount").value as Long
-                        postRef.child("commentCount").setValue(commentNum + 1)
-                    }
-                })
-
-                Toast.makeText(applicationContext, "공유 되었습니다.", Toast.LENGTH_SHORT).show()
-                finish()
             }
 
         }
