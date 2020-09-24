@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="64dp" />
+        app:layout_constraintGuide_begin="70dp" />
 
     <include
         android:id="@+id/buttonUpper"
@@ -147,7 +147,7 @@
         app:layout_constraintGuide_percent="0.72" />
 
     <include
-        android:id="@+id/highligherButton"
+        android:id="@+id/highlighterButton"
         layout="@layout/button_template_unpressed"
         android:layout_width="66dp"
         android:layout_height="28dp"
@@ -157,15 +157,38 @@
 
     <ImageView
         android:id="@+id/highlighterImageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="51dp"
+        android:layout_height="16dp"
         android:layout_margin="6dp"
         android:gravity="center"
-        app:srcCompat="@drawable/ic_paint_brush"
-        app:layout_constraintTop_toTopOf="@+id/highligherButton"
-        app:layout_constraintBottom_toBottomOf="@+id/highligherButton"
-        app:layout_constraintStart_toStartOf="@+id/highligherButton"
-        app:layout_constraintEnd_toEndOf="@+id/highligherButton"  />
+        app:layout_constraintBottom_toBottomOf="@+id/highlighterButton"
+        app:layout_constraintEnd_toEndOf="@+id/highlighterButton"
+        app:layout_constraintStart_toStartOf="@+id/highlighterButton"
+        app:layout_constraintTop_toTopOf="@+id/highlighterButton"
+        app:srcCompat="@drawable/ic_paint_brush" />
+
+    <include
+        android:id="@+id/highlighterPressedButton"
+        layout="@layout/button_template_unpressed"
+        android:layout_width="66dp"
+        android:layout_height="28dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/calendar_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/calendar_box" />
+
+    <ImageView
+        android:id="@+id/highlighterPressedImageView"
+        android:layout_width="51dp"
+        android:layout_height="16dp"
+        android:layout_margin="6dp"
+        android:visibility="invisible"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/highlighterPressedButton"
+        app:layout_constraintEnd_toEndOf="@+id/highlighterPressedButton"
+        app:layout_constraintStart_toStartOf="@+id/highlighterPressedButton"
+        app:layout_constraintTop_toTopOf="@+id/highlighterPressedButton"
+        app:srcCompat="@drawable/ic_check" />
 
     <include
         android:id="@+id/shareButton"
@@ -175,7 +198,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintStart_toEndOf="@+id/calendar_box"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/highligherButton" />
+        app:layout_constraintBottom_toTopOf="@+id/highlighterButton" />
 
     <ImageView
         android:id="@+id/shareImageView"
@@ -282,7 +305,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/dateTextView"
                 app:layout_constraintBottom_toTopOf="@+id/upper_breakfast_line"/>
-
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/meal_info_guideline1"
