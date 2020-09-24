@@ -16,20 +16,33 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/nicknameTextView"
+            android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
-            android:text="익명"
+            android:textSize="16dp"
+            android:text="무제"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/nicknameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="14dp"
+            android:text="익명"
+            app:layout_constraintStart_toStartOf="@+id/titleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
         <TextView
             android:id="@+id/timeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:textSize="14dp"
             android:text="2020/9/1/12:12"
             app:layout_constraintBottom_toBottomOf="@+id/nicknameTextView"
             app:layout_constraintStart_toEndOf="@+id/nicknameTextView"
@@ -40,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:textSize="14dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="내용!"
@@ -65,6 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="1927"
+            android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/hitsCountImage"
             app:layout_constraintStart_toEndOf="@+id/hitsCountImage"
             app:layout_constraintTop_toTopOf="@+id/hitsCountImage" />
@@ -86,6 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="920"
+            android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/hitsCountImage"
             app:layout_constraintStart_toEndOf="@+id/commentImage"
             app:layout_constraintTop_toTopOf="@+id/hitsCountImage" />
@@ -107,6 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="891"
+            android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/hitsCountImage"
             app:layout_constraintStart_toEndOf="@+id/likeImage"
             app:layout_constraintTop_toTopOf="@+id/hitsCountImage" />

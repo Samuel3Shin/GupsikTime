@@ -12,4 +12,5 @@ class CommunityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val hitsCountText: TextView = itemView.hitsCountText
     val nicknameText: TextView = itemView.nicknameTextView
     val likesCountText: TextView = itemView.likesCountText
+    val titleTextView: TextView = itemView.titleTextView
 }
