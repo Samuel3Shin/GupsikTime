@@ -66,7 +66,6 @@
         app:layout_constraintStart_toStartOf="@+id/button_upper_inside"
         app:layout_constraintEnd_toEndOf="@+id/button_upper_inside" />
 
-
     <TextView
         android:id="@+id/menuTextView"
         android:layout_width="wrap_content"
@@ -105,14 +104,12 @@
         app:layout_constraintEnd_toEndOf="@+id/black_line_at_the_bottom_of_menu_button"
         app:layout_constraintStart_toStartOf="@+id/black_line_at_the_bottom_of_menu_button" />
 
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.72" />
-
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -134,8 +131,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
-
     <include
         android:id="@+id/myPostsTab"
         layout="@layout/my_page_setting_tab"
@@ -143,7 +138,6 @@
         android:layout_height="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/my_page_box" />
-
 
     <TextView
         android:id="@+id/myPostsTabTextView"
@@ -155,8 +149,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/myPostsTab"
         app:layout_constraintStart_toStartOf="@+id/myPostsTab"
         app:layout_constraintEnd_toEndOf="@+id/myPostsTab" />
-
-
 
     <include
         android:id="@+id/mySettingTab"
@@ -180,7 +172,6 @@
         app:layout_constraintStart_toStartOf="@+id/mySettingTab"
         app:layout_constraintEnd_toEndOf="@+id/mySettingTab" />
 
-
     <View
         android:id="@+id/white_line_at_the_top_of_my_page_box"
         android:layout_width="0dp"
@@ -200,7 +191,6 @@
         app:layout_constraintEnd_toEndOf="@+id/my_page_box"
         app:layout_constraintStart_toEndOf="@+id/myPostsTab" />
 
-
     <include
         android:id="@+id/myPostsBox"
         layout="@layout/content_rectangle"
@@ -217,13 +207,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="2dp"
-        android:background="@drawable/bg_grid"
+        android:background="@drawable/ic_bg_grid"
         app:layout_constraintBottom_toBottomOf="@+id/myPostsBox"
         app:layout_constraintEnd_toEndOf="@+id/myPostsBox"
         app:layout_constraintStart_toStartOf="@+id/myPostsBox"
         app:layout_constraintTop_toTopOf="@+id/myPostsBox">
 
     </androidx.recyclerview.widget.RecyclerView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
