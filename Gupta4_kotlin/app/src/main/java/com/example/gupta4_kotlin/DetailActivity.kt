@@ -41,7 +41,6 @@ class DetailActivity : AppCompatActivity() {
         var myPostIdsStr: String = preference.getString(Utils.myPostIdsKey, "").toString()
         var postFullId = "$boardKey/Posts/$postId"
 
-
         if(myPostIdsStr.indexOf(postFullId, 0) != -1) {
             deleteButton.visibility = View.VISIBLE
             deleteImageView.visibility = View.VISIBLE
@@ -51,18 +50,26 @@ class DetailActivity : AppCompatActivity() {
         }
 
         deleteButton.setOnClickListener {
-            val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-            postRef.removeValue()
 
-            // preference에서 post ID를 없애줘야함.
-            myPostIdsStr = myPostIdsStr.replace("$boardKey/Posts/$postId,", "")
-            preference.edit().putString(Utils.myPostIdsKey, myPostIdsStr).apply()
+            val intent = Intent(this@DetailActivity, PopupButtonActivity::class.java)
+            intent.putExtra("boardKey", boardKey)
+            intent.putExtra("postId", postId)
+            intent.putExtra("popUpMode", "delete")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            startActivity(intent)
 
-            val commentRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId")
-            commentRef.removeValue()
-
-            //TODO: 게시글이 삭제될 때, 댓글도 같이 삭제되도록 구현한건데, 이 상황에서 댓글 id를 모아놓은 shared preference에서 그 댓글 id를 삭제할 방법을 찾아야한다.
-            finish()
+//            val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
+//            postRef.removeValue()
+//
+//            // preference에서 post ID를 없애줘야함.
+//            myPostIdsStr = myPostIdsStr.replace("$boardKey/Posts/$postId,", "")
+//            preference.edit().putString(Utils.myPostIdsKey, myPostIdsStr).apply()
+//
+//            val commentRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId")
+//            commentRef.removeValue()
+//
+//            //TODO: 게시글이 삭제될 때, 댓글도 같이 삭제되도록 구현한건데, 이 상황에서 댓글 id를 모아놓은 shared preference에서 그 댓글 id를 삭제할 방법을 찾아야한다.
+//            finish()
         }
 
         editButton.setOnClickListener {
