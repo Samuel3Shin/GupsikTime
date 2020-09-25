@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darkGreyNoPink"
+    tools:ignore="ContentDescription"
+    tools:context=".PopupButtonActivity">
+
+    <View
+        android:id="@+id/rectangle_at_the_top"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:background="#000000"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+<!--    <include-->
+<!--        android:id="@+id/popup_button"-->
+<!--        layout="@layout/button_template_unpressed"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:layout_margin="2dp"-->
+<!--        android:gravity="center"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.543"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+        <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.12" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.39" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.88" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.61" />
+
+    <ImageView
+        android:id="@+id/popUpImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline_bottom"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_right"
+        app:layout_constraintStart_toStartOf="@+id/guideline_left"
+        app:layout_constraintTop_toTopOf="@+id/guideline_top"
+        android:background="@drawable/delete_popup" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_delete_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_button_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.535" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_delete_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.45" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_button_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.57" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_cancel_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.54" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_cancel_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.73" />
+
+    <View
+        android:id="@+id/confirmButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline_button_bottom"
+        app:layout_constraintStart_toStartOf="@+id/guideline_delete_left"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_delete_right"
+        app:layout_constraintTop_toTopOf="@+id/guideline_button_top" />
+
+    <View
+        android:id="@+id/cancelButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline_button_bottom"
+        app:layout_constraintStart_toStartOf="@+id/guideline_cancel_left"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_cancel_right"
+        app:layout_constraintTop_toTopOf="@+id/guideline_button_top" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
