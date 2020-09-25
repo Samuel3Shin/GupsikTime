@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MyAllergyActivity"></activity>
+        <activity android:name=".PopupButtonActivity"></activity>
+        <activity android:name=".MyAllergyActivity" />
         <activity android:name=".MyPostsActivity" />
         <activity android:name=".SchoolSearchActivity" />
         <activity android:name=".MySettingActivity" />
