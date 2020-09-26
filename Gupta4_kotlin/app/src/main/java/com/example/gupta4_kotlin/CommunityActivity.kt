@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_community.*
+import kotlinx.android.synthetic.main.activity_community.adView
 import kotlinx.android.synthetic.main.activity_community.buttonUpper
 
 open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
@@ -18,6 +20,13 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_community)
+
+        //배너 광고 추가
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
+        recyclerView.layoutManager?.scrollToPosition(0)
 
         buttonUpper.setOnClickListener {
             val popup = PopupMenu(this@CommunityActivity, it)
@@ -29,7 +38,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         writeButton.setOnClickListener {
             val intent = Intent(this@CommunityActivity, WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
-            intent.putExtra("mode", "post")
+            intent.putExtra("writeMode", "post")
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
@@ -116,14 +125,17 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             intent.putExtra("boardKey", boardKey)
             startActivity(intent)
 
+            finish()
+
         }
         careerButton.setOnClickListener {
             boardKey = "career"
             val intent = Intent(this@CommunityActivity, CommunityCareerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra("boardKey", boardKey)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+
+            finish()
 
         }
 
@@ -132,8 +144,9 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             val intent = Intent(this@CommunityActivity, CommunityMySchoolActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra("boardKey", boardKey)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+
+            finish()
         }
 
     }
@@ -141,27 +154,44 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                Toast.makeText(this@CommunityActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+                finish()
                 return true
             }
 
             R.id.menu_board ->  {
-                Toast.makeText(this@CommunityActivity, "게시판!", Toast.LENGTH_SHORT).show()
                 return true
             }
 
             R.id.menu_myPage ->  {
-                Toast.makeText(this@CommunityActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+                finish()
                 return true
             }
         }
         return super.onOptionsItemSelected(item!!)
+    }
+
+    // Called when leaving the activity
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    // Called when returning to the activity
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    // Called before the activity is destroyed
+    public override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
     }
 
 }

@@ -216,12 +216,16 @@
 
             <TextView
                 android:id="@+id/contents"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:gravity="left"
                 android:text="게시물 내용"
                 android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/likeButtonUnpressed"
+                app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2"
                 app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
-                app:layout_constraintTop_toBottomOf="@+id/editButton" />
+                app:layout_constraintTop_toBottomOf="@+id/editButton"
+                app:layout_constraintVertical_bias="0.5" />
 
             <include
                 android:id="@+id/likeButtonUnpressed"
@@ -393,7 +397,7 @@
 
         <EditText
             android:id="@+id/comments"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:hint="댓글을 입력해주세요 :D"

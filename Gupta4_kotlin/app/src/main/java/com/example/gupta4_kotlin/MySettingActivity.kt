@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.PopupMenu
-import android.widget.Toast
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_community.*
 import kotlinx.android.synthetic.main.activity_community.buttonUpper
 import kotlinx.android.synthetic.main.activity_my_setting.*
+import kotlinx.android.synthetic.main.activity_my_setting.adView
 
 class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
@@ -19,6 +21,11 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_setting)
+
+        //배너 광고 추가
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
 
         mySchoolInfoTextView.setText(preference.getString(Utils.schoolNameKey, ""))
 
@@ -47,6 +54,8 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             val intent = Intent(this, MyPostsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+
+            finish()
         }
 
         buttonUpper.setOnClickListener {
@@ -57,7 +66,6 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         }
 
         mySchoolInfoEditButton.setOnClickListener {
-            Toast.makeText(this@MySettingActivity, "학교 수정!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, SchoolSearchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
@@ -65,7 +73,6 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         }
 
         myAllergyInfoEditButton.setOnClickListener {
-            Toast.makeText(this@MySettingActivity, "알러지 수정!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MyAllergyActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
@@ -76,27 +83,47 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                Toast.makeText(this@MySettingActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+
+                finish()
                 return true
             }
 
             R.id.menu_board ->  {
-                Toast.makeText(this@MySettingActivity, "게시판!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+
+                finish()
 
                 return true
             }
 
             R.id.menu_myPage ->  {
-                Toast.makeText(this@MySettingActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
+
                 return true
             }
         }
         return super.onOptionsItemSelected(item!!)
+    }
+
+    // Called when leaving the activity
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    // Called when returning to the activity
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    // Called before the activity is destroyed
+    public override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
     }
 }
