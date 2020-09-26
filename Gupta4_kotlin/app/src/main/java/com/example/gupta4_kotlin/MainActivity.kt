@@ -1,31 +1,28 @@
 package com.example.gupta4_kotlin
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import com.example.gupta4_kotlin.databinding.CalendarHeaderBinding
 import com.example.gupta4_kotlin.databinding.CalendarDayBinding
 import com.example.gupta4_kotlin.databinding.ActivityMainBinding
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import com.kizitonwose.calendarview.utils.next
+import com.kizitonwose.calendarview.utils.previous
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import org.xmlpull.v1.XmlPullParser
@@ -39,8 +36,8 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
-    var serviceUrl: String = "https://open.neis.go.kr/hub/mealServiceDietInfo"
-    var serviceKey: String = "ce674eea5a53470680157d24c26d07a4"
+    var serviceUrl: String = ""
+    var serviceKey: String = ""
 
     val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
@@ -53,7 +50,13 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var breakfastTextViewList: MutableList<TextView> = mutableListOf()
     var lunchTextViewList: MutableList<TextView> = mutableListOf()
     var dinnerTextViewList: MutableList<TextView> = mutableListOf()
+
+    var breakfastFamilyViewList: MutableList<View> = mutableListOf()
+    var lunchFamilyViewList: MutableList<View> = mutableListOf()
+    var dinnerFamilyViewList: MutableList<View> = mutableListOf()
+
     val allergyKeyList: MutableList<String> = mutableListOf()
+
 
     var date_code = ""
 
@@ -66,6 +69,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        //배너 광고 추가
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
+        serviceUrl = getString(R.string.neis_api_service_url)
+        serviceKey = getString(R.string.neis_api_service_key)
 
         schoolName.setText(preference.getString(Utils.schoolNameKey, ""))
 
@@ -82,6 +93,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 lunchTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
             } else if(viewId.startsWith("dinnerTextView_")) {
                 dinnerTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
+            }  else if(viewId.startsWith("breakfast_family_")) {
+                breakfastFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
+            } else if(viewId.startsWith("lunch_family_")) {
+                lunchFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
+            } else if(viewId.startsWith("dinner_family_")) {
+                dinnerFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
             }
         }
 
@@ -138,6 +155,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         todayButton.setOnClickListener {
             Utils.toggleButton(todayPressedButton)
             Utils.toggleButton(todayButton)
+
+            binding.calendarView.findFirstVisibleMonth()?.let {
+                binding.calendarView.scrollToDate(today)
+            }
 
             selectDate(today)
         }
@@ -223,10 +244,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 if (day.owner == DayOwner.THIS_MONTH) {
                     textView.makeVisible()
                     when (day.date) {
-                        today -> {
-                            textView.setTextColorRes(R.color.allergy)
-//                            textView.setBackgroundResource(R.drawable.calendar_today_bg)
-                        }
+
                         selectedDate -> {
                             textView.setTextColorRes(R.color.allergy)
                             textView.setBackgroundResource(R.drawable.calendar_selected_bg)
@@ -242,16 +260,32 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         }
 
-        binding.calendarView.monthScrollListener = {
-//            homeActivityToolbar.title = if (it.year == today.year) {
-//                titleSameYearFormatter.format(it.yearMonth)
-//            } else {
-//                titleFormatter.format(it.yearMonth)
-//            }
+        binding.calendarView.monthScrollListener = { month ->
+            var monthNum = month.month.toString()
+            if(monthNum.get(0) == '0') {
+                monthNum = monthNum.get(1).toString()
+            }
+            val title = "${monthNum}월"
 
-            // Select the first day of the month when
-            // we scroll to a new month.
-//            selectDate(it.yearMonth.atDay(1))
+            binding.exFiveMonthYearText.text = title
+
+            selectedDate?.let {
+                // Clear selection if we scroll to a new month.
+                selectedDate = null
+                binding.calendarView.notifyDateChanged(it)
+            }
+        }
+
+        previousMonthButton.setOnClickListener {
+            binding.calendarView.findFirstVisibleMonth()?.let {
+                binding.calendarView.smoothScrollToMonth(it.yearMonth.previous)
+            }
+        }
+
+        nextMonthButton.setOnClickListener {
+            binding.calendarView.findFirstVisibleMonth()?.let {
+                binding.calendarView.smoothScrollToMonth(it.yearMonth.next)
+            }
         }
 
         class MonthViewContainer(view: View) : ViewContainer(view) {
@@ -278,7 +312,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                                 else -> ""
                             }
                         }
-                        tv.setTextColorRes(R.color.black)
+                        tv.setTextColorRes(R.color.white)
                     }
                 }
             }
@@ -355,23 +389,22 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo -> {
-                Toast.makeText(this@MainActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
                 return true
             }
 
             R.id.menu_board -> {
-                Toast.makeText(this@MainActivity, "게시판!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+                finish()
                 return true
             }
 
             R.id.menu_myPage -> {
-                Toast.makeText(this@MainActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+                finish()
                 return true
             }
         }
@@ -414,7 +447,17 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             date_code = date.toString().replace("-", "")
             showMealInfo(date_code)
 
-            dateTextView.setText(date_code)
+            var date_lst: MutableList<String> = date.toString().split("-") as MutableList<String>
+            if(date_lst.get(1).get(0) == '0') {
+                date_lst.set(1, date_lst.get(1).get(1).toString())
+            }
+
+            if(date_lst.get(2).get(0) == '0') {
+                date_lst.set(2, date_lst.get(2).get(1).toString())
+            }
+
+//            dateTextView.setText(date_lst.get(0) + "년 " + date_lst.get(1) + "월 " + date_lst.get(2) + "일")
+            dateTextView.setText(date_lst.get(1) + "월 " + date_lst.get(2) + "일")
 
         }
     }
@@ -608,11 +651,28 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             for(i in 0 until breakfastTextViewList.size) {
                 breakfastTextViewList.get(i).makeGone()
             }
+
+            for(i in 0 until breakfastFamilyViewList.size) {
+                breakfastFamilyViewList.get(i).makeGone()
+            }
+
+        } else {
+            for(i in 0 until breakfastFamilyViewList.size) {
+                breakfastFamilyViewList.get(i).makeVisible()
+            }
         }
 
         if(!isLunchExist) {
             for(i in 0 until lunchTextViewList.size) {
                 lunchTextViewList.get(i).makeGone()
+            }
+
+            for(i in 0 until lunchFamilyViewList.size) {
+                lunchFamilyViewList.get(i).makeGone()
+            }
+        } else {
+            for(i in 0 until lunchFamilyViewList.size) {
+                lunchFamilyViewList.get(i).makeVisible()
             }
         }
 
@@ -620,8 +680,34 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             for(i in 0 until dinnerTextViewList.size) {
                 dinnerTextViewList.get(i).makeGone()
             }
+
+            for(i in 0 until dinnerFamilyViewList.size) {
+                dinnerFamilyViewList.get(i).makeGone()
+            }
+        } else {
+            for(i in 0 until dinnerFamilyViewList.size) {
+                dinnerFamilyViewList.get(i).makeVisible()
+            }
         }
 
+    }
+
+    // Called when leaving the activity
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    // Called when returning to the activity
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    // Called before the activity is destroyed
+    public override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
     }
 
 }

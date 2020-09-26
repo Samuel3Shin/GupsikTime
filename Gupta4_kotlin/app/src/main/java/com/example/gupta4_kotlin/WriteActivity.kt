@@ -6,32 +6,27 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
-import android.util.Log
-import android.widget.Toast
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_write.*
 
 class WriteActivity : AppCompatActivity() {
 
-    var mode = "post"
+    var writeMode = "post"
     var postId = ""
     var boardName = ""
     var boardKey = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
+        if(resultCode == 1) {
+            finish()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write)
-
-        backButton.setOnClickListener {
-            val intent = Intent(this@WriteActivity, PopupButtonActivity::class.java)
-            intent.putExtra("boardKey", boardKey)
-            intent.putExtra("postId", postId)
-            intent.putExtra("popUpMode", "back")
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            startActivity(intent)
-
-        }
 
         intent.getStringExtra("boardKey")?.let {
             boardKey = intent.getStringExtra("boardKey")!!
@@ -39,7 +34,7 @@ class WriteActivity : AppCompatActivity() {
         intent.getStringExtra("postId")?.let {
             postId = intent.getStringExtra("postId")!!
         }
-        mode = intent.getStringExtra("mode").toString()
+        writeMode = intent.getStringExtra("writeMode").toString()
 
         when(boardKey) {
             "bamboo" -> {
@@ -56,9 +51,20 @@ class WriteActivity : AppCompatActivity() {
         }
 
         boardNameTextView.setText(boardName)
-        Toast.makeText(applicationContext, boardName, Toast.LENGTH_SHORT).show()
 
-        if(mode=="editPost") {
+        backButton.setOnClickListener {
+            val intent = Intent(this@WriteActivity, PopupButtonActivity::class.java)
+            intent.putExtra("boardKey", boardKey)
+            intent.putExtra("postId", postId)
+            intent.putExtra("writeMode", writeMode)
+            intent.putExtra("popUpMode", "back")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+
+            // PopupButtonActivity로 부터 1을 받으면 activity 종료시킨다.
+            startActivityForResult(intent, 1)
+        }
+
+        if(writeMode=="editPost") {
 
             val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
 
@@ -82,10 +88,9 @@ class WriteActivity : AppCompatActivity() {
 
         registerButton.setOnClickListener {
             if(TextUtils.isEmpty(input.text)) {
-                Toast.makeText(applicationContext, "메시지를 입력하세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if(mode=="post") {
+            if(writeMode=="post") {
                 val post = Post()
                 val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts").push()
                 post.writeTime = ServerValue.TIMESTAMP
@@ -101,19 +106,30 @@ class WriteActivity : AppCompatActivity() {
                 var myPostIdsStr: String = preference.getString(Utils.myPostIdsKey, "").toString()
                 myPostIdsStr = myPostIdsStr + "$boardKey/Posts/" + post.postId + ","
                 preference.edit().putString(Utils.myPostIdsKey, myPostIdsStr).apply()
-                Toast.makeText(applicationContext, "공유 되었습니다.", Toast.LENGTH_SHORT).show()
-                finish()
 
-            } else if (mode=="editPost") {
+                // 여기서 새로 쓰는 글의 postId와 수정을 위해서 가져온 postId는 다르다는 걸 숙지하고 있어야한다.
+                val intent = Intent(this@WriteActivity, DetailActivity::class.java)
+
+                intent.putExtra("boardKey", boardKey)
+                intent.putExtra("postId", post.postId)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(intent)
+
+            } else if (writeMode=="editPost") {
                 val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
                 postRef.child("title").setValue(titleTextView_write.text.toString())
                 postRef.child("nickname").setValue(nicknameTextView_write.text.toString())
                 postRef.child("message").setValue(input.text.toString())
 
-                finish()
+                val intent = Intent(this@WriteActivity, DetailActivity::class.java)
 
+                intent.putExtra("boardKey", boardKey)
+                intent.putExtra("postId", postId)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(intent)
             }
 
+            finish()
         }
 
     }
