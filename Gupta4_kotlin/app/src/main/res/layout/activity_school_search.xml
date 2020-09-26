@@ -107,29 +107,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/schoolSearchTextView" />
 
-    <include
-        android:id="@+id/button_upper_inside"
-        layout="@layout/button_template_unpressed"
-        android:layout_height="0dp"
-        android:layout_width="60dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginStart="2dp"
-        app:layout_constraintBottom_toBottomOf="@+id/schoolSearchBox"
-        app:layout_constraintEnd_toEndOf="@+id/schoolSearchBox"
-        app:layout_constraintTop_toTopOf="@+id/schoolSearchBox" />
+<!--    <include-->
+<!--        android:id="@+id/button_upper_inside"-->
+<!--        layout="@layout/button_template_unpressed"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_width="60dp"-->
+<!--        android:layout_marginTop="2dp"-->
+<!--        android:layout_marginEnd="2dp"-->
+<!--        android:layout_marginBottom="2dp"-->
+<!--        android:layout_marginStart="2dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/schoolSearchBox"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/schoolSearchBox"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/schoolSearchBox" />-->
 
-    <TextView
-        android:id="@+id/menuTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="검색"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/button_upper_inside"
-        app:layout_constraintStart_toStartOf="@+id/button_upper_inside"
-        app:layout_constraintEnd_toEndOf="@+id/button_upper_inside"
-        app:layout_constraintTop_toTopOf="@+id/button_upper_inside"/>
+<!--    <TextView-->
+<!--        android:id="@+id/menuTextView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="검색"-->
+<!--        android:textColor="@color/black"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/button_upper_inside"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/button_upper_inside"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/button_upper_inside"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/button_upper_inside"/>-->
 
     <include
         android:id="@+id/searchBar"
@@ -139,7 +139,8 @@
         android:layout_marginTop="2dp"
         android:layout_marginStart="2dp"
         android:layout_marginBottom="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/button_upper_inside"
+        android:layout_marginEnd="2dp"
+        app:layout_constraintEnd_toEndOf="@+id/schoolSearchBox"
         app:layout_constraintStart_toStartOf="@+id/schoolSearchBox"
         app:layout_constraintTop_toTopOf="@+id/schoolSearchBox"
         app:layout_constraintBottom_toBottomOf="@+id/schoolSearchBox" />
@@ -188,6 +189,19 @@
         app:layout_constraintBottom_toBottomOf="@+id/cancelButton"
         app:layout_constraintStart_toStartOf="@+id/cancelButton"
         app:layout_constraintEnd_toEndOf="@+id/cancelButton" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/schoolSearchBox"
+        app:layout_constraintBottom_toTopOf="@+id/cancelButton"
+        app:srcCompat="@drawable/school_search_bg"
+        tools:layout_editor_absoluteY="185dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

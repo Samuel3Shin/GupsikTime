@@ -4,21 +4,20 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.renderscript.Sampler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_community.*
 import kotlinx.android.synthetic.main.activity_my_posts.*
+import kotlinx.android.synthetic.main.activity_my_posts.adView
+import kotlinx.android.synthetic.main.activity_my_posts.buttonUpper
 import kotlinx.android.synthetic.main.activity_my_posts.recyclerView
-import kotlinx.android.synthetic.main.gupsik_post.view.*
 
 class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     val posts: MutableList<Post> = mutableListOf()
@@ -28,6 +27,13 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_posts)
+
+        recyclerView.layoutManager?.scrollToPosition(0)
+
+        //배너 광고 추가
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
 
         buttonUpper.setOnClickListener {
             val popup = PopupMenu(this@MyPostsActivity, it)
@@ -40,6 +46,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val intent = Intent(this, MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+            finish()
         }
 
         val layoutManager = LinearLayoutManager(this@MyPostsActivity)
@@ -119,28 +126,45 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                Toast.makeText(this@MyPostsActivity, "급식메뉴!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+                finish()
                 return true
             }
 
             R.id.menu_board ->  {
-                Toast.makeText(this@MyPostsActivity, "게시판!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-
+                finish()
                 return true
             }
 
             R.id.menu_myPage ->  {
-                Toast.makeText(this@MyPostsActivity, "마이 페이지!", Toast.LENGTH_SHORT).show()
                 return true
             }
         }
         return super.onOptionsItemSelected(item!!)
+    }
+
+
+    // Called when leaving the activity
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    // Called when returning to the activity
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    // Called before the activity is destroyed
+    public override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
     }
 
 }

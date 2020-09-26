@@ -12,10 +12,35 @@
         layout="@layout/default_lines"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_weight="1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_banner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="60dp" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_banner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
+    </com.google.android.gms.ads.AdView>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline0"
@@ -130,7 +155,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/default_lines"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -315,15 +340,16 @@
         android:id="@+id/myAllergyInfoTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:text="난류, 우유, 땅콩, 대두, 호두, 메밀, 밀, 복숭아, 토마토, 닭꼬기, 쇠고기, 돼지고기, 새우, 게, 고등어, 오징어, 조개류(굴,전복,홍합"
         android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
+        app:layout_constraintBottom_toTopOf="@+id/myAllergyInfoEditButton"
         app:layout_constraintEnd_toEndOf="@+id/guideline_vertical_2"
+        app:layout_constraintStart_toStartOf="@+id/guideline_vertical_1"
         app:layout_constraintTop_toTopOf="@+id/myAllergyInfoBox"
- />
+        app:layout_constraintVertical_bias="0.0" />
 
 
     <View
