@@ -84,13 +84,36 @@ class DetailActivity : AppCompatActivity() {
                     snapshot?.let {
                         val post = it.getValue(Post::class.java)
                         post?.let {
+                            boardNameTextView.text = post.board
                             post_title.text = post.title
                             nickname.text = post.nickname
+                            dateTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
+                            hitsCountText.text = post.hitsCount.toString()
+                            commentCountText.text = post.commentCount.toString()
+                            likesCountText.text = post.likesCount.toString()
                             contents.text = post.message
                         }
                     }
                 }
             })
+
+//        // hitsCountText 갱신해준다.
+//        val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
+//
+//        postRef.addListenerForSingleValueEvent(object: ValueEventListener {
+//            override fun onCancelled(error: DatabaseError) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val hitsCount = snapshot.child("hitsCount").getValue()
+//                hitsCountText.setText(hitsCount.toString())
+//
+//                val writeTime = snapshot.child("writeTime").getValue()
+//                val date = Utils.getDiffTimeText(writeTime as Long)
+//                dateTextView.setText(date)
+//            }
+//        })
 
         FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").addChildEventListener(object
             :ChildEventListener {
@@ -249,24 +272,6 @@ class DetailActivity : AppCompatActivity() {
             })
 
         }
-
-        // hitsCountText 갱신해준다.
-        val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-
-        postRef.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val hitsCount = snapshot.child("hitsCount").getValue()
-                hitsCountText.setText(hitsCount.toString())
-
-                val writeTime = snapshot.child("writeTime").getValue()
-                val date = Utils.getDiffTimeText(writeTime as Long)
-                dateTextView.setText(date)
-            }
-        })
 
     }
 
