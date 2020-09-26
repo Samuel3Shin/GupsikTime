@@ -4,16 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_community.*
 import kotlinx.android.synthetic.main.gupsik_comment.view.*
 import kotlinx.android.synthetic.main.gupsik_detail.*
 
@@ -58,29 +55,20 @@ class DetailActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
-//            val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-//            postRef.removeValue()
-//
-//            // preference에서 post ID를 없애줘야함.
-//            myPostIdsStr = myPostIdsStr.replace("$boardKey/Posts/$postId,", "")
-//            preference.edit().putString(Utils.myPostIdsKey, myPostIdsStr).apply()
-//
-//            val commentRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId")
-//            commentRef.removeValue()
-//
-//            //TODO: 게시글이 삭제될 때, 댓글도 같이 삭제되도록 구현한건데, 이 상황에서 댓글 id를 모아놓은 shared preference에서 그 댓글 id를 삭제할 방법을 찾아야한다.
-//            finish()
+            finish()
         }
 
         editButton.setOnClickListener {
 
             val intent = Intent(this@DetailActivity, WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
-            intent.putExtra("mode", "editPost")
+            intent.putExtra("writeMode", "editPost")
             intent.putExtra("postId", postId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
-        }
+
+            finish()
+    }
 
         val layoutManager = LinearLayoutManager(this@DetailActivity)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
@@ -103,24 +91,6 @@ class DetailActivity : AppCompatActivity() {
                     }
                 }
             })
-
-        // hitsCountText 갱신해준다.
-        val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-
-        postRef.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val hitsCount = snapshot.child("hitsCount").getValue()
-                hitsCountText.setText(hitsCount.toString())
-
-                val writeTime = snapshot.child("writeTime").getValue()
-                val date = Utils.getDiffTimeText(writeTime as Long)
-                dateTextView.setText(date)
-            }
-        })
 
         FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").addChildEventListener(object
             :ChildEventListener {
@@ -280,6 +250,24 @@ class DetailActivity : AppCompatActivity() {
 
         }
 
+        // hitsCountText 갱신해준다.
+        val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
+
+        postRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val hitsCount = snapshot.child("hitsCount").getValue()
+                hitsCountText.setText(hitsCount.toString())
+
+                val writeTime = snapshot.child("writeTime").getValue()
+                val date = Utils.getDiffTimeText(writeTime as Long)
+                dateTextView.setText(date)
+            }
+        })
+
     }
 
     fun getMyId(): String {
@@ -362,7 +350,7 @@ class DetailActivity : AppCompatActivity() {
         when(item?.itemId) {
             R.id.edit -> {
                 val intent = Intent(this, WriteActivity::class.java)
-                intent.putExtra("mode", "editPost")
+                intent.putExtra("writeMode", "editPost")
                 intent.putExtra("postId", postId)
                 startActivity(intent)
 

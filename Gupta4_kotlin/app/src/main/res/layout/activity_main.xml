@@ -13,10 +13,36 @@
         layout="@layout/default_lines"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_weight="1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_banner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="60dp" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_banner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
+    </com.google.android.gms.ads.AdView>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline0"
@@ -120,20 +146,100 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_margin="4dp"
+        android:layout_margin="2dp"
         app:layout_constraintTop_toTopOf="@+id/calendar_box"
         app:layout_constraintEnd_toEndOf="@+id/calendar_box"
         app:layout_constraintStart_toStartOf="@+id/calendar_box"
         app:layout_constraintBottom_toBottomOf="@+id/calendar_box">
 
-        <com.kizitonwose.calendarview.CalendarView
-            android:id="@+id/calendarView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cv_dayViewResource="@layout/calendar_day"
-            app:cv_monthHeaderResource="@layout/calendar_header"
-            app:cv_orientation="horizontal"
-            app:cv_scrollMode="paged" />
+            android:layout_height="wrap_content" >
+
+            <include
+                android:id="@+id/previousMonthButton"
+                layout="@layout/button_template_unpressed"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_chevron_left" />
+
+            <ImageView
+                android:id="@+id/leftArrowImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_left_arrow"
+                app:layout_constraintTop_toTopOf="@+id/previousMonthButton"
+                app:layout_constraintBottom_toBottomOf="@+id/previousMonthButton"
+                app:layout_constraintStart_toStartOf="@+id/previousMonthButton"
+                app:layout_constraintEnd_toEndOf="@+id/previousMonthButton" />
+
+            <TextView
+                android:id="@+id/exFiveMonthYearText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text=""
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/nextMonthButton"
+                app:layout_constraintStart_toEndOf="@+id/previousMonthButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/nextMonthButton"
+                layout="@layout/button_template_unpressed"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_chevron_left" />
+
+            <ImageView
+                android:id="@+id/rightArrowImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_right_arrow"
+                app:layout_constraintBottom_toBottomOf="@+id/nextMonthButton"
+                app:layout_constraintEnd_toEndOf="@+id/nextMonthButton"
+                app:layout_constraintStart_toStartOf="@+id/nextMonthButton"
+                app:layout_constraintTop_toTopOf="@+id/nextMonthButton" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+
+            <com.kizitonwose.calendarview.CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cv_dayViewResource="@layout/calendar_day"
+                app:cv_monthHeaderResource="@layout/calendar_header"
+                app:cv_orientation="horizontal"
+                app:cv_scrollMode="paged" />
+        </LinearLayout>
+
 
     </LinearLayout>
 
@@ -253,7 +359,7 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/default_lines"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -262,24 +368,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_begin="420dp" />
 
     <ScrollView
         android:id="@+id/calendarScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="2dp"
-        app:layout_constraintTop_toTopOf="@+id/meal_info_box"
         app:layout_constraintBottom_toBottomOf="@+id/meal_info_box"
         app:layout_constraintEnd_toEndOf="@+id/meal_info_box"
-        app:layout_constraintStart_toStartOf="@+id/meal_info_box" >
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/meal_info_box"
+        app:layout_constraintTop_toTopOf="@+id/meal_info_box"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gupsikInfoGroup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/white"
-            android:id="@+id/gupsikInfoGroup">
+            android:background="@color/white">
 
             <TextView
                 android:id="@+id/dateTextView"
@@ -300,9 +408,9 @@
                 android:layout_marginTop="2dp"
                 android:text="학교 이름"
                 android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/breakfast_family_1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dateTextView"
-                app:layout_constraintBottom_toTopOf="@+id/upper_breakfast_line"/>
+                app:layout_constraintTop_toBottomOf="@+id/dateTextView" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/meal_info_guideline1"
@@ -319,32 +427,32 @@
                 app:layout_constraintGuide_percent="0.50" />
 
             <ImageView
-                android:id="@+id/upper_breakfast_line"
+                android:id="@+id/breakfast_family_1"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
                 android:src="@drawable/dotted_line_horizontal_wider"
-                app:layout_constraintBottom_toTopOf="@+id/breakfast"
+                app:layout_constraintBottom_toTopOf="@+id/breakfast_family_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/schoolName" />
 
             <TextView
-                android:id="@+id/breakfast"
+                android:id="@+id/breakfast_family_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="아침식사"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/upper_breakfast_line"
-                app:layout_constraintBottom_toTopOf="@+id/down_breakfast_line"
+                app:layout_constraintBottom_toTopOf="@+id/breakfast_family_3"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/breakfast_family_1" />
 
             <ImageView
-                android:id="@+id/down_breakfast_line"
+                android:id="@+id/breakfast_family_3"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="2dp"
@@ -355,157 +463,217 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/breakfast" />
+                app:layout_constraintTop_toBottomOf="@+id/breakfast_family_2" />
 
             <TextView
                 android:id="@+id/breakfastTextView_1"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/down_breakfast_line"
-                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_3"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/breakfast_family_3"
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_3" />
 
 
             <TextView
                 android:id="@+id/breakfastTextView_2"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/breakfastTextView_1"
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/breakfastTextView_1" />
+                app:layout_constraintTop_toTopOf="@+id/breakfastTextView_1" />
 
 
             <TextView
                 android:id="@+id/breakfastTextView_3"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_5"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_1" />
 
 
             <TextView
                 android:id="@+id/breakfastTextView_4"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/breakfastTextView_3"
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/breakfastTextView_3" />
+                app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_2" />
 
             <TextView
                 android:id="@+id/breakfastTextView_5"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_3"
-                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_7"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_7"/>
 
             <TextView
                 android:id="@+id/breakfastTextView_6"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/breakfastTextView_5"
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/breakfastTextView_5" />
+                app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_4" />
 
             <TextView
                 android:id="@+id/breakfastTextView_7"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_5"
-                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_9" />
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_9"/>
 
             <TextView
                 android:id="@+id/breakfastTextView_8"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/breakfastTextView_7"
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/breakfastTextView_7" />
+                app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_6" />
 
             <TextView
                 android:id="@+id/breakfastTextView_9"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_7"
-                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_11"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_11"/>
 
             <TextView
                 android:id="@+id/breakfastTextView_10"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/breakfastTextView_9"
+                app:layout_constraintBottom_toTopOf="@+id/breakfastTextView_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/breakfastTextView_9" />
+                app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_8"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/breakfastTextView_11"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_9"
-                app:layout_constraintBottom_toTopOf="@+id/upper_lunch_line"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintBottom_toTopOf="@+id/lunch_family_1"/>
 
             <TextView
                 android:id="@+id/breakfastTextView_12"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/breakfastTextView_11"
+                app:layout_constraintBottom_toBottomOf="@+id/breakfastTextView_11"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/breakfastTextView_11" />
+                app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_10" />
 
             <ImageView
-                android:id="@+id/upper_lunch_line"
+                android:id="@+id/lunch_family_1"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
                 android:src="@drawable/dotted_line_horizontal_wider"
-                app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_11"
-                app:layout_constraintBottom_toTopOf="@+id/lunch"
+                app:layout_constraintBottom_toTopOf="@+id/lunch_family_2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/breakfastTextView_11" />
 
             <TextView
-                android:id="@+id/lunch"
+                android:id="@+id/lunch_family_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="점심식사"
                 android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/lunch_family_3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/upper_lunch_line"
-                app:layout_constraintBottom_toTopOf="@+id/down_lunch_line" />
+                app:layout_constraintTop_toBottomOf="@+id/lunch_family_1" />
 
             <ImageView
-                android:id="@+id/down_lunch_line"
+                android:id="@+id/lunch_family_3"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="2dp"
@@ -515,290 +683,409 @@
                 app:layout_constraintBottom_toTopOf="@+id/lunchTextView_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lunch" />
+                app:layout_constraintTop_toBottomOf="@+id/lunch_family_2" />
 
             <TextView
                 android:id="@+id/lunchTextView_1"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/down_lunch_line"
                 app:layout_constraintBottom_toTopOf="@+id/lunchTextView_3"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/lunch_family_3" />
 
 
             <TextView
                 android:id="@+id/lunchTextView_2"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/lunchTextView_1"
+                app:layout_constraintBottom_toTopOf="@+id/lunchTextView_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/lunchTextView_1" />
+                app:layout_constraintTop_toTopOf="@+id/lunchTextView_1" />
 
 
             <TextView
                 android:id="@+id/lunchTextView_3"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@+id/lunchTextView_5"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/lunchTextView_1" />
 
 
             <TextView
                 android:id="@+id/lunchTextView_4"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/lunchTextView_3"
+                app:layout_constraintBottom_toTopOf="@+id/lunchTextView_6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/lunchTextView_3" />
+                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_2" />
 
             <TextView
                 android:id="@+id/lunchTextView_5"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@+id/lunchTextView_7"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/lunchTextView_3" />
 
             <TextView
                 android:id="@+id/lunchTextView_6"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/lunchTextView_5"
+                app:layout_constraintBottom_toTopOf="@+id/lunchTextView_8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/lunchTextView_5" />
+                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_4" />
 
             <TextView
                 android:id="@+id/lunchTextView_7"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@+id/lunchTextView_9"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/lunchTextView_5" />
 
             <TextView
                 android:id="@+id/lunchTextView_8"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/lunchTextView_7"
+                app:layout_constraintBottom_toTopOf="@+id/lunchTextView_10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/lunchTextView_7" />
+                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_6" />
 
             <TextView
                 android:id="@+id/lunchTextView_9"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_7"
                 app:layout_constraintBottom_toTopOf="@+id/lunchTextView_11"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_7" />
 
             <TextView
                 android:id="@+id/lunchTextView_10"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/lunchTextView_9"
+                app:layout_constraintBottom_toTopOf="@+id/lunchTextView_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/lunchTextView_9" />
+                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_8" />
 
             <TextView
                 android:id="@+id/lunchTextView_11"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_9"
-                app:layout_constraintBottom_toTopOf="@+id/upper_dinner_line"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintBottom_toTopOf="@+id/dinner_family_1"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_9" />
 
             <TextView
                 android:id="@+id/lunchTextView_12"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/lunchTextView_11"
+                app:layout_constraintBottom_toBottomOf="@+id/lunchTextView_11"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/lunchTextView_11" />
+                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_10" />
 
 
             <ImageView
-                android:id="@+id/upper_dinner_line"
+                android:id="@+id/dinner_family_1"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
                 android:src="@drawable/dotted_line_horizontal_wider"
-                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_11"
-                app:layout_constraintBottom_toTopOf="@+id/dinner"
+                app:layout_constraintBottom_toTopOf="@+id/dinner_family_2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lunchTextView_11" />
 
             <TextView
-                android:id="@+id/dinner"
+                android:id="@+id/dinner_family_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="저녁식사"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/upper_dinner_line"
-                app:layout_constraintBottom_toTopOf="@+id/down_dinner_line"
+                app:layout_constraintBottom_toTopOf="@+id/dinner_family_3"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dinner_family_1" />
 
             <ImageView
-                android:id="@+id/down_dinner_line"
+                android:id="@+id/dinner_family_3"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
                 android:src="@drawable/dotted_line_horizontal_wider"
-                app:layout_constraintTop_toBottomOf="@+id/dinner"
                 app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dinner_family_2" />
 
             <TextView
                 android:id="@+id/dinnerTextView_1"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/down_dinner_line"
                 app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_3"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/dinner_family_3" />
 
 
             <TextView
                 android:id="@+id/dinnerTextView_2"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/dinnerTextView_1"
+                app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/dinnerTextView_1" />
+                app:layout_constraintTop_toTopOf="@+id/dinnerTextView_1" />
 
 
             <TextView
                 android:id="@+id/dinnerTextView_3"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_5"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_1" />
 
 
             <TextView
                 android:id="@+id/dinnerTextView_4"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/dinnerTextView_3"
+                app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/dinnerTextView_3" />
+                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_2" />
 
             <TextView
                 android:id="@+id/dinnerTextView_5"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_7"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_3" />
 
             <TextView
                 android:id="@+id/dinnerTextView_6"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/dinnerTextView_5"
+                app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/dinnerTextView_5" />
+                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_4" />
 
             <TextView
                 android:id="@+id/dinnerTextView_7"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_5"
                 app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_9"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_5" />
 
             <TextView
                 android:id="@+id/dinnerTextView_8"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/dinnerTextView_7"
+                app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/dinnerTextView_7" />
+                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_6" />
 
             <TextView
                 android:id="@+id/dinnerTextView_9"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_7"
                 app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_11"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_7" />
 
             <TextView
                 android:id="@+id/dinnerTextView_10"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/dinnerTextView_9"
+                app:layout_constraintBottom_toTopOf="@+id/dinnerTextView_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/dinnerTextView_9" />
+                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_8" />
 
             <TextView
                 android:id="@+id/dinnerTextView_11"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="현미밥" android:layout_marginTop="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="3"
+                android:text="현미밥"
                 android:textColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@+id/meal_info_guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_9"
-                app:layout_constraintStart_toStartOf="@id/meal_info_guideline1" />
+                app:layout_constraintBottom_toTopOf="@+id/last_line"/>
 
             <TextView
                 android:id="@+id/dinnerTextView_12"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:text="핫도그"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="@+id/dinnerTextView_11"
+                app:layout_constraintBottom_toBottomOf="@+id/dinnerTextView_11"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/meal_info_guideline2"
-                app:layout_constraintBottom_toBottomOf="@+id/dinnerTextView_11" />
+                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_10" />
 
             <ImageView
                 android:id="@+id/last_line"
@@ -808,17 +1095,18 @@
                 android:layout_marginBottom="2dp"
                 android:layerType="software"
                 android:src="@drawable/dotted_line_horizontal_wider"
-                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_11"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-            
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dinnerTextView_11" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
-<!--    <ImageView-->
+
+    <!--    <ImageView-->
 <!--        android:id="@+id/testImageView"-->
 <!--        android:layout_width="0dp"-->
 <!--        android:layout_height="0dp"-->
