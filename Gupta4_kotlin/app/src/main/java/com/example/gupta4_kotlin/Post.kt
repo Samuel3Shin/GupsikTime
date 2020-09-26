@@ -11,5 +11,6 @@ class Post {
     var hitsCount = 0
     var likesCount = 0
     var nickname = "익명"
+    var board = ""
 
 }

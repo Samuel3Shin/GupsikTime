@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardUseCompatPadding="true">
+    android:layout_height="wrap_content" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,8 +15,12 @@
             android:id="@+id/nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:text="익명의 사무엘"
+            android:textColor="@color/darkGreyNoPink"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/comment_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,31 +28,57 @@
             android:id="@+id/dateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
             android:text="2020년 9월 5일"
+            android:textColor="@color/darkGreyNoPink"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/nickname"
             app:layout_constraintStart_toEndOf="@+id/nickname"
             app:layout_constraintTop_toTopOf="@+id/nickname" />
 
         <TextView
-            android:id="@+id/comment_text"
+            android:id="@+id/barTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="댓~글~"
-            app:layout_constraintStart_toStartOf="@+id/nickname"
-            app:layout_constraintTop_toBottomOf="@+id/nickname" />
+            android:layout_marginStart="8dp"
+            android:text="|"
+            android:textColor="@color/darkGreyNoPink"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/nickname"
+            app:layout_constraintStart_toEndOf="@+id/dateTextView"
+            app:layout_constraintTop_toTopOf="@+id/nickname" />
 
         <TextView
             android:id="@+id/deleteTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="삭제"
+            android:layout_marginStart="8dp"
             android:clickable="true"
-            android:visibility="invisible"
+            android:text="삭제"
+            android:textColor="@color/darkGreyNoPink"
+            android:textSize="14sp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/nickname"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/barTextView"
             app:layout_constraintTop_toTopOf="@+id/nickname" />
+
+        <TextView
+            android:id="@+id/comment_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="댓~글~"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/nickname"
+            app:layout_constraintTop_toBottomOf="@+id/nickname" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
