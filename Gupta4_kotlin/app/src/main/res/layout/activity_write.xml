@@ -13,10 +13,37 @@
         layout="@layout/default_lines"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_banner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="60dp" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_banner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" >
+    </com.google.android.gms.ads.AdView>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline0"
@@ -202,7 +229,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="120dp"
+        android:layout_marginEnd="160dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/nickname_box"
         app:layout_constraintEnd_toEndOf="parent"
@@ -236,9 +263,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:text="급식메뉴"
-        android:textSize="16dp"
+        android:text="대나무숲"
         android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonUpper"
         app:layout_constraintStart_toStartOf="@+id/buttonUpper"
         app:layout_constraintTop_toTopOf="@+id/buttonUpper" />
@@ -260,15 +287,17 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="6dp"
-        android:maxLength="12"
+        android:layout_marginEnd="6dp"
         android:background="@android:color/transparent"
-        android:text="익명의신사무엘이나가신다길을비켜라하"
+        android:maxLength="12"
+        android:text="익명"
         android:textColor="@color/black"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/nickname_box"
+        app:layout_constraintEnd_toEndOf="@+id/nickname_box"
         app:layout_constraintStart_toStartOf="@+id/nickname_box"
         app:layout_constraintTop_toTopOf="@+id/nickname_box"
-        app:layout_constraintEnd_toEndOf="@+id/nickname_box" />
+        android:inputType="text" />
 
     <include
         android:id="@+id/title_box"
@@ -287,15 +316,17 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="6dp"
-        android:maxLength="12"
+        android:layout_marginEnd="6dp"
         android:background="@android:color/transparent"
-        android:text="무제"
+        android:maxLength="12"
+        android:text="제목없음"
         android:textColor="@color/black"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/title_box"
+        app:layout_constraintEnd_toEndOf="@+id/title_box"
         app:layout_constraintStart_toStartOf="@+id/title_box"
         app:layout_constraintTop_toTopOf="@+id/title_box"
-        app:layout_constraintEnd_toEndOf="@+id/title_box"/>
+        android:inputType="text" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_horizontal"
@@ -303,7 +334,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="238dp" />
-
 
     <include
         android:id="@+id/writingPostBox"
@@ -313,11 +343,10 @@
         android:padding="4dp"
         android:layout_margin="8dp"
         android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_banner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal"  />
-
 
     <EditText
         android:id="@+id/input"
@@ -329,7 +358,9 @@
         android:gravity="top|left"
         android:hint="글을 써주세요"
         android:inputType="textMultiLine"
+        android:maxLength="500"
         android:textColor="@android:color/black"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/writingPostBox"
         app:layout_constraintEnd_toEndOf="@+id/writingPostBox"
         app:layout_constraintStart_toStartOf="@+id/writingPostBox"

@@ -6,8 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_community.*
 import kotlinx.android.synthetic.main.activity_write.*
+import kotlinx.android.synthetic.main.activity_write.adView
 
 class WriteActivity : AppCompatActivity() {
 
@@ -51,6 +55,11 @@ class WriteActivity : AppCompatActivity() {
         }
 
         boardNameTextView.setText(boardName)
+
+        //배너 광고 추가
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
 
         backButton.setOnClickListener {
             val intent = Intent(this@WriteActivity, PopupButtonActivity::class.java)
@@ -99,6 +108,7 @@ class WriteActivity : AppCompatActivity() {
                 post.postId = newRef.key.toString()
                 post.title = titleTextView_write.text.toString()
                 post.nickname = nicknameTextView_write.text.toString()
+                post.board = boardNameTextView.text.toString()
                 newRef.setValue(post)
 
                 // post아이디를 shared preference에 저장. ','를 구분자로 저장함.
@@ -136,6 +146,24 @@ class WriteActivity : AppCompatActivity() {
 
     fun getMyId(): String {
         return Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+    }
+
+    // Called when leaving the activity
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    // Called when returning to the activity
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    // Called before the activity is destroyed
+    public override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
     }
 
 }

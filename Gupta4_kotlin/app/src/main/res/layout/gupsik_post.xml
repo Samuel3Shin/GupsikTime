@@ -29,7 +29,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.97" />
 
-
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
@@ -46,8 +45,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textSize="14dp"
             android:text="익명"
+            android:textColor="@color/darkGreyNoPink"
+            android:textSize="14dp"
             app:layout_constraintStart_toStartOf="@+id/guideline_vertical_0"
             app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
@@ -56,8 +56,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textSize="14dp"
             android:text="2020/9/1/12:12"
+            android:textColor="@color/darkGreyNoPink"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/nicknameTextView"
             app:layout_constraintStart_toEndOf="@+id/nicknameTextView"
             app:layout_constraintTop_toTopOf="@+id/nicknameTextView" />
@@ -96,6 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="1927"
+            android:textColor="@color/darkGreyNoPink"
             android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/hitsCountImage"
             app:layout_constraintStart_toEndOf="@+id/hitsCountImage"
@@ -118,6 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="920"
+            android:textColor="@color/darkGreyNoPink"
             android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/hitsCountImage"
             app:layout_constraintStart_toEndOf="@+id/commentImage"
@@ -140,6 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="891"
+            android:textColor="@color/darkGreyNoPink"
             android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/hitsCountImage"
             app:layout_constraintStart_toEndOf="@+id/likeImage"
