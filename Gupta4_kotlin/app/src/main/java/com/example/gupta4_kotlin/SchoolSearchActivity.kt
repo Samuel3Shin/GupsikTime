@@ -41,7 +41,7 @@ class SchoolSearchActivity : AppCompatActivity() {
             str = str.replace("]","")
 
             var strLst = str.split(",")
-
+            // Charlie : 굳이 파싱 안하고도 rows[i][0] / rows[i][1] / rows[i][2] 로 접근 가능해!
 
             schoolCodeMap.put(strLst.get(2).trim(), strLst.get(1).trim())
             districtCodeMap.put(strLst.get(2).trim(), strLst.get(0).trim())

@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -165,7 +167,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 binding.calendarView.smoothScrollToDate(today)
 //                binding.calendarView.scrollToMonth(YearMonth.now())
             }
-            selectDate(today)
+            // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
+            Handler(Looper.getMainLooper()).postDelayed({
+                selectDate(today)
+            }, 100)
 
         }
 
@@ -205,6 +210,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             todayTextView.alpha = 1F
             shareButton.alpha = 1F
             shareImageView.alpha = 1F
+            // Charlie : 토글과 alpha 조절하는 건 함수만들어서 코드 라인 수 줄이면 좋을 것 같아!
 
             dateTextView.setText(tmpDate)
             dateTextView.setTextColor(getResources().getColor(R.color.black))
@@ -285,12 +291,24 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         previousMonthButton.setOnClickListener {
             binding.calendarView.findFirstVisibleMonth()?.let {
                 binding.calendarView.smoothScrollToMonth(it.yearMonth.previous)
+                selectedDate?.let {
+                    // Clear selection if we scroll to a new month.
+                    selectedDate = null
+                    binding.calendarView.notifyDateChanged(it)
+                }
+                binding.calendarView.notifyMonthChanged(it.yearMonth.previous)
             }
         }
 
         nextMonthButton.setOnClickListener {
             binding.calendarView.findFirstVisibleMonth()?.let {
                 binding.calendarView.smoothScrollToMonth(it.yearMonth.next)
+                selectedDate?.let {
+                    // Clear selection if we scroll to a new month.
+                    selectedDate = null
+                    binding.calendarView.notifyDateChanged(it)
+                }
+                binding.calendarView.notifyMonthChanged(it.yearMonth.next)
             }
         }
 
@@ -387,6 +405,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
                 }
             }
+            // Charlie : listener 등록하는 것도 같은 코드가 반복되는데 setClickListenerWithTextViewList(textViewList) 정도로 만들어서 쓰면 좋을 것 같아!!
         }
 
 
@@ -452,7 +471,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             date_code = date.toString().replace("-", "")
             showMealInfo(date_code)
-
+            // Charlie : date 파싱할 필요 없이 이미 LocalDate 클래스에서 구현된 접근자 쓰면 될 것 같아!
+            // date.dayOfMonth / date.monthValue / date.year
             var date_lst: MutableList<String> = date.toString().split("-") as MutableList<String>
             if(date_lst.get(1).get(0) == '0') {
                 date_lst.set(1, date_lst.get(1).get(1).toString())
@@ -554,7 +574,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 if (meal_dish) {
                     dish = xmlpp.text
                     meal_dish = false
-
+                    // Charlie : 대박.. 요거 response json이나 정리된건 없었어? <br/>로 구분된거 파싱했다니!
                     var dishList: List<String> = dish.split("<br/>")
                     var tmpTextViewList: MutableList<TextView> = mutableListOf()
                     var whichMeal: String = ""
@@ -577,7 +597,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
 
                     var highlightedTextViews = preference.getString(date_code + whichMeal, "")
-
+                    // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
                     for(i in 0 until dishList.size)  {
                         // 하이라이트 저장된 거 불러오기
                         if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
