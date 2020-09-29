@@ -557,6 +557,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     dish = xmlpp.text
                     meal_dish = false
                     // Charlie : 대박.. 요거 response json이나 정리된건 없었어? <br/>로 구분된거 파싱했다니!
+                    dish = dish.replace("*", "")
                     var dishList: List<String> = dish.split("<br/>")
                     var tmpTextViewList: MutableList<TextView> = mutableListOf()
                     var whichMeal: String = ""
