@@ -169,6 +169,7 @@ class DetailActivity : AppCompatActivity() {
         })
 
         backButton.setOnClickListener {
+
             finish()
         }
 

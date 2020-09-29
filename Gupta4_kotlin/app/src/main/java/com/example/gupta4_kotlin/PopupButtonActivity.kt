@@ -53,7 +53,7 @@ class PopupButtonActivity : AppCompatActivity() {
                         "career" -> {
                             intent = Intent(this@PopupButtonActivity, CommunityCareerActivity::class.java)
                         }
-                        "mySchool" -> {
+                        else -> {
                             intent = Intent(this@PopupButtonActivity, CommunityMySchoolActivity::class.java)
                         }
                     }
@@ -89,7 +89,7 @@ class PopupButtonActivity : AppCompatActivity() {
                             "career" -> {
                                 intent = Intent(this@PopupButtonActivity, CommunityCareerActivity::class.java)
                             }
-                            "mySchool" -> {
+                            else -> {
                                 intent = Intent(this@PopupButtonActivity, CommunityMySchoolActivity::class.java)
                             }
                         }

@@ -69,12 +69,16 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
+            finish()
+
         }
 
         myAllergyInfoEditButton.setOnClickListener {
             val intent = Intent(this, MyAllergyActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+
+            finish()
 
         }
     }

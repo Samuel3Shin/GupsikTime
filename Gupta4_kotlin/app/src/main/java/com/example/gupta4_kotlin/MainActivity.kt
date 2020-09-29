@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             Utils.toggleButton(todayButton)
 
             binding.calendarView.findFirstVisibleMonth()?.let {
-                binding.calendarView.scrollToDate(today)
+              binding.calendarView.smoothScrollToMonth(YearMonth.now())
             }
 
             // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
@@ -452,19 +452,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             date_code = date.toString().replace("-", "")
             showMealInfo(date_code)
-            // Charlie : date 파싱할 필요 없이 이미 LocalDate 클래스에서 구현된 접근자 쓰면 될 것 같아!
-            // date.dayOfMonth / date.monthValue / date.year
-            var date_lst: MutableList<String> = date.toString().split("-") as MutableList<String>
-            if(date_lst.get(1).get(0) == '0') {
-                date_lst.set(1, date_lst.get(1).get(1).toString())
-            }
-
-            if(date_lst.get(2).get(0) == '0') {
-                date_lst.set(2, date_lst.get(2).get(1).toString())
-            }
-
-//            dateTextView.setText(date_lst.get(0) + "년 " + date_lst.get(1) + "월 " + date_lst.get(2) + "일")
-            dateTextView.setText(date_lst.get(1) + "월 " + date_lst.get(2) + "일")
+            dateTextView.setText(date.monthValue.toString() + "월 " + date.dayOfMonth.toString() + "일")
 
         }
     }

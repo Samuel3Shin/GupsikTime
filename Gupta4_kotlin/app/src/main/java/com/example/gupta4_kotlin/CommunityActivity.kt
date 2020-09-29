@@ -26,6 +26,11 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
+        // 게시판 설명 부분변경
+        boardDescribeTextView.setText("전국 학생들과 익명으로 소통하세요")
+        leftImageView.setImageResource(R.drawable.ic_bamboo_left_icon)
+        rightImageView.setImageResource(R.drawable.ic_bamboo_right_icon)
+
         recyclerView.layoutManager?.scrollToPosition(0)
 
         buttonUpper.setOnClickListener {
@@ -119,28 +124,22 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             })
 
         bambooButton.setOnClickListener {
-            boardKey = "bamboo"
             val intent = Intent(this@CommunityActivity, CommunityActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            intent.putExtra("boardKey", boardKey)
             startActivity(intent)
 
         }
 
         careerButton.setOnClickListener {
-            boardKey = "career"
             val intent = Intent(this@CommunityActivity, CommunityCareerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            intent.putExtra("boardKey", boardKey)
             startActivity(intent)
 
         }
 
         mySchoolButton.setOnClickListener{
-            boardKey = "mySchool"
             val intent = Intent(this@CommunityActivity, CommunityMySchoolActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            intent.putExtra("boardKey", boardKey)
             startActivity(intent)
 
         }
