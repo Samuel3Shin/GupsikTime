@@ -56,7 +56,7 @@
             android:text="삭제"
             android:textColor="@color/darkGreyNoPink"
             android:textSize="14sp"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/nickname"
             app:layout_constraintStart_toEndOf="@+id/barTextView"
             app:layout_constraintTop_toTopOf="@+id/nickname" />
@@ -75,8 +75,5 @@
             app:layout_constraintStart_toStartOf="@+id/nickname"
             app:layout_constraintTop_toBottomOf="@+id/nickname" />
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>
