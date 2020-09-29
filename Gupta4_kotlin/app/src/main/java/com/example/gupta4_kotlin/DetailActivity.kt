@@ -2,6 +2,8 @@ package com.example.gupta4_kotlin
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
@@ -13,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.gupsik_comment.view.*
 import kotlinx.android.synthetic.main.gupsik_detail.*
 import kotlinx.android.synthetic.main.gupsik_detail.adView
@@ -71,7 +72,11 @@ class DetailActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
-    }
+        }
+
+        shareButton.setOnClickListener {
+            onClickShareButton()
+        }
 
         val layoutManager = LinearLayoutManager(this@DetailActivity)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
@@ -169,7 +174,6 @@ class DetailActivity : AppCompatActivity() {
         })
 
         backButton.setOnClickListener {
-
             finish()
         }
 
@@ -182,7 +186,6 @@ class DetailActivity : AppCompatActivity() {
             comment.writerId = getMyId()
             comment.commentId = newRef.key.toString()
             comment.postId = postId!!
-
 
             // 댓글 id를 shared preference에 저장
             var myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
@@ -351,6 +354,30 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
+    // Share callback function
+    private fun onClickShareButton(){
+        nestedScrollView.isDrawingCacheEnabled = true
+        nestedScrollView.buildDrawingCache()
+
+//        val bitmap = gupsikInfoGroup.getDrawingCache()
+//            testImageView.setImageBitmap(bitmap)
+
+        val bitmap: Bitmap = nestedScrollView.getDrawingCache()
+
+        if (bitmap == null)
+            return
+
+        var bitmapURI = Utils.getImageUri(this@DetailActivity, bitmap)
+        //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
+        //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "image/jpeg"
+            putExtra(Intent.EXTRA_STREAM, bitmapURI)
+            putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
+        }
+        startActivity(Intent.createChooser(shareIntent, "share image and text!"))
+    }
 
     // Called when leaving the activity
     public override fun onPause() {

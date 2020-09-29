@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
             Handler(Looper.getMainLooper()).postDelayed({
                 selectDate(today)
-            }, 200)
+            }, 400)
         }
 
         var tmpDate = ""
@@ -175,7 +175,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             dateTextView.setText("좋아하는 메뉴를 눌러 하이라이트!")
             dateTextView.setTextColor(getResources().getColor(R.color.windowBlue))
             schoolName.makeGone()
-
         }
 
         highlighterPressedButton.setOnClickListener {
@@ -715,7 +714,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
         startActivity(Intent.createChooser(shareIntent, "share image and text!"))
     }
-
 
     // Called when leaving the activity
     public override fun onPause() {
