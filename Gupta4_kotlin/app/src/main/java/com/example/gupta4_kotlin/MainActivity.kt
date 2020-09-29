@@ -2,6 +2,8 @@ package com.example.gupta4_kotlin
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -35,7 +37,6 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.*
-
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
@@ -137,41 +138,21 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         shareButton.setOnClickListener {
-
-            gupsikInfoGroup.isDrawingCacheEnabled = true
-            gupsikInfoGroup.buildDrawingCache()
-            //TODO: 여기서 bitmap null인 경우가 있음!
-            val bitmap = gupsikInfoGroup.getDrawingCache()
-//            testImageView.setImageBitmap(bitmap)
-
-            var bitmapURI = Utils.getImageUri(this@MainActivity, bitmap)
-            //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
-            //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
-            val shareIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "image/jpeg"
-                putExtra(Intent.EXTRA_STREAM, bitmapURI)
-                putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
-            }
-            startActivity(Intent.createChooser(shareIntent, "share image and text!"))
-
+            onClickShareButton()
         }
 
         todayButton.setOnClickListener {
-
             Utils.toggleButton(todayPressedButton)
             Utils.toggleButton(todayButton)
-            selectDate(today)
+
             binding.calendarView.findFirstVisibleMonth()?.let {
-//                binding.calendarView.smoothScrollToMonth(YearMonth.now())
-                binding.calendarView.smoothScrollToDate(today)
-//                binding.calendarView.scrollToMonth(YearMonth.now())
+                binding.calendarView.scrollToDate(today)
             }
+
             // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
             Handler(Looper.getMainLooper()).postDelayed({
                 selectDate(today)
             }, 100)
-
         }
 
         var tmpDate = ""
@@ -421,7 +402,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-
+                finish()
                 return true
             }
 
@@ -429,7 +410,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-
+                finish()
                 return true
             }
         }
@@ -484,6 +465,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
 //            dateTextView.setText(date_lst.get(0) + "년 " + date_lst.get(1) + "월 " + date_lst.get(2) + "일")
             dateTextView.setText(date_lst.get(1) + "월 " + date_lst.get(2) + "일")
+
         }
     }
 
@@ -716,6 +698,35 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
     }
+
+    // Share callback function
+    private fun onClickShareButton(){
+        gupsikInfoGroup.isDrawingCacheEnabled = true
+        gupsikInfoGroup.buildDrawingCache()
+
+//        val bitmap = gupsikInfoGroup.getDrawingCache()
+//            testImageView.setImageBitmap(bitmap)
+
+        val bitmap: Bitmap = Bitmap.createBitmap(gupsikInfoGroup.measuredWidth, gupsikInfoGroup.measuredHeight, Bitmap.Config.ARGB_8888)
+        val canvas: Canvas = Canvas(bitmap)
+
+        gupsikInfoGroup.draw(canvas)
+
+        if (bitmap == null)
+            return
+
+        var bitmapURI = Utils.getImageUri(this@MainActivity, bitmap)
+        //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
+        //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "image/jpeg"
+            putExtra(Intent.EXTRA_STREAM, bitmapURI)
+            putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
+        }
+        startActivity(Intent.createChooser(shareIntent, "share image and text!"))
+    }
+
 
     // Called when leaving the activity
     public override fun onPause() {
