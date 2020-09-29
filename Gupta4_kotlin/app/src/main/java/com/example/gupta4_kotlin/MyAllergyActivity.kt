@@ -5,7 +5,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_my_allergy.*
+import kotlinx.android.synthetic.main.activity_write.*
 
 class MyAllergyActivity : AppCompatActivity() {
     val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
@@ -84,12 +86,15 @@ class MyAllergyActivity : AppCompatActivity() {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 preference.edit().putBoolean(Utils.isSetSchoolKey, true).apply()
+
                 startActivity(intent)
             } else {
                 val intent = Intent(this, MySettingActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
             }
+
+            Toast.makeText(applicationContext, "알러지 정보가 저장되었습니다!", Toast.LENGTH_SHORT).show()
 
         }
 

@@ -36,6 +36,7 @@ import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.*
 
+
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     var serviceUrl: String = ""
@@ -136,8 +137,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         shareButton.setOnClickListener {
+
             gupsikInfoGroup.isDrawingCacheEnabled = true
             gupsikInfoGroup.buildDrawingCache()
+            //TODO: 여기서 bitmap null인 경우가 있음!
             val bitmap = gupsikInfoGroup.getDrawingCache()
 //            testImageView.setImageBitmap(bitmap)
 
@@ -155,17 +158,20 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         todayButton.setOnClickListener {
+
             Utils.toggleButton(todayPressedButton)
             Utils.toggleButton(todayButton)
-
+            selectDate(today)
             binding.calendarView.findFirstVisibleMonth()?.let {
-                binding.calendarView.scrollToDate(today)
+//                binding.calendarView.smoothScrollToMonth(YearMonth.now())
+                binding.calendarView.smoothScrollToDate(today)
+//                binding.calendarView.scrollToMonth(YearMonth.now())
             }
-
             // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
             Handler(Looper.getMainLooper()).postDelayed({
                 selectDate(today)
             }, 100)
+
         }
 
         var tmpDate = ""
@@ -415,7 +421,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-                finish()
+
                 return true
             }
 
@@ -423,7 +429,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-                finish()
+
                 return true
             }
         }
@@ -478,7 +484,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
 //            dateTextView.setText(date_lst.get(0) + "년 " + date_lst.get(1) + "월 " + date_lst.get(2) + "일")
             dateTextView.setText(date_lst.get(1) + "월 " + date_lst.get(2) + "일")
-
         }
     }
 

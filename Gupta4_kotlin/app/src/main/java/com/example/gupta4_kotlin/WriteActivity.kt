@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
+import android.view.MenuItem
+import android.widget.PopupMenu
+import android.widget.Toast
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_community.*
 import kotlinx.android.synthetic.main.activity_write.*
 import kotlinx.android.synthetic.main.activity_write.adView
 
@@ -17,8 +19,8 @@ class WriteActivity : AppCompatActivity() {
 
     var writeMode = "post"
     var postId = ""
-    var boardName = ""
     var boardKey = ""
+    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -42,19 +44,30 @@ class WriteActivity : AppCompatActivity() {
 
         when(boardKey) {
             "bamboo" -> {
-                boardName = "대나무숲"
+                boardNameTextView.setText("대나무숲")
             }
 
             "career" -> {
-                boardName = "진로고민"
+                boardNameTextView.setText("진로고민")
             }
 
             else -> {
-                boardName = "우리학교"
+                boardNameTextView.setText("우리학교")
             }
         }
 
-        boardNameTextView.setText(boardName)
+        var alphaValue = 0.5F
+        buttonUpper.alpha = alphaValue
+        button_upper_inside.alpha = alphaValue
+        downArrowImageView.alpha = alphaValue
+        boardNameTextView.alpha = alphaValue
+
+//        buttonUpper.setOnClickListener {
+//            val popup = PopupMenu(this@WriteActivity, it)
+//            popup.setOnMenuItemClickListener(this@WriteActivity)
+//            popup.inflate(R.menu.boards)
+//            popup.show()
+//        }
 
         //배너 광고 추가
         MobileAds.initialize(this, getString(R.string.admob_app_id))
@@ -100,6 +113,12 @@ class WriteActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             if(writeMode=="post") {
+
+                if(TextUtils.isEmpty(input.text)) {
+                    Toast.makeText(applicationContext, "글 내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 val post = Post()
                 val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts").push()
                 post.writeTime = ServerValue.TIMESTAMP
@@ -126,6 +145,11 @@ class WriteActivity : AppCompatActivity() {
                 startActivity(intent)
 
             } else if (writeMode=="editPost") {
+                if(TextUtils.isEmpty(input.text)) {
+                    Toast.makeText(applicationContext, "글 내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
                 postRef.child("title").setValue(titleTextView_write.text.toString())
                 postRef.child("nickname").setValue(nicknameTextView_write.text.toString())
@@ -147,6 +171,33 @@ class WriteActivity : AppCompatActivity() {
     fun getMyId(): String {
         return Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
     }
+
+//    override fun onMenuItemClick(item: MenuItem?): Boolean {
+//        when (item?.itemId) {
+//            R.id.menu_bamboo ->  {
+//                boardKey = "bamboo"
+//                boardNameTextView.setText("대나무숲")
+//                return true
+//            }
+//
+//            R.id.menu_career ->  {
+//                boardKey = "career"
+//                boardNameTextView.setText("진로고민")
+//                return true
+//            }
+//
+//            R.id.menu_mySchool ->  {
+//                boardKey = "mySchool"
+//                val schoolCode = preference.getString(Utils.schoolCodeKey, "").toString()
+//
+//                // boardKey에 schoolCode 추가
+//                boardKey = boardKey + "/$schoolCode"
+//                boardNameTextView.setText("우리학교")
+//                return true
+//            }
+//        }
+//        return super.onOptionsItemSelected(item!!)
+//    }
 
     // Called when leaving the activity
     public override fun onPause() {

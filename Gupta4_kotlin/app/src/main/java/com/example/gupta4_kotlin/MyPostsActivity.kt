@@ -46,7 +46,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val intent = Intent(this, MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
-            finish()
+
         }
 
         val layoutManager = LinearLayoutManager(this@MyPostsActivity)
@@ -116,8 +116,6 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
-                finish()
-
             }
 
         }
@@ -129,7 +127,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-                finish()
+
                 return true
             }
 
@@ -137,7 +135,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-                finish()
+
                 return true
             }
 

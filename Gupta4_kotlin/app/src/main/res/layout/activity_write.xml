@@ -44,7 +44,6 @@
         app:layout_constraintEnd_toEndOf="parent" >
     </com.google.android.gms.ads.AdView>
 
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline0"
         android:layout_width="wrap_content"
@@ -57,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="64dp" />
+        app:layout_constraintGuide_begin="34dp" />
 
     <include
         android:id="@+id/backButton"
@@ -144,7 +143,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="108dp" />
+        app:layout_constraintGuide_begin="78dp" />
 
     <View
         android:id="@+id/black_line_at_the_bottom_of_menu_button"
@@ -227,7 +226,7 @@
         android:id="@+id/buttonUpper"
         layout="@layout/content_rectangle"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="160dp"
         android:layout_marginBottom="8dp"
@@ -285,10 +284,11 @@
     <EditText
         android:id="@+id/nicknameTextView_write"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="32dp"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="6dp"
         android:background="@android:color/transparent"
+        android:inputType="text"
         android:maxLength="12"
         android:text="익명"
         android:textColor="@color/black"
@@ -296,8 +296,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/nickname_box"
         app:layout_constraintEnd_toEndOf="@+id/nickname_box"
         app:layout_constraintStart_toStartOf="@+id/nickname_box"
-        app:layout_constraintTop_toTopOf="@+id/nickname_box"
-        android:inputType="text" />
+        app:layout_constraintTop_toTopOf="@+id/nickname_box" />
 
     <include
         android:id="@+id/title_box"
@@ -318,6 +317,7 @@
         android:layout_marginStart="6dp"
         android:layout_marginEnd="6dp"
         android:background="@android:color/transparent"
+        android:inputType="text"
         android:maxLength="12"
         android:text="제목없음"
         android:textColor="@color/black"
@@ -325,15 +325,14 @@
         app:layout_constraintBottom_toBottomOf="@+id/title_box"
         app:layout_constraintEnd_toEndOf="@+id/title_box"
         app:layout_constraintStart_toStartOf="@+id/title_box"
-        app:layout_constraintTop_toTopOf="@+id/title_box"
-        android:inputType="text" />
+        app:layout_constraintTop_toTopOf="@+id/title_box" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="238dp" />
+        app:layout_constraintGuide_begin="208dp" />
 
     <include
         android:id="@+id/writingPostBox"

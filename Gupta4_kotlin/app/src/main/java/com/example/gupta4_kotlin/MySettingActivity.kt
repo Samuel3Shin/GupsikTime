@@ -55,7 +55,6 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
-            finish()
         }
 
         buttonUpper.setOnClickListener {
@@ -69,14 +68,14 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             val intent = Intent(this, SchoolSearchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
-            finish()
+
         }
 
         myAllergyInfoEditButton.setOnClickListener {
             val intent = Intent(this, MyAllergyActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
-            finish()
+
         }
     }
 
@@ -87,7 +86,6 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
-                finish()
                 return true
             }
 
@@ -95,8 +93,6 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-
-                finish()
 
                 return true
             }

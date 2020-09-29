@@ -12,10 +12,36 @@
         layout="@layout/default_lines"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_weight="1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_banner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="60dp" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_banner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
+    </com.google.android.gms.ads.AdView>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline0"
@@ -29,31 +55,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="64dp" />
+        app:layout_constraintGuide_begin="34dp" />
 
     <include
         android:id="@+id/backButton"
         layout="@layout/button_template_unpressed"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="32dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toBottomOf="@+id/guideline1"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline1" />
 
     <ImageView
         android:id="@+id/backImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="12dp"
-        app:srcCompat="@drawable/ic_left_chevron"
-        app:layout_constraintTop_toTopOf="@+id/backButton"
+        android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/backButton"
+        app:layout_constraintEnd_toEndOf="@+id/backButton"
         app:layout_constraintStart_toStartOf="@+id/backButton"
-        app:layout_constraintEnd_toEndOf="@+id/backButton"  />
+        app:layout_constraintTop_toTopOf="@+id/backButton"
+        app:srcCompat="@drawable/ic_left_chevron" />
 
 
     <TextView
@@ -75,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="108dp" />
+        app:layout_constraintGuide_begin="78dp" />
 
     <View
         android:id="@+id/black_line_at_the_bottom_of_menu_button"
@@ -114,14 +140,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.04136253" />
+                app:layout_constraintGuide_begin="16dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_vertical_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.96" />
+                app:layout_constraintGuide_end="16dp" />
 
             <TextView
                 android:id="@+id/post_title"
@@ -278,8 +304,6 @@
                 app:layout_constraintStart_toStartOf="@+id/deleteButton"
                 app:layout_constraintEnd_toEndOf="@+id/deleteButton" />
 
-
-
             <TextView
                 android:id="@+id/contents"
                 android:layout_width="0dp"
@@ -313,13 +337,11 @@
                 layout="@layout/button_template_pressed"
                 android:layout_width="60dp"
                 android:layout_height="28dp"
-                android:layout_marginStart="100dp"
-                android:layout_marginTop="16dp"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/recycler_view"
-                app:layout_constraintEnd_toStartOf="@+id/shareButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contents" />
+                app:layout_constraintTop_toTopOf="@+id/likeButtonUnpressed"
+                app:layout_constraintBottom_toBottomOf="@+id/likeButtonUnpressed"
+                app:layout_constraintStart_toStartOf="@+id/likeButtonUnpressed"
+                app:layout_constraintEnd_toEndOf="@+id/likeButtonUnpressed"  />
 
             <ImageView
                 android:id="@+id/likeImageView"
@@ -394,7 +416,7 @@
         android:id="@+id/comment_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/default_lines"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 

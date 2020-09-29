@@ -10,9 +10,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.gupsik_comment.view.*
 import kotlinx.android.synthetic.main.gupsik_detail.*
+import kotlinx.android.synthetic.main.gupsik_detail.adView
+import kotlinx.android.synthetic.main.gupsik_detail.dateTextView
 
 
 class DetailActivity : AppCompatActivity() {
@@ -55,7 +60,6 @@ class DetailActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
-            finish()
         }
 
         editButton.setOnClickListener {
@@ -67,7 +71,6 @@ class DetailActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
-            finish()
     }
 
         val layoutManager = LinearLayoutManager(this@DetailActivity)
@@ -97,23 +100,10 @@ class DetailActivity : AppCompatActivity() {
                 }
             })
 
-//        // hitsCountText 갱신해준다.
-//        val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-//
-//        postRef.addListenerForSingleValueEvent(object: ValueEventListener {
-//            override fun onCancelled(error: DatabaseError) {
-//                TODO("Not yet implemented")
-//            }
-//
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val hitsCount = snapshot.child("hitsCount").getValue()
-//                hitsCountText.setText(hitsCount.toString())
-//
-//                val writeTime = snapshot.child("writeTime").getValue()
-//                val date = Utils.getDiffTimeText(writeTime as Long)
-//                dateTextView.setText(date)
-//            }
-//        })
+        //배너 광고 추가
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
 
         FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").addChildEventListener(object
             :ChildEventListener {
@@ -375,6 +365,24 @@ class DetailActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    // Called when leaving the activity
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    // Called when returning to the activity
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    // Called before the activity is destroyed
+    public override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
     }
 
 }
