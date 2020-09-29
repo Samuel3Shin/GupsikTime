@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -160,7 +162,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 binding.calendarView.scrollToDate(today)
             }
 
-            selectDate(today)
+            // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
+            Handler(Looper.getMainLooper()).postDelayed({
+                selectDate(today)
+            }, 100)
         }
 
         var tmpDate = ""
@@ -280,12 +285,24 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         previousMonthButton.setOnClickListener {
             binding.calendarView.findFirstVisibleMonth()?.let {
                 binding.calendarView.smoothScrollToMonth(it.yearMonth.previous)
+                selectedDate?.let {
+                    // Clear selection if we scroll to a new month.
+                    selectedDate = null
+                    binding.calendarView.notifyDateChanged(it)
+                }
+                binding.calendarView.notifyMonthChanged(it.yearMonth.previous)
             }
         }
 
         nextMonthButton.setOnClickListener {
             binding.calendarView.findFirstVisibleMonth()?.let {
                 binding.calendarView.smoothScrollToMonth(it.yearMonth.next)
+                selectedDate?.let {
+                    // Clear selection if we scroll to a new month.
+                    selectedDate = null
+                    binding.calendarView.notifyDateChanged(it)
+                }
+                binding.calendarView.notifyMonthChanged(it.yearMonth.next)
             }
         }
 
