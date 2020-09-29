@@ -10,17 +10,6 @@
     android:id="@+id/allergyFrame">
 
     <View
-        android:id="@+id/rectangle_at_the_top"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_alignParentTop="true"
-        android:background="#000000"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
         android:id="@+id/white_line_at_the_top"
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -31,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rectangle_at_the_top" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/black_line_at_the_bottom"
@@ -81,27 +70,31 @@
         android:background="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rectangle_at_the_top" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/TextView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="40dp"
         android:text="알러지가 있는 식재료를 알려주세요!"
         android:textColor="@color/black"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/TextView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/white_line_at_the_top" />
+
     <TextView
         android:id="@+id/TextView2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="20dp"
         android:text="급식 메뉴에서 따로 표시해줄게요 :D"
         android:textColor="@color/black"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TextView1" />
@@ -125,23 +118,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="150dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_horizontal2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="353dp" />
+        app:layout_constraintGuide_begin="108dp" />
 
     <include
         android:id="@+id/checkbox_1"
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_4"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_1"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
-        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/text_checkbox_1"
@@ -173,8 +162,10 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_3"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_4"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_1" />
 
@@ -207,8 +198,10 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_11"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_3"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_4" />
 
@@ -217,11 +210,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="메밀"
-        android:textSize="16sp"
         android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_3"
         app:layout_constraintStart_toStartOf="@+id/text_checkbox_1"
-        app:layout_constraintTop_toTopOf="@+id/checkbox_3"
-        app:layout_constraintBottom_toBottomOf="@+id/checkbox_3" />
+        app:layout_constraintTop_toTopOf="@+id/checkbox_3" />
 
     <ImageView
         android:id="@+id/image_checkbox_3"
@@ -241,8 +234,10 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_15"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_11"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_3" />
 
@@ -275,8 +270,10 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_9"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_15"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_11" />
 
@@ -308,8 +305,10 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_7"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_9"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_15" />
 
@@ -342,8 +341,10 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_18"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_7"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_9" />
 
@@ -376,10 +377,12 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_13"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_18"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_7" />어
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_7" />
 
     <TextView
         android:id="@+id/text_checkbox_18"
@@ -410,10 +413,13 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom1"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_13"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_18" />
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_18"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/text_checkbox_13"
@@ -446,9 +452,12 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="52dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_1"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_2"
         app:layout_constraintStart_toEndOf="@+id/text_checkbox_1"
-        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal" />
+        app:layout_constraintTop_toTopOf="@+id/checkbox_1" />
 
     <TextView
         android:id="@+id/text_checkbox_2"
@@ -481,10 +490,12 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_4"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_5"
         app:layout_constraintStart_toStartOf="@+id/checkbox_2"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_2" />
+        app:layout_constraintTop_toTopOf="@+id/checkbox_4" />
 
     <TextView
         android:id="@+id/text_checkbox_5"
@@ -516,10 +527,12 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_3"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_6"
         app:layout_constraintStart_toStartOf="@+id/checkbox_2"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_5" />
+        app:layout_constraintTop_toTopOf="@+id/checkbox_3" />
 
     <TextView
         android:id="@+id/text_checkbox_6"
@@ -550,10 +563,12 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_11"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_12"
         app:layout_constraintStart_toStartOf="@+id/checkbox_2"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_6" />
+        app:layout_constraintTop_toTopOf="@+id/checkbox_11" />
 
     <TextView
         android:id="@+id/text_checkbox_12"
@@ -585,10 +600,10 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_15"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="@+id/checkbox_2"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_12" />
+        app:layout_constraintTop_toTopOf="@+id/checkbox_15" />
 
     <TextView
         android:id="@+id/text_checkbox_16"
@@ -620,10 +635,12 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_9"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_8"
         app:layout_constraintStart_toStartOf="@+id/checkbox_2"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_16" />
+        app:layout_constraintTop_toTopOf="@+id/checkbox_9" />
 
     <TextView
         android:id="@+id/text_checkbox_8"
@@ -655,10 +672,12 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_7"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_17"
         app:layout_constraintStart_toStartOf="@+id/checkbox_2"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_8" />
+        app:layout_constraintTop_toTopOf="@+id/checkbox_7" />
 
     <TextView
         android:id="@+id/text_checkbox_17"
@@ -685,18 +704,18 @@
         app:layout_constraintEnd_toEndOf="@+id/checkbox_17" />
 
 
-
     <include
         android:id="@+id/checkbox_14"
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="52dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toEndOf="@+id/text_checkbox_5"
-        app:layout_constraintTop_toTopOf="@+id/checkbox_5"
+        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/checkbox_5"
-        />
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_14"
+        app:layout_constraintStart_toEndOf="@+id/text_checkbox_5"
+        app:layout_constraintTop_toTopOf="@+id/checkbox_5" />
 
     <TextView
         android:id="@+id/text_checkbox_14"
@@ -727,11 +746,12 @@
         layout="@layout/content_rectangle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toStartOf="@+id/checkbox_14"
-        app:layout_constraintTop_toTopOf="@+id/checkbox_16"
+        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/checkbox_16"
-        />
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/text_checkbox_10"
+        app:layout_constraintStart_toStartOf="@+id/checkbox_14"
+        app:layout_constraintTop_toTopOf="@+id/checkbox_16" />
 
     <TextView
         android:id="@+id/text_checkbox_10"
@@ -757,16 +777,30 @@
         app:layout_constraintStart_toStartOf="@+id/checkbox_10"
         app:layout_constraintEnd_toEndOf="@+id/checkbox_10" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.96" />
 
     <include
         android:id="@+id/saveButton"
         layout="@layout/button_template_unpressed"
         android:layout_width="80dp"
         android:layout_height="35dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_13" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline_bottom1" />
 
     <TextView
         android:id="@+id/saveButtonTextView"
@@ -786,10 +820,10 @@
         layout="@layout/button_template_unpressed"
         android:layout_width="80dp"
         android:layout_height="35dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom2"
         app:layout_constraintEnd_toStartOf="@+id/saveButton"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_13" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline_bottom1" />
 
     <TextView
         android:id="@+id/cancelButtonTextView"

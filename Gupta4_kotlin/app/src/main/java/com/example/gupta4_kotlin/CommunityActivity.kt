@@ -125,17 +125,14 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             intent.putExtra("boardKey", boardKey)
             startActivity(intent)
 
-            finish()
-
         }
+
         careerButton.setOnClickListener {
             boardKey = "career"
             val intent = Intent(this@CommunityActivity, CommunityCareerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra("boardKey", boardKey)
             startActivity(intent)
-
-            finish()
 
         }
 
@@ -146,7 +143,6 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             intent.putExtra("boardKey", boardKey)
             startActivity(intent)
 
-            finish()
         }
 
     }
@@ -157,7 +153,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-                finish()
+
                 return true
             }
 
@@ -169,7 +165,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
                 val intent = Intent(this, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-                finish()
+
                 return true
             }
         }

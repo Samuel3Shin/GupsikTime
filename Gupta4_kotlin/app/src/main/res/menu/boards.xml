@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_bamboo"
+        android:title="대나무숲"
+        app:showAsAction="never">
+
+    </item>
+    <item
+        android:id="@+id/menu_career"
+        android:title="진로고민"
+        app:showAsAction="never">
+    </item>
+    <item
+        android:id="@+id/menu_mySchool"
+        android:title="우리학교"
+        app:showAsAction="never" />
+</menu>

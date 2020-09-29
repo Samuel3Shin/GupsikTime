@@ -87,6 +87,8 @@ class SchoolSearchActivity : AppCompatActivity() {
                 }
 
             }
+
+            Toast.makeText(applicationContext, "힉교 정보가 저장되었습니다!", Toast.LENGTH_SHORT).show()
         }
     }
 }

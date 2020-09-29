@@ -7,20 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-
-
-    <View
-        android:id="@+id/rectangle_at_the_top"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_alignParentTop="true"
-        android:background="#000000"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
     <View
         android:id="@+id/white_line_at_the_top"
         android:layout_width="0dp"
@@ -32,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rectangle_at_the_top" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/black_line_at_the_bottom"
@@ -82,7 +68,7 @@
         android:background="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rectangle_at_the_top" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/schoolSearchTextView"
@@ -145,15 +131,30 @@
         app:layout_constraintTop_toTopOf="@+id/schoolSearchBox"
         app:layout_constraintBottom_toBottomOf="@+id/schoolSearchBox" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.96" />
+
     <include
         android:id="@+id/saveButton"
         layout="@layout/button_template_unpressed"
         android:layout_width="80dp"
         android:layout_height="35dp"
-        android:layout_marginBottom="32dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline_bottom1"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom2" />
 
     <TextView
         android:id="@+id/saveButtonTextView"
@@ -199,7 +200,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/schoolSearchBox"
-        app:layout_constraintBottom_toTopOf="@+id/cancelButton"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom1"
         app:srcCompat="@drawable/school_search_bg"
         tools:layout_editor_absoluteY="185dp" />
 

@@ -21,10 +21,10 @@
             android:value="@string/admob_app_id"/>
 
         <activity android:name=".PopupButtonActivity"/>
-        <activity android:name=".MyAllergyActivity" />
-        <activity android:name=".MyPostsActivity" />
+        <activity android:name=".MyAllergyActivity"/>
+        <activity android:name=".MyPostsActivity" android:launchMode="singleInstance"/>
         <activity android:name=".SchoolSearchActivity" />
-        <activity android:name=".MySettingActivity" />
+        <activity android:name=".MySettingActivity" android:launchMode="singleInstance"/>
         <activity android:name=".SplashScrrenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,12 +32,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CommunityActivity" />
-        <activity android:name=".CommunityCareerActivity" />
-        <activity android:name=".CommunityMySchoolActivity" />
+        <activity android:name=".CommunityActivity" android:launchMode="singleInstance"/>
+        <activity android:name=".CommunityCareerActivity" android:launchMode="singleInstance"/>
+        <activity android:name=".CommunityMySchoolActivity" android:launchMode="singleInstance"/>
         <activity android:name=".WriteActivity" />
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".DetailActivity" android:launchMode="singleInstance"/>
+        <activity android:name=".MainActivity" android:launchMode="singleInstance"/>
     </application>
 
 </manifest>

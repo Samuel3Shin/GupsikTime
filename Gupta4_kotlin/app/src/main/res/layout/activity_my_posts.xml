@@ -54,16 +54,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="64dp" />
+        app:layout_constraintGuide_begin="34dp" />
 
     <include
         android:id="@+id/buttonUpper"
         layout="@layout/content_rectangle"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="6dp"
-        android:layout_marginTop="6dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline0"
@@ -107,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="108dp" />
+        app:layout_constraintGuide_begin="78dp" />
 
     <View
         android:id="@+id/black_line_at_the_bottom_of_menu_button"
@@ -141,7 +141,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="176dp" />
+        app:layout_constraintGuide_begin="146dp" />
 
     <include
         android:id="@+id/my_page_box"
