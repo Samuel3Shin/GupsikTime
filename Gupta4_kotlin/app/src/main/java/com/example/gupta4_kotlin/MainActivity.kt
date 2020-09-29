@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
             Handler(Looper.getMainLooper()).postDelayed({
                 selectDate(today)
-            }, 100)
+            }, 200)
         }
 
         var tmpDate = ""

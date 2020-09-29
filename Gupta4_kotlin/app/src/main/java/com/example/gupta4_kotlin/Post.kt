@@ -12,5 +12,5 @@ class Post {
     var likesCount = 0
     var nickname = "익명"
     var board = ""
-
+    var commentIdMap: HashMap<String, String> = HashMap()
 }

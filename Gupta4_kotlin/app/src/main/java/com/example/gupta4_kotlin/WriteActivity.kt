@@ -62,13 +62,6 @@ class WriteActivity : AppCompatActivity() {
         downArrowImageView.alpha = alphaValue
         boardNameTextView.alpha = alphaValue
 
-//        buttonUpper.setOnClickListener {
-//            val popup = PopupMenu(this@WriteActivity, it)
-//            popup.setOnMenuItemClickListener(this@WriteActivity)
-//            popup.inflate(R.menu.boards)
-//            popup.show()
-//        }
-
         //배너 광고 추가
         MobileAds.initialize(this, getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
@@ -128,6 +121,8 @@ class WriteActivity : AppCompatActivity() {
                 post.title = titleTextView_write.text.toString()
                 post.nickname = nicknameTextView_write.text.toString()
                 post.board = boardNameTextView.text.toString()
+                post.commentIdMap = HashMap()
+                post.commentIdMap.put(getMyId(), "(글쓴이)")
                 newRef.setValue(post)
 
                 // post아이디를 shared preference에 저장. ','를 구분자로 저장함.
@@ -171,33 +166,6 @@ class WriteActivity : AppCompatActivity() {
     fun getMyId(): String {
         return Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
     }
-
-//    override fun onMenuItemClick(item: MenuItem?): Boolean {
-//        when (item?.itemId) {
-//            R.id.menu_bamboo ->  {
-//                boardKey = "bamboo"
-//                boardNameTextView.setText("대나무숲")
-//                return true
-//            }
-//
-//            R.id.menu_career ->  {
-//                boardKey = "career"
-//                boardNameTextView.setText("진로고민")
-//                return true
-//            }
-//
-//            R.id.menu_mySchool ->  {
-//                boardKey = "mySchool"
-//                val schoolCode = preference.getString(Utils.schoolCodeKey, "").toString()
-//
-//                // boardKey에 schoolCode 추가
-//                boardKey = boardKey + "/$schoolCode"
-//                boardNameTextView.setText("우리학교")
-//                return true
-//            }
-//        }
-//        return super.onOptionsItemSelected(item!!)
-//    }
 
     // Called when leaving the activity
     public override fun onPause() {

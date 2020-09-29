@@ -183,7 +183,6 @@ class DetailActivity : AppCompatActivity() {
             comment.commentId = newRef.key.toString()
             comment.postId = postId!!
 
-            newRef.setValue(comment)
 
             // 댓글 id를 shared preference에 저장
             var myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
@@ -191,7 +190,8 @@ class DetailActivity : AppCompatActivity() {
             preference.edit().putString(Utils.myCommentIdsKey, myCommentIdsStr).apply()
 
             val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-
+            var commentIdMap: HashMap<String, String> = HashMap()
+            var idCnt = ""
             // post의 댓글 개수 불러와서 거기다가 1을 더해준다.
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -201,6 +201,20 @@ class DetailActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var commentNum = snapshot.child("commentCount").value as Long
                     postRef.child("commentCount").setValue(commentNum + 1)
+
+                    commentIdMap = snapshot.child("commentIdMap").getValue() as HashMap<String, String>
+
+                    if(commentIdMap.containsKey(getMyId())){
+
+                    } else {
+                        commentIdMap.put(getMyId(), commentIdMap.size.toString())
+                    }
+                    postRef.child("commentIdMap").setValue(commentIdMap)
+
+                    idCnt = commentIdMap.get(getMyId())!!
+                    comment.nickname = "익명" + idCnt
+                    newRef.setValue(comment)
+
                 }
             })
 
@@ -290,6 +304,7 @@ class DetailActivity : AppCompatActivity() {
             comment?.let {
                 holder.commentText.text = comment.message
                 holder.commentWriteTime.text = Utils.getDiffTimeText(comment.writeTime as Long)
+                holder.commentNickname.text = comment.nickname
 
                 //TODO: 여기에 익명1, 익명2을 id값에 따라 mapping해주는 것이 필요함.
                 // holder.commentNickname.text = comment.nickname
@@ -336,37 +351,6 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
-    // 점점점 메뉴 옵션 넣은부분. 수정, 삭제 가능하도록 구현!
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.detail, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item?.itemId) {
-            R.id.edit -> {
-                val intent = Intent(this, WriteActivity::class.java)
-                intent.putExtra("writeMode", "editPost")
-                intent.putExtra("postId", postId)
-                startActivity(intent)
-
-                return true
-            }
-
-            R.id.delete -> {
-                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-                postRef.removeValue()
-
-                val commentRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId")
-                commentRef.removeValue()
-
-                finish()
-                return true
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
 
     // Called when leaving the activity
     public override fun onPause() {
