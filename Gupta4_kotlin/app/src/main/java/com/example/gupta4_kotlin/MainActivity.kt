@@ -2,8 +2,12 @@ package com.example.gupta4_kotlin
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -33,7 +37,6 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.*
-
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
@@ -135,36 +138,21 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         shareButton.setOnClickListener {
-
-            gupsikInfoGroup.isDrawingCacheEnabled = true
-            gupsikInfoGroup.buildDrawingCache()
-            //TODO: 여기서 bitmap null인 경우가 있음!
-            val bitmap = gupsikInfoGroup.getDrawingCache()
-//            testImageView.setImageBitmap(bitmap)
-
-            var bitmapURI = Utils.getImageUri(this@MainActivity, bitmap)
-            //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
-            //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
-            val shareIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "image/jpeg"
-                putExtra(Intent.EXTRA_STREAM, bitmapURI)
-                putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
-            }
-            startActivity(Intent.createChooser(shareIntent, "share image and text!"))
-
+            onClickShareButton()
         }
 
         todayButton.setOnClickListener {
-
             Utils.toggleButton(todayPressedButton)
             Utils.toggleButton(todayButton)
 
             binding.calendarView.findFirstVisibleMonth()?.let {
-                binding.calendarView.smoothScrollToMonth(YearMonth.now())
+              binding.calendarView.smoothScrollToMonth(YearMonth.now())
             }
-            selectDate(today)
 
+            // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
+            Handler(Looper.getMainLooper()).postDelayed({
+                selectDate(today)
+            }, 100)
         }
 
         var tmpDate = ""
@@ -203,6 +191,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             todayTextView.alpha = 1F
             shareButton.alpha = 1F
             shareImageView.alpha = 1F
+            // Charlie : 토글과 alpha 조절하는 건 함수만들어서 코드 라인 수 줄이면 좋을 것 같아!
 
             dateTextView.setText(tmpDate)
             dateTextView.setTextColor(getResources().getColor(R.color.black))
@@ -283,12 +272,24 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         previousMonthButton.setOnClickListener {
             binding.calendarView.findFirstVisibleMonth()?.let {
                 binding.calendarView.smoothScrollToMonth(it.yearMonth.previous)
+                selectedDate?.let {
+                    // Clear selection if we scroll to a new month.
+                    selectedDate = null
+                    binding.calendarView.notifyDateChanged(it)
+                }
+                binding.calendarView.notifyMonthChanged(it.yearMonth.previous)
             }
         }
 
         nextMonthButton.setOnClickListener {
             binding.calendarView.findFirstVisibleMonth()?.let {
                 binding.calendarView.smoothScrollToMonth(it.yearMonth.next)
+                selectedDate?.let {
+                    // Clear selection if we scroll to a new month.
+                    selectedDate = null
+                    binding.calendarView.notifyDateChanged(it)
+                }
+                binding.calendarView.notifyMonthChanged(it.yearMonth.next)
             }
         }
 
@@ -385,6 +386,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
                 }
             }
+            // Charlie : listener 등록하는 것도 같은 코드가 반복되는데 setClickListenerWithTextViewList(textViewList) 정도로 만들어서 쓰면 좋을 것 같아!!
         }
 
 
@@ -400,7 +402,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-
+                finish()
                 return true
             }
 
@@ -408,7 +410,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-
+                finish()
                 return true
             }
         }
@@ -450,8 +452,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             date_code = date.toString().replace("-", "")
             showMealInfo(date_code)
-
             dateTextView.setText(date.monthValue.toString() + "월 " + date.dayOfMonth.toString() + "일")
+
         }
     }
 
@@ -542,7 +544,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 if (meal_dish) {
                     dish = xmlpp.text
                     meal_dish = false
-
+                    // Charlie : 대박.. 요거 response json이나 정리된건 없었어? <br/>로 구분된거 파싱했다니!
+                    dish = dish.replace("*", "")
                     var dishList: List<String> = dish.split("<br/>")
                     var tmpTextViewList: MutableList<TextView> = mutableListOf()
                     var whichMeal: String = ""
@@ -565,7 +568,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
 
                     var highlightedTextViews = preference.getString(date_code + whichMeal, "")
-
+                    // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
                     for(i in 0 until dishList.size)  {
                         // 하이라이트 저장된 거 불러오기
                         if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
@@ -684,6 +687,35 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
     }
+
+    // Share callback function
+    private fun onClickShareButton(){
+        gupsikInfoGroup.isDrawingCacheEnabled = true
+        gupsikInfoGroup.buildDrawingCache()
+
+//        val bitmap = gupsikInfoGroup.getDrawingCache()
+//            testImageView.setImageBitmap(bitmap)
+
+        val bitmap: Bitmap = Bitmap.createBitmap(gupsikInfoGroup.measuredWidth, gupsikInfoGroup.measuredHeight, Bitmap.Config.ARGB_8888)
+        val canvas: Canvas = Canvas(bitmap)
+
+        gupsikInfoGroup.draw(canvas)
+
+        if (bitmap == null)
+            return
+
+        var bitmapURI = Utils.getImageUri(this@MainActivity, bitmap)
+        //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
+        //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "image/jpeg"
+            putExtra(Intent.EXTRA_STREAM, bitmapURI)
+            putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
+        }
+        startActivity(Intent.createChooser(shareIntent, "share image and text!"))
+    }
+
 
     // Called when leaving the activity
     public override fun onPause() {
