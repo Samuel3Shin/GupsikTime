@@ -36,7 +36,7 @@
         <activity android:name=".CommunityCareerActivity" android:launchMode="singleInstance"/>
         <activity android:name=".CommunityMySchoolActivity" android:launchMode="singleInstance"/>
         <activity android:name=".WriteActivity" />
-        <activity android:name=".DetailActivity" android:launchMode="singleInstance"/>
+        <activity android:name=".DetailActivity" />
         <activity android:name=".MainActivity" android:launchMode="singleInstance"/>
     </application>
 

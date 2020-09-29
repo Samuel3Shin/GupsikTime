@@ -1,6 +1,7 @@
 package com.example.gupta4_kotlin
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_community.*
@@ -29,5 +30,11 @@ class CommunityMySchoolActivity : CommunityActivity() {
             Utils.toggleButton(careerButton)
             Utils.toggleButton(careerPressedButton)
         }
+
+        // 게시판 설명 부분변경
+        boardDescribeTextView.setText("우리 학교만 쓰는 게시판")
+        leftImageView.setImageResource(R.drawable.ic_openmoji_school)
+        rightImageView.setImageResource(R.drawable.ic_openmoji_school)
+
     }
 }

@@ -159,11 +159,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             Utils.toggleButton(todayPressedButton)
             Utils.toggleButton(todayButton)
-            selectDate(today)
+
             binding.calendarView.findFirstVisibleMonth()?.let {
-//                binding.calendarView.smoothScrollToMonth(YearMonth.now())
-                binding.calendarView.smoothScrollToDate(today)
-//                binding.calendarView.scrollToMonth(YearMonth.now())
+                binding.calendarView.smoothScrollToMonth(YearMonth.now())
             }
             selectDate(today)
 
@@ -453,17 +451,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             date_code = date.toString().replace("-", "")
             showMealInfo(date_code)
 
-            var date_lst: MutableList<String> = date.toString().split("-") as MutableList<String>
-            if(date_lst.get(1).get(0) == '0') {
-                date_lst.set(1, date_lst.get(1).get(1).toString())
-            }
-
-            if(date_lst.get(2).get(0) == '0') {
-                date_lst.set(2, date_lst.get(2).get(1).toString())
-            }
-
-//            dateTextView.setText(date_lst.get(0) + "년 " + date_lst.get(1) + "월 " + date_lst.get(2) + "일")
-            dateTextView.setText(date_lst.get(1) + "월 " + date_lst.get(2) + "일")
+            dateTextView.setText(date.monthValue.toString() + "월 " + date.dayOfMonth.toString() + "일")
         }
     }
 

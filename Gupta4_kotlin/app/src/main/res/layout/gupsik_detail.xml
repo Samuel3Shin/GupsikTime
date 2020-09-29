@@ -331,13 +331,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/contents" />
 
-
-            <include
+            <ImageView
                 android:id="@+id/likeButtonPressed"
-                layout="@layout/button_template_pressed"
                 android:layout_width="60dp"
                 android:layout_height="28dp"
                 android:visibility="invisible"
+                app:srcCompat="@drawable/ic_pressed_heart"
                 app:layout_constraintTop_toTopOf="@+id/likeButtonUnpressed"
                 app:layout_constraintBottom_toBottomOf="@+id/likeButtonUnpressed"
                 app:layout_constraintStart_toStartOf="@+id/likeButtonUnpressed"
@@ -360,6 +359,8 @@
                 android:layout_width="60dp"
                 android:layout_height="28dp"
                 android:layout_marginEnd="100dp"
+                android:background="?attr/selectableItemBackground"
+                android:foreground="?attr/selectableItemBackground"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/likeButtonUnpressed"
                 app:layout_constraintEnd_toEndOf="parent"
