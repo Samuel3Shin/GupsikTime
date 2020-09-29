@@ -35,6 +35,7 @@ import java.io.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
 
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var dinnerFamilyViewList: MutableList<View> = mutableListOf()
 
     val allergyKeyList: MutableList<String> = mutableListOf()
+    val allergyDayList: MutableList<LocalDate> = mutableListOf()
 
 
     var date_code = ""
@@ -239,7 +241,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     when (day.date) {
 
                         selectedDate -> {
-                            textView.setTextColorRes(R.color.allergy)
                             textView.setBackgroundResource(R.drawable.calendar_selected_bg)
                         }
                         else -> {
@@ -247,6 +248,13 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                             textView.background = null
                         }
                     }
+
+                    for(i in 0 until allergyDayList.size) {
+                        if (day.date.equals(allergyDayList.get(i))){
+                            textView.setTextColorRes(R.color.allergy)
+                        }
+                    }
+
                 } else {
                     textView.makeInVisible()
                 }
@@ -500,6 +508,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                     runOnUiThread {
                         parse(result)
+                        binding.calendarView.notifyCalendarChanged()    // Update calendar with meal info
                     }
                 }
             }
@@ -579,6 +588,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
                     }
 
+                    var isAllergyDay = false;
                     var highlightedTextViews = preference.getString(date_code + whichMeal, "")
                     // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
                     for(i in 0 until dishList.size)  {
@@ -635,13 +645,20 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                             }
                         }
 
+
                         if(isAllergyFlag) {
                             tmpTextViewList.get(i).setText(menuName)
                             tmpTextViewList.get(i).setTextColor(Color.parseColor("#FF7FFF"))
+                            isAllergyDay = true;
                         } else {
                             tmpTextViewList.get(i).setText(menuName)
                         }
 
+                    }
+
+                    if(isAllergyDay){
+                        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+                        allergyDayList.add(LocalDate.parse(date, dateTimeFormatter))
                     }
 
                     for(i in dishList.size until 12) {
@@ -699,6 +716,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
     }
+
 
     // Share callback function
     private fun onClickShareButton(){
