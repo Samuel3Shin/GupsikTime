@@ -204,8 +204,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val currentMonth = YearMonth.now()
 
         // init monthly meal info
-        val monthStr = currentMonth.toString().replace("-", "")
-        showMealInfoWithMonth(monthStr)
+        showMealInfoWithMonth(currentMonth)
 
         binding.calendarView.apply {
             setup(currentMonth.minusMonths(10), currentMonth.plusMonths(10), daysOfWeek.first())
@@ -273,6 +272,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val title = "${monthNum}월"
 
             binding.exFiveMonthYearText.text = title
+
+
+            showMealInfoWithMonth(month.yearMonth)
 
             selectedDate?.let {
                 // Clear selection if we scroll to a new month.
@@ -486,7 +488,23 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         run(strUrl)
     }
 
-    private fun showMealInfoWithMonth(monthCode: String){
+    private fun isAlreadyCalledMonthlyMealInfo(yearMonth: YearMonth): Boolean {
+        for(i in 0 until allergyDayList.size) {
+            val allergyDay : LocalDate = allergyDayList.get(i)
+            if (allergyDay.year == yearMonth.year && allergyDay.month == yearMonth.month)
+                return true
+        }
+
+        return false
+    }
+
+    private fun showMealInfoWithMonth(yearMonth: YearMonth){
+
+        if (isAlreadyCalledMonthlyMealInfo(yearMonth))
+            return
+
+        val monthCode = yearMonth.toString().replace("-", "")
+
         var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$monthCode"
         run(strUrl)
     }
