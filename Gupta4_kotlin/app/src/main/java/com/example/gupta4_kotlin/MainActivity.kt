@@ -240,23 +240,21 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 textView.text = day.date.dayOfMonth.toString()
 
                 if (day.owner == DayOwner.THIS_MONTH) {
+
+                    // init textview
                     textView.makeVisible()
-                    when (day.date) {
+                    textView.setTextColorRes(R.color.black)
+                    textView.background = null
 
-                        selectedDate -> {
-                            textView.setBackgroundResource(R.drawable.calendar_selected_bg)
-                        }
-                        else -> {
-                            textView.setTextColorRes(R.color.black)
-                            textView.background = null
-                        }
-                    }
+                    if (isAllergyDay(day.date))
+                        textView.setTextColorRes(R.color.allergy)
 
-                    for(i in 0 until allergyDayList.size) {
-                        if (day.date.equals(allergyDayList.get(i))){
-                            textView.setTextColorRes(R.color.allergy)
-                        }
-                    }
+                    if (isHighlightDay(day.date))
+                        textView.setBackgroundResource(R.drawable.highlight)
+
+                    if (selectedDate == day.date)
+                        textView.setBackgroundResource(R.drawable.calendar_selected_bg)
+
 
                 } else {
                     textView.makeInVisible()
@@ -744,6 +742,29 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         }
 
+    }
+
+
+    // check whether the day is allergic or highlight
+    private fun isAllergyDay(date: LocalDate): Boolean{
+        for(i in 0 until allergyDayList.size) {
+            if (date.equals(allergyDayList.get(i))){
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isHighlightDay(date: LocalDate): Boolean{
+        val tempDateCode = date.toString().replace("-", "")
+        if(preference.getString(tempDateCode + "breakfast", "")!!.length > 0)
+            return true
+        if(preference.getString(tempDateCode + "lunch", "")!!.length > 0)
+            return true
+        if(preference.getString(tempDateCode + "dinner", "")!!.length > 0)
+            return true
+
+        return false
     }
 
 
