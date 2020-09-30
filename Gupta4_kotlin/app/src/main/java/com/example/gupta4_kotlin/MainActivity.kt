@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var district_code = "J10"
     var school_code = "7530184"
 
-    var strUrl = ""
     var result = ""
 
     var breakfastTextViewList: MutableList<TextView> = mutableListOf()
@@ -203,6 +202,11 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         // Customized Calendar
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.now()
+
+        // init monthly meal info
+        val monthStr = currentMonth.toString().replace("-", "")
+        showMealInfoWithMonth(monthStr)
+
         binding.calendarView.apply {
             setup(currentMonth.minusMonths(10), currentMonth.plusMonths(10), daysOfWeek.first())
             scrollToMonth(currentMonth)
@@ -478,15 +482,20 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
 
     private fun showMealInfo(date_code: String) {
-        strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$date_code"
-        run()
+        var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$date_code"
+        run(strUrl)
+    }
+
+    private fun showMealInfoWithMonth(monthCode: String){
+        var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$monthCode"
+        run(strUrl)
     }
 
     val client = OkHttpClient()
 
-    fun run() {
+    fun run(targetUrl: String) {
         val request = Request.Builder()
-            .url(strUrl)
+            .url(targetUrl)
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -658,7 +667,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                     if(isAllergyDay){
                         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-                        allergyDayList.add(LocalDate.parse(date, dateTimeFormatter))
+                        val allergyDay = LocalDate.parse(date, dateTimeFormatter)
+                        if (allergyDayList.contains(allergyDay) == false)
+                            allergyDayList.add(LocalDate.parse(date, dateTimeFormatter))
                     }
 
                     for(i in dishList.size until 12) {
