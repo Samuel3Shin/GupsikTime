@@ -35,6 +35,7 @@ import java.io.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
 
@@ -48,7 +49,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var district_code = "J10"
     var school_code = "7530184"
 
-    var strUrl = ""
     var result = ""
 
     var breakfastTextViewList: MutableList<TextView> = mutableListOf()
@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var dinnerFamilyViewList: MutableList<View> = mutableListOf()
 
     val allergyKeyList: MutableList<String> = mutableListOf()
+    val allergyDayList: MutableList<LocalDate> = mutableListOf()
 
 
     var date_code = ""
@@ -200,6 +201,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         // Customized Calendar
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.now()
+
+        // init monthly meal info
+        showMealInfoWithMonth(currentMonth)
+
         binding.calendarView.apply {
             setup(currentMonth.minusMonths(10), currentMonth.plusMonths(10), daysOfWeek.first())
             scrollToMonth(currentMonth)
@@ -234,18 +239,22 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 textView.text = day.date.dayOfMonth.toString()
 
                 if (day.owner == DayOwner.THIS_MONTH) {
-                    textView.makeVisible()
-                    when (day.date) {
 
-                        selectedDate -> {
-                            textView.setTextColorRes(R.color.allergy)
-                            textView.setBackgroundResource(R.drawable.calendar_selected_bg)
-                        }
-                        else -> {
-                            textView.setTextColorRes(R.color.black)
-                            textView.background = null
-                        }
-                    }
+                    // init textview
+                    textView.makeVisible()
+                    textView.setTextColorRes(R.color.black)
+                    textView.background = null
+
+                    if (isAllergyDay(day.date))
+                        textView.setTextColorRes(R.color.allergy)
+
+                    if (isHighlightDay(day.date))
+                        textView.setBackgroundResource(R.drawable.highlight)
+
+                    if (selectedDate == day.date)
+                        textView.setBackgroundResource(R.drawable.calendar_selected_bg)
+
+
                 } else {
                     textView.makeInVisible()
                 }
@@ -260,6 +269,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val title = "${monthNum}월"
 
             binding.exFiveMonthYearText.text = title
+
+
+            showMealInfoWithMonth(month.yearMonth)
 
             selectedDate?.let {
                 // Clear selection if we scroll to a new month.
@@ -457,15 +469,36 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
 
     private fun showMealInfo(date_code: String) {
-        strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$date_code"
-        run()
+        var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$date_code"
+        run(strUrl)
+    }
+
+    private fun isAlreadyCalledMonthlyMealInfo(yearMonth: YearMonth): Boolean {
+        for(i in 0 until allergyDayList.size) {
+            val allergyDay : LocalDate = allergyDayList.get(i)
+            if (allergyDay.year == yearMonth.year && allergyDay.month == yearMonth.month)
+                return true
+        }
+
+        return false
+    }
+
+    private fun showMealInfoWithMonth(yearMonth: YearMonth){
+
+        if (isAlreadyCalledMonthlyMealInfo(yearMonth))
+            return
+
+        val monthCode = yearMonth.toString().replace("-", "")
+
+        var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$monthCode"
+        run(strUrl)
     }
 
     val client = OkHttpClient()
 
-    fun run() {
+    fun run(targetUrl: String) {
         val request = Request.Builder()
-            .url(strUrl)
+            .url(targetUrl)
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -487,6 +520,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                     runOnUiThread {
                         parse(result)
+                        binding.calendarView.notifyCalendarChanged()    // Update calendar with meal info
                     }
                 }
             }
@@ -566,6 +600,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
                     }
 
+                    var isAllergyDay = false;
                     var highlightedTextViews = preference.getString(date_code + whichMeal, "")
                     // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
                     for(i in 0 until dishList.size)  {
@@ -622,13 +657,22 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                             }
                         }
 
+
                         if(isAllergyFlag) {
                             tmpTextViewList.get(i).setText(menuName)
                             tmpTextViewList.get(i).setTextColor(Color.parseColor("#FF7FFF"))
+                            isAllergyDay = true;
                         } else {
                             tmpTextViewList.get(i).setText(menuName)
                         }
 
+                    }
+
+                    if(isAllergyDay){
+                        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+                        val allergyDay = LocalDate.parse(date, dateTimeFormatter)
+                        if (allergyDayList.contains(allergyDay) == false)
+                            allergyDayList.add(LocalDate.parse(date, dateTimeFormatter))
                     }
 
                     for(i in dishList.size until 12) {
@@ -686,6 +730,30 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
     }
+
+
+    // check whether the day is allergic or highlight
+    private fun isAllergyDay(date: LocalDate): Boolean{
+        for(i in 0 until allergyDayList.size) {
+            if (date.equals(allergyDayList.get(i))){
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isHighlightDay(date: LocalDate): Boolean{
+        val tempDateCode = date.toString().replace("-", "")
+        if(preference.getString(tempDateCode + "breakfast", "")!!.length > 0)
+            return true
+        if(preference.getString(tempDateCode + "lunch", "")!!.length > 0)
+            return true
+        if(preference.getString(tempDateCode + "dinner", "")!!.length > 0)
+            return true
+
+        return false
+    }
+
 
     // Share callback function
     private fun onClickShareButton(){
