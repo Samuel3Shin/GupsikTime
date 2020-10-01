@@ -67,7 +67,8 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         mySchoolInfoEditButton.setOnClickListener {
             val intent = Intent(this, SchoolSearchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            startActivity(intent)
+
+            startActivity(intent);
 
             finish()
 
@@ -76,6 +77,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         myAllergyInfoEditButton.setOnClickListener {
             val intent = Intent(this, MyAllergyActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+
             startActivity(intent)
 
             finish()
