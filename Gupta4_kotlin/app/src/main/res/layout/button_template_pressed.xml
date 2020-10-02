@@ -87,7 +87,6 @@
         app:layout_constraintStart_toEndOf="@+id/pink_line_at_the_left_of_rectangle"
         app:layout_constraintBottom_toTopOf="@+id/pink_line_at_the_bottom_of_rectangle" />
 
-
     <View
         android:id="@+id/myRectangleView"
         android:layout_width="0dp"
@@ -98,7 +97,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <View
         android:id="@+id/dashed_lines"
