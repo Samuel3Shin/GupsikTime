@@ -92,7 +92,7 @@
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
         android:text="급식타임"
-        android:textColor="#FEF5FF"
+        android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/rectangle_lightblue"
         app:layout_constraintStart_toStartOf="@+id/rectangle_lightblue"
