@@ -8,6 +8,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.BackgroundColorSpan
+import android.text.style.ImageSpan
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -32,6 +36,7 @@ import okhttp3.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.*
+import java.lang.Math.abs
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -251,9 +256,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     if (isHighlightDay(day.date))
                         textView.setBackgroundResource(R.drawable.highlight)
 
-                    if (selectedDate == day.date)
+                    if (selectedDate == day.date) {
+                        textView.setTextColorRes(R.color.white)
                         textView.setBackgroundResource(R.drawable.calendar_selected_bg)
-
+                    }
 
                 } else {
                     textView.makeInVisible()
@@ -344,6 +350,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                     if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
                         it.setBackgroundResource(android.R.color.transparent)
+//                        it.setText(it.getText().toString())
                         highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
                         preference.edit().putString(date_code + "breakfast", highlightedTextViews).apply()
 
@@ -351,6 +358,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         highlightedTextViews = highlightedTextViews + i.toString() + ","
                         preference.edit().putString(date_code + "breakfast", highlightedTextViews).apply()
                         it.background = getResources().getDrawable(R.drawable.highlight)
+
+//                        highlightString(it)
 
                     }
                 }
@@ -694,12 +703,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     var highlightedTextViews = preference.getString(date_code + whichMeal, "")
                     // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
                     for(i in 0 until dishList.size)  {
-                        // 하이라이트 저장된 거 불러오기
-                        if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
-                            tmpTextViewList.get(i).background = getResources().getDrawable(R.drawable.highlight)
-                        } else {
-                            tmpTextViewList.get(i).setBackgroundResource(android.R.color.transparent)
-                        }
+//                        // 하이라이트 저장된 거 불러오기
+//                        if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
+//                            tmpTextViewList.get(i).background = getResources().getDrawable(R.drawable.highlight)
+//                        } else {
+//                            tmpTextViewList.get(i).setBackgroundResource(android.R.color.transparent)
+//                        }
 
                         // View.visibility 초기화
                         tmpTextViewList.get(i).visibility = View.VISIBLE
@@ -810,6 +819,18 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         }
 
+        if(!(isBreakfastExist || isLunchExist || isDinnerExist)) {
+            breakfast_family_1.makeVisible()
+            breakfast_family_2.makeVisible()
+            breakfast_family_2.setText("오늘자 급식 정보가 없습니다 ^^;")
+            breakfast_family_3.makeVisible()
+
+            last_line.makeInVisible()
+        } else {
+            breakfast_family_2.setText("아침식사")
+            last_line.makeVisible()
+        }
+
     }
 
     // check whether the day is allergic or highlight
@@ -861,6 +882,25 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
         }
         startActivity(Intent.createChooser(shareIntent, "share image and text!"))
+    }
+
+    private fun highlightString(mTextView: TextView) {
+
+        //Get the text from text view and create a spannable string
+        val spannableString = SpannableString(mTextView.getText())
+        //Get the previous spans and remove them
+        val backgroundSpans = spannableString.getSpans(
+            0, spannableString.length,
+            BackgroundColorSpan::class.java
+        )
+        for (span in backgroundSpans) {
+            spannableString.removeSpan(span)
+        }
+
+        spannableString.setSpan(BackgroundColorSpan(Color.parseColor("#80EFEF")), 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        //Set the final text on TextView
+        mTextView.setText(spannableString)
     }
 
     // Called when leaving the activity
