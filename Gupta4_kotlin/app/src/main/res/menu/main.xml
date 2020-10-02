@@ -4,7 +4,8 @@
     <item
         android:id="@+id/menu_mealInfo"
         android:title="급식메뉴"
-        app:showAsAction="never">
+        app:showAsAction="always"
+        android:background="@color/windowBlue">
 
     </item>
     <item

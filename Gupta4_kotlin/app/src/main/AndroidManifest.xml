@@ -20,24 +20,24 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id"/>
 
-        <activity android:name=".PopupButtonActivity"/>
-        <activity android:name=".MyAllergyActivity"/>
-        <activity android:name=".MyPostsActivity" android:launchMode="singleInstance"/>
-        <activity android:name=".SchoolSearchActivity" />
-        <activity android:name=".MySettingActivity" android:launchMode="singleInstance"/>
-        <activity android:name=".SplashScrrenActivity">
+        <activity android:name=".PopupButtonActivity" android:screenOrientation="portrait" />
+        <activity android:name=".MyAllergyActivity" android:screenOrientation="portrait" />
+        <activity android:name=".MyPostsActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".SchoolSearchActivity" android:screenOrientation="portrait" />
+        <activity android:name=".MySettingActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".SplashScrrenActivity" android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CommunityActivity" android:launchMode="singleInstance"/>
-        <activity android:name=".CommunityCareerActivity" android:launchMode="singleInstance"/>
-        <activity android:name=".CommunityMySchoolActivity" android:launchMode="singleInstance"/>
-        <activity android:name=".WriteActivity" />
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".MainActivity" android:launchMode="singleTop"/>
+        <activity android:name=".CommunityActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".CommunityCareerActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".CommunityMySchoolActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".WriteActivity" android:screenOrientation="portrait" />
+        <activity android:name=".DetailActivity" android:screenOrientation="portrait" />
+        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
     </application>
 
 </manifest>

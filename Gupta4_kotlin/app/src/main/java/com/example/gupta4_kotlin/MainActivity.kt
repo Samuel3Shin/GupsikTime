@@ -474,7 +474,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     private fun showMealInfo(date_code: String) {
         var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$date_code"
-        run(strUrl)
+        run(strUrl, false)
     }
 
     private fun isAlreadyCalledMonthlyMealInfo(yearMonth: YearMonth): Boolean {
@@ -495,12 +495,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val monthCode = yearMonth.toString().replace("-", "")
 
         var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$monthCode"
-        run(strUrl)
+        run(strUrl, true)
     }
 
     val client = OkHttpClient()
 
-    fun run(targetUrl: String) {
+    fun run(targetUrl: String, isMonthRefresh:Boolean) {
         val request = Request.Builder()
             .url(targetUrl)
             .build()
@@ -523,12 +523,99 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     result = resStr
 
                     runOnUiThread {
-                        parse(result)
+                        if(isMonthRefresh) {
+                            parseForMonth(result)
+                        } else {
+                            parse(result)
+                        }
                         binding.calendarView.notifyCalendarChanged()    // Update calendar with meal info
                     }
                 }
             }
         })
+    }
+
+    fun parseForMonth(result: String) {
+        var date = ""
+        var dish = ""
+        var meal_date = false
+        var meal_dish = false
+
+        val factory = XmlPullParserFactory.newInstance()
+        val xmlpp = factory.newPullParser()
+
+        xmlpp.setInput(StringReader(result))
+
+        var eventType = xmlpp.eventType
+
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            if (eventType == XmlPullParser.START_DOCUMENT) {
+            } else if (eventType == XmlPullParser.START_TAG) {
+                val tag_name = xmlpp.name
+                when (tag_name) {
+                    "MLSV_YMD" -> meal_date = true
+                    "DDISH_NM" -> meal_dish = true
+                }
+            } else if (eventType == XmlPullParser.TEXT) {
+
+                if (meal_date) {
+                    date = xmlpp.text
+                    meal_date = false
+                }
+
+                if (meal_dish) {
+                    dish = xmlpp.text
+                    meal_dish = false
+                    dish = dish.replace("*", "")
+                    var dishList: List<String> = dish.split("<br/>")
+                    var isAllergyDay = false;
+
+                    for(i in 0 until dishList.size)  {
+
+                        var str = dishList.get(i)
+                        var allergyNumList = str.split(".")
+                        var firstOne = allergyNumList.get(0)
+                        var firstAllergyInfo = ""
+                        var digitsInFirstone = ""
+
+                        // 숫자 있는지부터 확인
+                        if(firstOne.length >= 2 && firstOne.get(firstOne.length - 1) != ')') {
+                            digitsInFirstone = firstOne.substring(firstOne.length - 2, firstOne.length).filter{it.isDigit()}
+                        }
+
+                        if(digitsInFirstone != "") {
+                            firstAllergyInfo = digitsInFirstone
+                        }
+
+                        if(firstAllergyInfo != "" && firstAllergyInfo.toInt() > 0 && firstAllergyInfo.toInt() <= 18 && preference.getInt(
+                                allergyKeyList.get(firstAllergyInfo.toInt()), 0) != 0) {
+                            isAllergyDay = true
+                        }
+
+                        if(!isAllergyDay) {
+                            for(i in 1 until allergyNumList.size) {
+                                if(allergyNumList.get(i) == "" || allergyNumList.get(i).toInt() > 18 || allergyNumList.get(i).toInt() < 0) continue
+                                if(preference.getInt(allergyKeyList.get(allergyNumList.get(i).toInt()), 0) != 0) {
+                                    isAllergyDay = true
+                                    break
+                                }
+                            }
+                        }
+                    }
+
+                    if(isAllergyDay){
+                        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+                        val allergyDay = LocalDate.parse(date, dateTimeFormatter)
+                        if (allergyDayList.contains(allergyDay) == false)
+                            allergyDayList.add(LocalDate.parse(date, dateTimeFormatter))
+                    }
+
+                }
+            } else if (eventType == XmlPullParser.END_TAG) {
+
+            }
+            eventType = xmlpp.next()
+        }
     }
 
     fun parse(result: String) {
@@ -604,7 +691,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
                     }
 
-                    var isAllergyDay = false;
                     var highlightedTextViews = preference.getString(date_code + whichMeal, "")
                     // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
                     for(i in 0 until dishList.size)  {
@@ -661,22 +747,13 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                             }
                         }
 
-
                         if(isAllergyFlag) {
                             tmpTextViewList.get(i).setText(menuName)
-                            tmpTextViewList.get(i).setTextColor(Color.parseColor("#FF7FFF"))
-                            isAllergyDay = true;
+                            tmpTextViewList.get(i).setTextColor(getResources().getColor(R.color.allergy))
                         } else {
                             tmpTextViewList.get(i).setText(menuName)
                         }
 
-                    }
-
-                    if(isAllergyDay){
-                        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-                        val allergyDay = LocalDate.parse(date, dateTimeFormatter)
-                        if (allergyDayList.contains(allergyDay) == false)
-                            allergyDayList.add(LocalDate.parse(date, dateTimeFormatter))
                     }
 
                     for(i in dishList.size until 12) {
@@ -734,7 +811,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
     }
-
 
     // check whether the day is allergic or highlight
     private fun isAllergyDay(date: LocalDate): Boolean{
