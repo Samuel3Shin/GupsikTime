@@ -703,12 +703,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     var highlightedTextViews = preference.getString(date_code + whichMeal, "")
                     // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
                     for(i in 0 until dishList.size)  {
-//                        // 하이라이트 저장된 거 불러오기
-//                        if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
-//                            tmpTextViewList.get(i).background = getResources().getDrawable(R.drawable.highlight)
-//                        } else {
-//                            tmpTextViewList.get(i).setBackgroundResource(android.R.color.transparent)
-//                        }
+                        // 하이라이트 저장된 거 불러오기
+                        if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
+                            tmpTextViewList.get(i).background = getResources().getDrawable(R.drawable.highlight)
+                        } else {
+                            tmpTextViewList.get(i).setBackgroundResource(android.R.color.transparent)
+                        }
 
                         // View.visibility 초기화
                         tmpTextViewList.get(i).visibility = View.VISIBLE
