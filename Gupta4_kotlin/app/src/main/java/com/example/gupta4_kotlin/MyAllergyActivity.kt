@@ -26,15 +26,20 @@ class MyAllergyActivity : AppCompatActivity() {
         var textCheckboxMap: MutableMap<String, View> = mutableMapOf()
         var checkboxMap: MutableMap<String, View> = mutableMapOf()
 
-        var childCnt: Int = allergyFrame.getChildCount()
+        var childCnt: Int = allergyFrame.childCount
         for(i in 0 until childCnt) {
-            var viewId = allergyFrame.getChildAt(i).getResources().getResourceEntryName(allergyFrame.getChildAt(i).id).toString()
-            if(viewId.startsWith("checkbox_")) {
-                checkboxMap.put(allergyKeyList.get(viewId.split("checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
-            } else if(viewId.startsWith("image_checkbox_")) {
-                imageCheckboxMap.put(allergyKeyList.get(viewId.split("image_checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
-            }  else if(viewId.startsWith("text_checkbox_")) {
-                textCheckboxMap.put(allergyKeyList.get(viewId.split("text_checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
+            var viewId = allergyFrame.getChildAt(i).resources.getResourceEntryName(allergyFrame.getChildAt(i).id).toString()
+
+            when {
+                viewId.startsWith("checkbox_") -> {
+                    checkboxMap.put(allergyKeyList.get(viewId.split("checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
+                }
+                viewId.startsWith("image_checkbox_") -> {
+                    imageCheckboxMap.put(allergyKeyList.get(viewId.split("image_checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
+                }
+                viewId.startsWith("text_checkbox_") -> {
+                    textCheckboxMap.put(allergyKeyList.get(viewId.split("text_checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
+                }
             }
         }
 
@@ -46,20 +51,20 @@ class MyAllergyActivity : AppCompatActivity() {
 
         for(i in 1 until allergyKeyList.size) {
             // 알러지 체크했던 것들은 체크한 걸로 표시!
-            preference.getInt(allergyKeyList.get(i), 0).let {
+            preference.getInt(allergyKeyList[i], 0).let {
                 if(it != 0) {
-                    imageCheckboxMap.get(allergyKeyList.get(i))!!.visibility = View.VISIBLE
+                    imageCheckboxMap[allergyKeyList[i]]!!.visibility = View.VISIBLE
                 }
             }
 
             //checkbox 클릭되면 토글!
-            checkboxMap.get(allergyKeyList.get(i))!!.setOnClickListener {
-                Utils.toggleButton(imageCheckboxMap.get(allergyKeyList.get(i))!!)
+            checkboxMap.get(allergyKeyList[i])!!.setOnClickListener {
+                Utils.toggleButton(imageCheckboxMap[allergyKeyList[i]]!!)
             }
 
             // text_checkbox 클릭되어도 토글!
-            textCheckboxMap.get(allergyKeyList.get(i))!!.setOnClickListener {
-                Utils.toggleButton(imageCheckboxMap.get(allergyKeyList.get(i))!!)
+            textCheckboxMap.get(allergyKeyList[i])!!.setOnClickListener {
+                Utils.toggleButton(imageCheckboxMap[allergyKeyList[i]]!!)
             }
         }
 
@@ -72,10 +77,10 @@ class MyAllergyActivity : AppCompatActivity() {
 
         saveButton.setOnClickListener {
             for(i in 1 until allergyKeyList.size) {
-                if(imageCheckboxMap.get(allergyKeyList.get(i))!!.visibility == View.VISIBLE) {
-                    preference.edit().putInt(allergyKeyList.get(i), i).apply()
+                if(imageCheckboxMap[allergyKeyList[i]]!!.visibility == View.VISIBLE) {
+                    preference.edit().putInt(allergyKeyList[i], i).apply()
                 } else {
-                    preference.edit().putInt(allergyKeyList.get(i), 0).apply()
+                    preference.edit().putInt(allergyKeyList[i], 0).apply()
                 }
 
             }

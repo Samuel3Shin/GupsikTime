@@ -15,11 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.gupsik_comment.view.*
 import kotlinx.android.synthetic.main.gupsik_detail.*
 import kotlinx.android.synthetic.main.gupsik_detail.adView
 import kotlinx.android.synthetic.main.gupsik_detail.dateTextView
-
+import kotlinx.android.synthetic.main.gupsik_detail.shareButton
 
 class DetailActivity : AppCompatActivity() {
 
@@ -36,21 +37,7 @@ class DetailActivity : AppCompatActivity() {
         postId = intent.getStringExtra("postId")
         boardKey = intent.getStringExtra("boardKey")
 
-        intent.getStringExtra("schoolCode")?.let {
-            schoolCode = intent.getStringExtra("schoolCode")!!
-            boardKey = boardKey + "/$schoolCode"
-        }
-
-        var myPostIdsStr: String = preference.getString(Utils.myPostIdsKey, "").toString()
         var postFullId = "$boardKey/Posts/$postId"
-
-        if(myPostIdsStr.indexOf(postFullId, 0) != -1) {
-            deleteButton.visibility = View.VISIBLE
-            deleteImageView.visibility = View.VISIBLE
-
-            editButton.visibility = View.VISIBLE
-            editImageView.visibility = View.VISIBLE
-        }
 
         deleteButton.setOnClickListener {
 
@@ -60,6 +47,8 @@ class DetailActivity : AppCompatActivity() {
             intent.putExtra("popUpMode", "delete")
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+
+            finish()
 
         }
 
@@ -71,6 +60,8 @@ class DetailActivity : AppCompatActivity() {
             intent.putExtra("postId", postId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+
+            finish()
 
         }
 
@@ -100,6 +91,13 @@ class DetailActivity : AppCompatActivity() {
                             commentCountText.text = post.commentCount.toString()
                             likesCountText.text = post.likesCount.toString()
                             contents.text = post.message
+
+                            if(post.writerId == getMyId()) {
+                                deleteButton.visibility = View.VISIBLE
+                                deleteImageView.visibility = View.VISIBLE
+                                editButton.visibility = View.VISIBLE
+                                editImageView.visibility = View.VISIBLE
+                            }
                         }
                     }
                 }
@@ -187,11 +185,6 @@ class DetailActivity : AppCompatActivity() {
             comment.commentId = newRef.key.toString()
             comment.postId = postId!!
 
-            // 댓글 id를 shared preference에 저장
-            var myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
-            myCommentIdsStr = myCommentIdsStr + "$boardKey/Comments/$postId/" + comment.commentId + ","
-            preference.edit().putString(Utils.myCommentIdsKey, myCommentIdsStr).apply()
-
             val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
             var commentIdMap: HashMap<String, String> = HashMap()
             var idCnt = ""
@@ -205,17 +198,17 @@ class DetailActivity : AppCompatActivity() {
                     var commentNum = snapshot.child("commentCount").value as Long
                     postRef.child("commentCount").setValue(commentNum + 1)
 
-                    commentIdMap = snapshot.child("commentIdMap").getValue() as HashMap<String, String>
+                    commentIdMap = snapshot.child("commentIdMap").value as HashMap<String, String>
 
                     if(commentIdMap.containsKey(getMyId())){
 
                     } else {
-                        commentIdMap.put(getMyId(), commentIdMap.size.toString())
+                        commentIdMap[getMyId()] = commentIdMap.size.toString()
                     }
                     postRef.child("commentIdMap").setValue(commentIdMap)
 
-                    idCnt = commentIdMap.get(getMyId())!!
-                    comment.nickname = "익명" + idCnt
+                    idCnt = commentIdMap[getMyId()]!!
+                    comment.nickname = "익명$idCnt"
                     newRef.setValue(comment)
 
                 }
@@ -240,7 +233,7 @@ class DetailActivity : AppCompatActivity() {
             Utils.toggleButton(likeButtonUnpressed)
             Utils.toggleButton(likeButtonPressed)
 
-            myLikedPostIdsStr = myLikedPostIdsStr + postFullId + ","
+            myLikedPostIdsStr = "$myLikedPostIdsStr$postFullId,"
             preference.edit().putString(Utils.myLikedPostIdsKey, myLikedPostIdsStr).apply()
 
             // post의 좋아요 개수 불러와서 거기다가 1을 더해준다.
@@ -263,7 +256,7 @@ class DetailActivity : AppCompatActivity() {
             Utils.toggleButton(likeButtonPressed)
 
             // 댓글 id를 shared preference에서 빼줘야 함
-            myLikedPostIdsStr = myLikedPostIdsStr.replace(postFullId + ",", "")
+            myLikedPostIdsStr = myLikedPostIdsStr.replace("$postFullId,", "")
             preference.edit().putString(Utils.myLikedPostIdsKey, myLikedPostIdsStr).apply()
 
             // post의 좋아요 개수 불러와서 거기다가 1을 빼준다.
@@ -309,41 +302,29 @@ class DetailActivity : AppCompatActivity() {
                 holder.commentWriteTime.text = Utils.getDiffTimeText(comment.writeTime as Long)
                 holder.commentNickname.text = comment.nickname
 
-                //TODO: 여기에 익명1, 익명2을 id값에 따라 mapping해주는 것이 필요함.
-                // holder.commentNickname.text = comment.nickname
             }
 
             // 본인이 쓴 댓글이면 삭제 버튼이 보이도록 해야함.
-            val myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
+
             val commentId = comment.commentId
 
-            if(myCommentIdsStr.indexOf("$boardKey/Comments/$postId/$commentId", 0) != -1) {
+            if(comment.writerId == getMyId()) {
                 holder.deleteTextView.visibility = View.VISIBLE
             }
 
             holder.deleteTextView.setOnClickListener {
 
-                val commentRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId/$commentId")
-                commentRef.removeValue()
 
-                // 댓글 id를 shared preference에서 빼줘야 함
-                var myCommentIdsStr: String = preference.getString(Utils.myCommentIdsKey, "").toString()
-                myCommentIdsStr = myCommentIdsStr.replace("$boardKey/Comments/$postId/$commentId,", "")
-                preference.edit().putString(Utils.myCommentIdsKey, myCommentIdsStr).apply()
+                val intent = Intent(this@DetailActivity, PopupButtonActivity::class.java)
+                intent.putExtra("boardKey", boardKey)
+                intent.putExtra("postId", postId)
+                intent.putExtra("commentId", commentId)
+                intent.putExtra("popUpMode", "deleteComment")
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(intent)
 
-                val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
+                finish()
 
-                // post의 댓글 개수 불러와서 거기다가 1을 빼준다.
-                postRef.addListenerForSingleValueEvent(object: ValueEventListener {
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        var commentNum = snapshot.child("commentCount").value as Long
-                        postRef.child("commentCount").setValue(commentNum - 1)
-                    }
-                })
             }
 
         }
@@ -356,13 +337,10 @@ class DetailActivity : AppCompatActivity() {
 
     // Share callback function
     private fun onClickShareButton(){
-        nestedScrollView.isDrawingCacheEnabled = true
-        nestedScrollView.buildDrawingCache()
+        val bitmap: Bitmap = Bitmap.createBitmap(nestedScrollView.measuredWidth, nestedScrollView.measuredHeight, Bitmap.Config.ARGB_8888)
+        val canvas: Canvas = Canvas(bitmap)
 
-//        val bitmap = gupsikInfoGroup.getDrawingCache()
-//            testImageView.setImageBitmap(bitmap)
-
-        val bitmap: Bitmap = nestedScrollView.getDrawingCache()
+        nestedScrollView.draw(canvas)
 
         if (bitmap == null)
             return

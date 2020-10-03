@@ -15,7 +15,7 @@ class CommunityMySchoolActivity : CommunityActivity() {
         schoolCode = preference.getString(Utils.schoolCodeKey, "").toString()
 
         // boardKey에 schoolCode 추가
-        boardKey = boardKey + "/$schoolCode"
+        boardKey += "/$schoolCode"
 
         super.onCreate(savedInstanceState)
 
@@ -32,7 +32,7 @@ class CommunityMySchoolActivity : CommunityActivity() {
         }
 
         // 게시판 설명 부분변경
-        boardDescribeTextView.setText("우리 학교만 쓰는 게시판")
+        boardDescribeTextView.text = "우리 학교만 쓰는 게시판"
         leftImageView.setImageResource(R.drawable.ic_openmoji_school)
         rightImageView.setImageResource(R.drawable.ic_openmoji_school)
 

@@ -47,6 +47,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
+            finish()
         }
 
         val layoutManager = LinearLayoutManager(this@MyPostsActivity)
@@ -60,17 +61,18 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val myPostIdsStr = preference.getString(Utils.myPostIdsKey, "").toString()
         var myPostIdsList = myPostIdsStr.split(",")
 
+        // 마지막 index는 "" 이므로 쓰면 안 됨!
         for(i in 0 until myPostIdsList.size - 1) {
 
             // 일단 올리기에는 성공. 근데 이후에 아이템 정보 변경에 대해서는 handling 못 함.
-            val postRef = FirebaseDatabase.getInstance().getReference(myPostIdsList.get(i))
+            val postRef = FirebaseDatabase.getInstance().getReference(myPostIdsList[i])
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot?.let {
                         val post = it.getValue(Post::class.java)
                         post?.let {
                             posts.add(it)
-                            boardKeys.add(myPostIdsList.get(i).split("/Posts/").get(0))
+                            boardKeys.add(myPostIdsList[i].split("/Posts/")[0])
                             recyclerView.adapter?.notifyItemInserted(posts.size - 1)
                         }
                     }
@@ -109,7 +111,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             holder.itemView.setOnClickListener {
                 val intent = Intent(this@MyPostsActivity, DetailActivity::class.java)
-                var boardKey = boardKeys.get(position)
+                var boardKey = boardKeys[position]
 
                 intent.putExtra("boardKey", boardKey)
                 intent.putExtra("postId", post.postId)
@@ -128,6 +130,8 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
+                finish()
+
                 return true
             }
 
@@ -135,6 +139,8 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+
+                finish()
 
                 return true
             }

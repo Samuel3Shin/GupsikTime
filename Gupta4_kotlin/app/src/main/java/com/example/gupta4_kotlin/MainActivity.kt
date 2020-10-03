@@ -2,6 +2,7 @@ package com.example.gupta4_kotlin
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -16,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import com.example.gupta4_kotlin.databinding.CalendarHeaderBinding
@@ -48,8 +50,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     var serviceUrl: String = ""
     var serviceKey: String = ""
-
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     var district_code = "J10"
     var school_code = "7530184"
@@ -60,13 +61,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var lunchTextViewList: MutableList<TextView> = mutableListOf()
     var dinnerTextViewList: MutableList<TextView> = mutableListOf()
 
-    var breakfastFamilyViewList: MutableList<View> = mutableListOf()
-    var lunchFamilyViewList: MutableList<View> = mutableListOf()
-    var dinnerFamilyViewList: MutableList<View> = mutableListOf()
+    private var breakfastFamilyViewList: MutableList<View> = mutableListOf()
+    private var lunchFamilyViewList: MutableList<View> = mutableListOf()
+    private var dinnerFamilyViewList: MutableList<View> = mutableListOf()
 
-    val allergyKeyList: MutableList<String> = mutableListOf()
-    val allergyDayList: MutableList<LocalDate> = mutableListOf()
-
+    private val allergyKeyList: MutableList<String> = mutableListOf()
+    private val allergyDayList: MutableList<LocalDate> = mutableListOf()
 
     var date_code = ""
 
@@ -88,15 +88,15 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         serviceUrl = getString(R.string.neis_api_service_url)
         serviceKey = getString(R.string.neis_api_service_key)
 
-        schoolName.setText(preference.getString(Utils.schoolNameKey, ""))
+        schoolName.text = preference.getString(Utils.schoolNameKey, "")
 
         // shared preference에서 교육청 코드와 학교 코드 불러오는데, 만약에 없으면 그냥 위의 default값(안산동산고등학교 코드) 내뱉음.
         district_code = preference.getString("districtCode", district_code).toString()
         school_code = preference.getString("schoolCode", school_code).toString()
 
-        var childCnt: Int = gupsikInfoGroup.getChildCount()
+        var childCnt: Int = gupsikInfoGroup.childCount
         for(i in 0 until childCnt) {
-            var viewId = gupsikInfoGroup.getChildAt(i).getResources().getResourceEntryName(gupsikInfoGroup.getChildAt(i).id).toString()
+            var viewId = gupsikInfoGroup.getChildAt(i).resources.getResourceEntryName(gupsikInfoGroup.getChildAt(i).id).toString()
             if(viewId.startsWith("breakfastTextView_")) {
                 breakfastTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
             } else if(viewId.startsWith("lunchTextView_")) {
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             // 다른 달에서 오늘 버튼 눌렀을 때 현재 날짜 하이라이트 사라지는 이슈
             Handler(Looper.getMainLooper()).postDelayed({
                 selectDate(today)
-            }, 400)
+            }, 200)
         }
 
         var tmpDate = ""
@@ -178,8 +178,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             shareImageView.alpha = alphaValue
 
             tmpDate = dateTextView.text.toString()
-            dateTextView.setText("좋아하는 메뉴를 눌러 하이라이트!")
-            dateTextView.setTextColor(getResources().getColor(R.color.windowBlue))
+            dateTextView.text = "좋아하는 메뉴를 눌러 하이라이트!"
+            dateTextView.setTextColor(resources.getColor(R.color.windowBlue))
             schoolName.makeGone()
         }
 
@@ -198,17 +198,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             shareImageView.alpha = 1F
             // Charlie : 토글과 alpha 조절하는 건 함수만들어서 코드 라인 수 줄이면 좋을 것 같아!
 
-            dateTextView.setText(tmpDate)
-            dateTextView.setTextColor(getResources().getColor(R.color.black))
+            dateTextView.text = tmpDate
+            dateTextView.setTextColor(resources.getColor(R.color.black))
             schoolName.makeVisible()
         }
 
         // Customized Calendar
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.now()
-
-        // init monthly meal info
-        showMealInfoWithMonth(currentMonth)
 
         binding.calendarView.apply {
             setup(currentMonth.minusMonths(10), currentMonth.plusMonths(10), daysOfWeek.first())
@@ -217,6 +214,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         if (savedInstanceState == null) {
             binding.calendarView.post {
+                // init monthly meal info
+                showMealInfoWithMonth(currentMonth)
+
                 // Show today's events initially.
                 selectDate(today)
             }
@@ -250,14 +250,16 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     textView.setTextColorRes(R.color.black)
                     textView.background = null
 
-                    if (isAllergyDay(day.date))
+                    if (isAllergyDay(day.date)) {
                         textView.setTextColorRes(R.color.allergy)
+                    }
 
-                    if (isHighlightDay(day.date))
-                        textView.setBackgroundResource(R.drawable.highlight)
+                    if (isHighlightDay(day.date)) {
+                        highlightString(textView)
+//                        textView.setBackgroundResource(R.drawable.highlight)
+                    }
 
                     if (selectedDate == day.date) {
-                        textView.setTextColorRes(R.color.white)
                         textView.setBackgroundResource(R.drawable.calendar_selected_bg)
                     }
 
@@ -340,75 +342,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         }
 
-        var highlightedTextViews = ""
-        for(i in 0 until breakfastTextViewList.size) {
-            breakfastTextViewList.get(i).setOnClickListener {it as TextView
-
-                if(highlighterPressedButton.visibility == View.VISIBLE) {
-                    highlightedTextViews = preference.getString(date_code + "breakfast", "").toString()
-                    // 클릭했을 때,
-
-                    if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
-                        it.setBackgroundResource(android.R.color.transparent)
-//                        it.setText(it.getText().toString())
-                        highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
-                        preference.edit().putString(date_code + "breakfast", highlightedTextViews).apply()
-
-                    } else {
-                        highlightedTextViews = highlightedTextViews + i.toString() + ","
-                        preference.edit().putString(date_code + "breakfast", highlightedTextViews).apply()
-                        it.background = getResources().getDrawable(R.drawable.highlight)
-
-//                        highlightString(it)
-
-                    }
-                }
-            }
-        }
-
-        for(i in 0 until lunchTextViewList.size) {
-            lunchTextViewList.get(i).setOnClickListener {it as TextView
-
-                if(highlighterPressedButton.visibility == View.VISIBLE) {
-                    highlightedTextViews = preference.getString(date_code + "lunch", "").toString()
-
-                    if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
-                        it.setBackgroundResource(android.R.color.transparent)
-                        highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
-                        preference.edit().putString(date_code + "lunch", highlightedTextViews).apply()
-
-                    } else {
-                        highlightedTextViews = highlightedTextViews + i.toString() + ","
-                        preference.edit().putString(date_code + "lunch", highlightedTextViews).apply()
-                        it.background = getResources().getDrawable(R.drawable.highlight)
-
-                    }
-                }
-            }
-        }
-
-        for(i in 0 until dinnerTextViewList.size) {
-            dinnerTextViewList.get(i).setOnClickListener {it as TextView
-
-                if(highlighterPressedButton.visibility == View.VISIBLE) {
-                    highlightedTextViews = preference.getString(date_code + "dinner", "").toString()
-
-                    if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
-                        it.setBackgroundResource(android.R.color.transparent)
-                        highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
-                        preference.edit().putString(date_code + "dinner", highlightedTextViews).apply()
-
-                    } else {
-                        highlightedTextViews = highlightedTextViews + i.toString() + ","
-                        preference.edit().putString(date_code + "dinner", highlightedTextViews).apply()
-                        it.background = getResources().getDrawable(R.drawable.highlight)
-
-                    }
-                }
-            }
-            // Charlie : listener 등록하는 것도 같은 코드가 반복되는데 setClickListenerWithTextViewList(textViewList) 정도로 만들어서 쓰면 좋을 것 같아!!
-        }
-
+        setClickListenerWithTextViewList(breakfastTextViewList, "breakfast")
+        setClickListenerWithTextViewList(lunchTextViewList, "lunch")
+        setClickListenerWithTextViewList(dinnerTextViewList, "dinner")
 
     }
 
@@ -445,7 +381,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 //        binding.exThreeSelectedDateText.text = selectionFormatter.format(date)
     }
 
-    fun daysOfWeekFromLocale(): Array<DayOfWeek> {
+    private fun daysOfWeekFromLocale(): Array<DayOfWeek> {
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
         var daysOfWeek = DayOfWeek.values()
         // Order `daysOfWeek` array so that firstDayOfWeek is at index 0.
@@ -476,7 +412,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             date_code = date.toString().replace("-", "")
             showMealInfo(date_code)
-            dateTextView.setText(date.monthValue.toString() + "월 " + date.dayOfMonth.toString() + "일")
+            dateTextView.text = date.monthValue.toString() + "월 " + date.dayOfMonth.toString() + "일"
 
         }
     }
@@ -507,9 +443,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         run(strUrl, true)
     }
 
-    val client = OkHttpClient()
+    private val client = OkHttpClient()
 
-    fun run(targetUrl: String, isMonthRefresh:Boolean) {
+    private fun run(targetUrl: String, isMonthRefresh:Boolean) {
         val request = Request.Builder()
             .url(targetUrl)
             .build()
@@ -560,8 +496,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_DOCUMENT) {
             } else if (eventType == XmlPullParser.START_TAG) {
-                val tag_name = xmlpp.name
-                when (tag_name) {
+                when (xmlpp.name) {
                     "MLSV_YMD" -> meal_date = true
                     "DDISH_NM" -> meal_dish = true
                 }
@@ -579,11 +514,11 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     var dishList: List<String> = dish.split("<br/>")
                     var isAllergyDay = false;
 
-                    for(i in 0 until dishList.size)  {
+                    for(i in dishList.indices)  {
 
-                        var str = dishList.get(i)
+                        var str = dishList[i]
                         var allergyNumList = str.split(".")
-                        var firstOne = allergyNumList.get(0)
+                        var firstOne = allergyNumList[0]
                         var firstAllergyInfo = ""
                         var digitsInFirstone = ""
 
@@ -603,8 +538,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                         if(!isAllergyDay) {
                             for(i in 1 until allergyNumList.size) {
-                                if(allergyNumList.get(i) == "" || allergyNumList.get(i).toInt() > 18 || allergyNumList.get(i).toInt() < 0) continue
-                                if(preference.getInt(allergyKeyList.get(allergyNumList.get(i).toInt()), 0) != 0) {
+                                if(allergyNumList[i] == "" || !Utils.isDigit(allergyNumList[i]) || allergyNumList[i].toInt() > 18 || allergyNumList[i].toInt() < 0) continue
+                                if(preference.getInt(allergyKeyList[allergyNumList[i].toInt()], 0) != 0) {
                                     isAllergyDay = true
                                     break
                                 }
@@ -615,7 +550,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     if(isAllergyDay){
                         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
                         val allergyDay = LocalDate.parse(date, dateTimeFormatter)
-                        if (allergyDayList.contains(allergyDay) == false)
+                        if (!allergyDayList.contains(allergyDay))
                             allergyDayList.add(LocalDate.parse(date, dateTimeFormatter))
                     }
 
@@ -652,8 +587,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_DOCUMENT) {
             } else if (eventType == XmlPullParser.START_TAG) {
-                val tag_name = xmlpp.name
-                when (tag_name) {
+                when (xmlpp.name) {
                     "SCHUL_NM" -> meal_school = true
                     "MLSV_YMD" -> meal_date = true
                     "MMEAL_SC_NM" -> meal_bld = true
@@ -702,23 +636,23 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                     var highlightedTextViews = preference.getString(date_code + whichMeal, "")
                     // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
-                    for(i in 0 until dishList.size)  {
-                        // 하이라이트 저장된 거 불러오기
-                        if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
-                            tmpTextViewList.get(i).background = getResources().getDrawable(R.drawable.highlight)
-                        } else {
-                            tmpTextViewList.get(i).setBackgroundResource(android.R.color.transparent)
-                        }
+                    for(i in dishList.indices)  {
+//                        // 하이라이트 저장된 거 불러오기
+//                        if(highlightedTextViews!!.indexOf("$i,", 0) != -1) {
+//                            tmpTextViewList[i].background = resources.getDrawable(R.drawable.highlight)
+//                        } else {
+//                            tmpTextViewList[i].setBackgroundResource(android.R.color.transparent)
+//                        }
 
                         // View.visibility 초기화
-                        tmpTextViewList.get(i).visibility = View.VISIBLE
+                        tmpTextViewList[i].visibility = View.VISIBLE
 
                         //View 글자색 초기화
-                        tmpTextViewList.get(i).setTextColor(Color.parseColor("#000000"))
+                        tmpTextViewList[i].setTextColor(Color.parseColor("#000000"))
 
-                        var str = dishList.get(i)
+                        var str = dishList[i]
                         var allergyNumList = str.split(".")
-                        var firstOne = allergyNumList.get(0)
+                        var firstOne = allergyNumList[0]
                         var menuName: String = ""
                         var firstAllergyInfo = ""
 
@@ -748,8 +682,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                         if(!isAllergyFlag) {
                             for(i in 1 until allergyNumList.size) {
-                                if(allergyNumList.get(i) == "" || allergyNumList.get(i).toInt() > 18 || allergyNumList.get(i).toInt() < 0) continue
-                                if(preference.getInt(allergyKeyList.get(allergyNumList.get(i).toInt()), 0) != 0) {
+                                if(allergyNumList[i] == "" || !Utils.isDigit(allergyNumList[i]) || allergyNumList[i].toInt() > 18 || allergyNumList[i].toInt() < 0) continue
+                                if(preference.getInt(allergyKeyList[allergyNumList[i].toInt()], 0) != 0) {
                                     isAllergyFlag = true
                                     break
                                 }
@@ -757,10 +691,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
 
                         if(isAllergyFlag) {
-                            tmpTextViewList.get(i).setText(menuName)
-                            tmpTextViewList.get(i).setTextColor(getResources().getColor(R.color.allergy))
+                            tmpTextViewList[i].text = menuName.trim()
+                            tmpTextViewList[i].setTextColor(resources.getColor(R.color.allergy))
                         } else {
-                            tmpTextViewList.get(i).setText(menuName)
+                            tmpTextViewList[i].text = menuName.trim()
+                        }
+
+                        if(highlightedTextViews!!.indexOf("$i,", 0) != -1) {
+                            highlightString(tmpTextViewList[i])
                         }
 
                     }
@@ -778,56 +716,56 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         if(!isBreakfastExist) {
             for(i in 0 until breakfastTextViewList.size) {
-                breakfastTextViewList.get(i).makeGone()
+                breakfastTextViewList[i].makeGone()
             }
 
             for(i in 0 until breakfastFamilyViewList.size) {
-                breakfastFamilyViewList.get(i).makeGone()
+                breakfastFamilyViewList[i].makeGone()
             }
 
         } else {
             for(i in 0 until breakfastFamilyViewList.size) {
-                breakfastFamilyViewList.get(i).makeVisible()
+                breakfastFamilyViewList[i].makeVisible()
             }
         }
 
         if(!isLunchExist) {
             for(i in 0 until lunchTextViewList.size) {
-                lunchTextViewList.get(i).makeGone()
+                lunchTextViewList[i].makeGone()
             }
 
             for(i in 0 until lunchFamilyViewList.size) {
-                lunchFamilyViewList.get(i).makeGone()
+                lunchFamilyViewList[i].makeGone()
             }
         } else {
             for(i in 0 until lunchFamilyViewList.size) {
-                lunchFamilyViewList.get(i).makeVisible()
+                lunchFamilyViewList[i].makeVisible()
             }
         }
 
         if(!isDinnerExist) {
             for(i in 0 until dinnerTextViewList.size) {
-                dinnerTextViewList.get(i).makeGone()
+                dinnerTextViewList[i].makeGone()
             }
 
             for(i in 0 until dinnerFamilyViewList.size) {
-                dinnerFamilyViewList.get(i).makeGone()
+                dinnerFamilyViewList[i].makeGone()
             }
         } else {
             for(i in 0 until dinnerFamilyViewList.size) {
-                dinnerFamilyViewList.get(i).makeVisible()
+                dinnerFamilyViewList[i].makeVisible()
             }
         }
 
         if(!(isBreakfastExist || isLunchExist || isDinnerExist)) {
             breakfast_family_1.makeVisible()
             breakfast_family_2.makeVisible()
-            breakfast_family_2.setText("오늘자 급식 정보가 없습니다 ^^;")
+            breakfast_family_2.text = "오늘자 급식 정보가 없습니다 ^^;"
             breakfast_family_3.makeVisible()
 
             last_line.makeInVisible()
         } else {
-            breakfast_family_2.setText("아침식사")
+            breakfast_family_2.text = "아침식사"
             last_line.makeVisible()
         }
 
@@ -835,21 +773,17 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     // check whether the day is allergic or highlight
     private fun isAllergyDay(date: LocalDate): Boolean{
-        for(i in 0 until allergyDayList.size) {
-            if (date.equals(allergyDayList.get(i))){
-                return true
-            }
-        }
+        if(allergyDayList.contains(date)) return true
         return false
     }
 
     private fun isHighlightDay(date: LocalDate): Boolean{
         val tempDateCode = date.toString().replace("-", "")
-        if(preference.getString(tempDateCode + "breakfast", "")!!.length > 0)
+        if(preference.getString(tempDateCode + "breakfast", "")!!.isNotEmpty())
             return true
-        if(preference.getString(tempDateCode + "lunch", "")!!.length > 0)
+        if(preference.getString(tempDateCode + "lunch", "")!!.isNotEmpty())
             return true
-        if(preference.getString(tempDateCode + "dinner", "")!!.length > 0)
+        if(preference.getString(tempDateCode + "dinner", "")!!.isNotEmpty())
             return true
 
         return false
@@ -858,12 +792,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     // Share callback function
     private fun onClickShareButton(){
-        gupsikInfoGroup.isDrawingCacheEnabled = true
-        gupsikInfoGroup.buildDrawingCache()
-
-//        val bitmap = gupsikInfoGroup.getDrawingCache()
-//            testImageView.setImageBitmap(bitmap)
-
         val bitmap: Bitmap = Bitmap.createBitmap(gupsikInfoGroup.measuredWidth, gupsikInfoGroup.measuredHeight, Bitmap.Config.ARGB_8888)
         val canvas: Canvas = Canvas(bitmap)
 
@@ -897,10 +825,38 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             spannableString.removeSpan(span)
         }
 
-        spannableString.setSpan(BackgroundColorSpan(Color.parseColor("#80EFEF")), 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(BackgroundColorSpan(resources.getColor(R.color.highlight)), 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         //Set the final text on TextView
-        mTextView.setText(spannableString)
+        mTextView.text = spannableString
+    }
+
+    private fun setClickListenerWithTextViewList(textViewList: MutableList<TextView>, whichMeal: String) {
+        var highlightedTextViews = ""
+        for(i in 0 until textViewList.size) {
+            textViewList.get(i).setOnClickListener {it as TextView
+
+                if(highlighterPressedButton.visibility == View.VISIBLE) {
+                    highlightedTextViews = preference.getString(date_code + whichMeal, "").toString()
+
+                    if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
+
+                        it.text = it.text.toString()
+//                        it.setBackgroundResource(android.R.color.transparent)
+                        highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
+                        preference.edit().putString(date_code + whichMeal, highlightedTextViews).apply()
+
+                    } else {
+                        highlightedTextViews = highlightedTextViews + i.toString() + ","
+                        preference.edit().putString(date_code + whichMeal, highlightedTextViews).apply()
+//                        it.background = getResources().getDrawable(R.drawable.highlight)
+
+                        highlightString(it)
+
+                    }
+                }
+            }
+        }
     }
 
     // Called when leaving the activity
