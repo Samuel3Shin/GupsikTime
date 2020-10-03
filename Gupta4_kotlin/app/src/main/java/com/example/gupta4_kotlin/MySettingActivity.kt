@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.widget.PopupMenu
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
-import kotlinx.android.synthetic.main.activity_community.*
 import kotlinx.android.synthetic.main.activity_community.buttonUpper
 import kotlinx.android.synthetic.main.activity_my_setting.*
 import kotlinx.android.synthetic.main.activity_my_setting.adView
@@ -27,7 +26,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
-        mySchoolInfoTextView.setText(preference.getString(Utils.schoolNameKey, ""))
+        mySchoolInfoTextView.text = preference.getString(Utils.schoolNameKey, "")
 
 
         allergyList.addAll(listOf("", "난류", "우유", "메밀", "땅콩", "대두", "밀", "고등어", "게", "새우", "돼지고기", "복숭아", "토마토", "아황산염", "호두", "닭고기", "쇠고기", "오징어", "조개류"))
@@ -37,23 +36,25 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         var allergyInfo: String = ""
 
         for(i in 0 until allergyKeyList.size) {
-            allergyList.get(preference.getInt(allergyKeyList.get(i), 0)).let {
+            allergyList[preference.getInt(allergyKeyList[i], 0)].let {
                 if(it!= "") {
-                    allergyInfo = allergyInfo + it + ", "
+                    allergyInfo = "$allergyInfo$it, "
                 }
             }
         }
 
-        if(allergyInfo.length > 0) {
+        if(allergyInfo.isNotEmpty()) {
             allergyInfo = allergyInfo.substring(0, allergyInfo.length-2)
         }
 
-        myAllergyInfoTextView.setText(allergyInfo)
+        myAllergyInfoTextView.text = allergyInfo
 
         myPostsTab.setOnClickListener {
             val intent = Intent(this, MyPostsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
+
+            finish()
 
         }
 
@@ -62,12 +63,12 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             popup.setOnMenuItemClickListener(this@MySettingActivity)
             popup.inflate(R.menu.main)
             popup.show()
+
         }
 
         mySchoolInfoEditButton.setOnClickListener {
             val intent = Intent(this, SchoolSearchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-
             startActivity(intent);
 
             finish()
@@ -92,6 +93,8 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
+                finish()
+
                 return true
             }
 
@@ -99,6 +102,8 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
                 val intent = Intent(this, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
+
+                finish()
 
                 return true
             }

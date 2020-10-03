@@ -12,5 +12,8 @@
     <color name="allergy">#DA75EB</color>
     <color name="windowBlue">#497DA3</color>
     <color name="darkGreyNoPink">#747474</color>
+    <color name="highlight">#97F4F4</color>
+    <color name="highlight2">#A1EFEF</color>
+    <color name="highlight3">#80EFEF</color>
 
 </resources>

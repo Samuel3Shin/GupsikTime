@@ -44,15 +44,15 @@ class WriteActivity : AppCompatActivity() {
 
         when(boardKey) {
             "bamboo" -> {
-                boardNameTextView.setText("대나무숲")
+                boardNameTextView.text = "대나무숲"
             }
 
             "career" -> {
-                boardNameTextView.setText("진로고민")
+                boardNameTextView.text = "진로고민"
             }
 
             else -> {
-                boardNameTextView.setText("우리학교")
+                boardNameTextView.text = "우리학교"
             }
         }
 
@@ -89,28 +89,35 @@ class WriteActivity : AppCompatActivity() {
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val title = snapshot.child("title").getValue()
+                    val title = snapshot.child("title").value
                     titleTextView_write.setText(title.toString())
 
-                    val nickname = snapshot.child("nickname").getValue()
+                    val nickname = snapshot.child("nickname").value
                     nicknameTextView_write.setText(nickname.toString())
 
-                    val text = snapshot.child("message").getValue()
+                    val text = snapshot.child("message").value
                     input.setText(text.toString())
                 }
             })
         }
 
         registerButton.setOnClickListener {
-            if(TextUtils.isEmpty(input.text)) {
+            if(TextUtils.isEmpty(nicknameTextView_write.text)) {
+                Toast.makeText(applicationContext, "닉네임을 입력해주세요!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if(writeMode=="post") {
 
-                if(TextUtils.isEmpty(input.text)) {
-                    Toast.makeText(applicationContext, "글 내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
+            if(TextUtils.isEmpty(titleTextView_write.text)) {
+                Toast.makeText(applicationContext, "제목을 입력해주세요!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if(TextUtils.isEmpty(input.text)) {
+                Toast.makeText(applicationContext, "글 내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if(writeMode=="post") {
 
                 val post = Post()
                 val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts").push()
@@ -122,7 +129,8 @@ class WriteActivity : AppCompatActivity() {
                 post.nickname = nicknameTextView_write.text.toString()
                 post.board = boardNameTextView.text.toString()
                 post.commentIdMap = HashMap()
-                post.commentIdMap.put(getMyId(), "(글쓴이)")
+                post.commentIdMap[getMyId()] = "(글쓴이)"
+
                 newRef.setValue(post)
 
                 // post아이디를 shared preference에 저장. ','를 구분자로 저장함.

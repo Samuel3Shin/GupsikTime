@@ -31,21 +31,14 @@ class SchoolSearchActivity : AppCompatActivity() {
             cancelButtonTextView.visibility = View.INVISIBLE
         }
 
-        val rows: List<List<String>> = csvReader().readAll(getAssets().open("school_info.csv"))
+        val rows: List<List<String>> = csvReader().readAll(assets.open("school_info.csv"))
 
         val textList = mutableListOf<String>()
 
-        for (i in 0 until rows.size) {
-            var str: String = rows.get(i).toString()
-            str = str.replace("[","")
-            str = str.replace("]","")
-
-            var strLst = str.split(",")
-            // Charlie : 굳이 파싱 안하고도 rows[i][0] / rows[i][1] / rows[i][2] 로 접근 가능해!
-
-            schoolCodeMap.put(strLst.get(2).trim(), strLst.get(1).trim())
-            districtCodeMap.put(strLst.get(2).trim(), strLst.get(0).trim())
-            textList.add(strLst.get(2).trim())
+        for (i in rows.indices) {
+            schoolCodeMap[rows[i][2].trim()] = rows[i][1].trim()
+            districtCodeMap[rows[i][2].trim()] = rows[i][0].trim()
+            textList.add(rows[i][2].trim())
         }
 
         // 자동 완성될 수 있도록 위의 textList를 어댑터로 만들어서 searchBar.autoCompleteTextView에 붙여준다.

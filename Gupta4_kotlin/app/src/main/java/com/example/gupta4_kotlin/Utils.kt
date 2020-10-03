@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.provider.Settings
 import android.view.View
 import org.joda.time.DateTime
 import org.joda.time.Days
@@ -15,35 +16,34 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Utils {
-    val isSetSchoolKey = "isSetSchool"
-    val districtCodeKey = "districtCode"
-    val schoolCodeKey = "schoolCode"
-    val schoolNameKey = "schoolName"
-    val myPostIdsKey = "myPostIds"
-    val myCommentIdsKey = "myCommentIds"
-    val myLikedPostIdsKey = "myLikedPostIds"
-    val isAllergyInfoInsertedKey = "isAllergyInfoInserted"
-    val breakfastHighlightKey = "breakfastHighlightId"
-    val lunchHighlightKey = "lunchHighlightId"
-    val dinnerHighlightKey = "dinnerHighlightId"
-    val myAllergy1Key = "myAllergy1"
-    val myAllergy2Key = "myAllergy2"
-    val myAllergy3Key = "myAllergy3"
-    val myAllergy4Key = "myAllergy4"
-    val myAllergy5Key = "myAllergy5"
-    val myAllergy6Key = "myAllergy6"
-    val myAllergy7Key = "myAllergy7"
-    val myAllergy8Key = "myAllergy8"
-    val myAllergy9Key = "myAllergy9"
-    val myAllergy10Key = "myAllergy10"
-    val myAllergy11Key = "myAllergy11"
-    val myAllergy12Key = "myAllergy12"
-    val myAllergy13Key = "myAllergy13"
-    val myAllergy14Key = "myAllergy14"
-    val myAllergy15Key = "myAllergy15"
-    val myAllergy16Key = "myAllergy16"
-    val myAllergy17Key = "myAllergy17"
-    val myAllergy18Key = "myAllergy18"
+    const val isSetSchoolKey = "isSetSchool"
+    const val districtCodeKey = "districtCode"
+    const val schoolCodeKey = "schoolCode"
+    const val schoolNameKey = "schoolName"
+    const val myPostIdsKey = "myPostIds"
+    const val myLikedPostIdsKey = "myLikedPostIds"
+    const val isAllergyInfoInsertedKey = "isAllergyInfoInserted"
+    const val breakfastHighlightKey = "breakfastHighlightId"
+    const val lunchHighlightKey = "lunchHighlightId"
+    const val dinnerHighlightKey = "dinnerHighlightId"
+    const val myAllergy1Key = "myAllergy1"
+    const val myAllergy2Key = "myAllergy2"
+    const val myAllergy3Key = "myAllergy3"
+    const val myAllergy4Key = "myAllergy4"
+    const val myAllergy5Key = "myAllergy5"
+    const val myAllergy6Key = "myAllergy6"
+    const val myAllergy7Key = "myAllergy7"
+    const val myAllergy8Key = "myAllergy8"
+    const val myAllergy9Key = "myAllergy9"
+    const val myAllergy10Key = "myAllergy10"
+    const val myAllergy11Key = "myAllergy11"
+    const val myAllergy12Key = "myAllergy12"
+    const val myAllergy13Key = "myAllergy13"
+    const val myAllergy14Key = "myAllergy14"
+    const val myAllergy15Key = "myAllergy15"
+    const val myAllergy16Key = "myAllergy16"
+    const val myAllergy17Key = "myAllergy17"
+    const val myAllergy18Key = "myAllergy18"
 
 
     fun getDiffTimeText(targetTime: Long): String {
@@ -83,6 +83,10 @@ object Utils {
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
         val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "급식정보", null)
         return Uri.parse(path)
+    }
+
+    fun isDigit(str: String): Boolean {
+        return str.matches("^[0-9]+$".toRegex())
     }
 
 }

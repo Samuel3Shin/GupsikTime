@@ -22,7 +22,7 @@ class CommunityCareerActivity: CommunityActivity() {
         }
 
         // 게시판 설명 부분변경
-        boardDescribeTextView.setText("전국 진로고민 상담소")
+        boardDescribeTextView.text = "전국 진로고민 상담소"
         leftImageView.setImageResource(R.drawable.ic_twemoji_thinking_face)
         rightImageView.setImageResource(R.drawable.ic_twemoji_thinking_face)
 
