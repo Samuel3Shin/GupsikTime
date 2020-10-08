@@ -1,31 +1,26 @@
 package com.example.gupta4_kotlin
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.gupsik_comment.view.*
 import kotlinx.android.synthetic.main.gupsik_detail.*
 import kotlinx.android.synthetic.main.gupsik_detail.adView
 import kotlinx.android.synthetic.main.gupsik_detail.dateTextView
 import kotlinx.android.synthetic.main.gupsik_detail.shareButton
 
 class DetailActivity : AppCompatActivity() {
-
-    lateinit var context: Context
-
     init {
         instance = this
     }
@@ -38,10 +33,15 @@ class DetailActivity : AppCompatActivity() {
     }
 
     val commentList = mutableListOf<Comment>()
-    var postId: String? = "";
+    var postId: String? = ""
     var boardKey: String? = ""
-    var schoolCode = ""
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+
+    private lateinit var postReference: DatabaseReference
+    private lateinit var postListener: ValueEventListener
+
+    private lateinit var commentReference: DatabaseReference
+    private lateinit var commentListener: ChildEventListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +50,11 @@ class DetailActivity : AppCompatActivity() {
         postId = intent.getStringExtra("postId")
         boardKey = intent.getStringExtra("boardKey")
 
-        var postFullId = "$boardKey/Posts/$postId"
+        val postFullId = "$boardKey/Posts/$postId"
 
         deleteButton.setOnClickListener {
 
-            val intent = Intent(DetailActivity.applicationContext(), PopupButtonActivity::class.java)
+            val intent = Intent(applicationContext(), PopupButtonActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("postId", postId)
             intent.putExtra("popUpMode", "delete")
@@ -67,7 +67,7 @@ class DetailActivity : AppCompatActivity() {
 
         editButton.setOnClickListener {
 
-            val intent = Intent(DetailActivity.applicationContext(), WriteActivity::class.java)
+            val intent = Intent(applicationContext(), WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("writeMode", "editPost")
             intent.putExtra("postId", postId)
@@ -82,49 +82,49 @@ class DetailActivity : AppCompatActivity() {
             onClickShareButton()
         }
 
-        val layoutManager = LinearLayoutManager(DetailActivity.applicationContext())
+        val layoutManager = LinearLayoutManager(applicationContext())
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         recycler_view.layoutManager = layoutManager
-        recycler_view.adapter = MyAdapter()
-
-        FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-            .addValueEventListener(object: ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {
-                }
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot?.let {
-                        val post = it.getValue(Post::class.java)
-                        post?.let {
-                            boardNameTextView.text = post.board
-                            post_title.text = post.title
-                            nickname.text = post.nickname
-                            dateTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
-                            hitsCountText.text = post.hitsCount.toString()
-                            commentCountText.text = post.commentCount.toString()
-                            likesCountText.text = post.likesCount.toString()
-                            contents.text = post.message
-
-                            if(post.writerId == getMyId()) {
-                                deleteButton.visibility = View.VISIBLE
-                                deleteImageView.visibility = View.VISIBLE
-                                editButton.visibility = View.VISIBLE
-                                editImageView.visibility = View.VISIBLE
-                            }
-                        }
-                    }
-                }
-            })
+        recycler_view.adapter = CommentAdapter(this@DetailActivity, commentList, boardKey!!, postId!!)
 
         //배너 광고 추가
-        MobileAds.initialize(DetailActivity.applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
-        FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").addChildEventListener(object
-            :ChildEventListener {
+        postListener = object: ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-                error?.toException()?.printStackTrace()
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.let {
+                    val post = it.getValue(Post::class.java)
+                    post?.let {
+                        boardNameTextView.text = post.board
+                        post_title.text = post.title
+                        nickname.text = post.nickname
+                        dateTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
+                        hitsCountText.text = post.hitsCount.toString()
+                        commentCountText.text = post.commentCount.toString()
+                        likesCountText.text = post.likesCount.toString()
+                        contents.text = post.message
+
+                        if(post.writerId == getMyId()) {
+                            deleteButton.visibility = View.VISIBLE
+                            deleteImageView.visibility = View.VISIBLE
+                            editButton.visibility = View.VISIBLE
+                            editImageView.visibility = View.VISIBLE
+                        }
+                    }
+                }
+            }
+        }
+        postReference = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
+        postReference.addValueEventListener(postListener)
+
+        commentListener = object :ChildEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                error.toException().printStackTrace()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
@@ -142,7 +142,7 @@ class DetailActivity : AppCompatActivity() {
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                snapshot?.let { snapshot ->
+                snapshot.let { snapshot ->
                     val comment = snapshot.getValue(Comment::class.java)
                     comment?.let{ comment ->
                         val prevIndex = commentList.map{it.commentId}.indexOf(previousChildName)
@@ -153,7 +153,7 @@ class DetailActivity : AppCompatActivity() {
             }
 
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                snapshot?.let { snapshot ->
+                snapshot.let { snapshot ->
                     val comment = snapshot.getValue(Comment::class.java)
                     comment?.let{
                         // 이 부분은 책 내용과 다르게 내가 마음대로 해봄.
@@ -171,7 +171,7 @@ class DetailActivity : AppCompatActivity() {
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                snapshot?.let {
+                snapshot.let {
                     val comment = snapshot.getValue(Comment::class.java)
 
                     comment?.let {comment ->
@@ -181,8 +181,9 @@ class DetailActivity : AppCompatActivity() {
                     }
                 }
             }
-
-        })
+        }
+        commentReference = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId")
+        commentReference.addChildEventListener(commentListener)
 
         backButton.setOnClickListener {
             finish()
@@ -199,8 +200,8 @@ class DetailActivity : AppCompatActivity() {
             comment.postId = postId!!
 
             val postRef = FirebaseDatabase.getInstance().getReference("$boardKey/Posts/$postId")
-            var commentIdMap: HashMap<String, String> = HashMap()
-            var idCnt = ""
+            var commentIdMap: HashMap<String, String>
+            var idCnt: String
             // post의 댓글 개수 불러와서 거기다가 1을 더해준다.
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -208,16 +209,15 @@ class DetailActivity : AppCompatActivity() {
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var commentNum = snapshot.child("commentCount").value as Long
+                    val commentNum = snapshot.child("commentCount").value as Long
                     postRef.child("commentCount").setValue(commentNum + 1)
 
                     commentIdMap = snapshot.child("commentIdMap").value as HashMap<String, String>
 
-                    if(commentIdMap.containsKey(getMyId())){
-
-                    } else {
+                    if(!commentIdMap.containsKey(getMyId())){
                         commentIdMap[getMyId()] = commentIdMap.size.toString()
                     }
+
                     postRef.child("commentIdMap").setValue(commentIdMap)
 
                     idCnt = commentIdMap[getMyId()]!!
@@ -257,7 +257,7 @@ class DetailActivity : AppCompatActivity() {
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var commentNum = snapshot.child("likesCount").value as Long
+                    val commentNum = snapshot.child("likesCount").value as Long
                     postRef.child("likesCount").setValue(commentNum + 1)
                 }
             })
@@ -280,85 +280,29 @@ class DetailActivity : AppCompatActivity() {
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var commentNum = snapshot.child("likesCount").value as Long
+                    val commentNum = snapshot.child("likesCount").value as Long
                     postRef.child("likesCount").setValue(commentNum - 1)
                 }
             })
-
         }
-
     }
 
+    @SuppressLint("HardwareIds")
     fun getMyId(): String {
         return Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-    }
-
-    inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val commentText = itemView.findViewById<TextView>(R.id.comment_text)
-        val commentWriteTime = itemView.dateTextView
-        val commentNickname = itemView.nickname
-        val deleteTextView = itemView.deleteTextView
-    }
-
-    inner class MyAdapter: RecyclerView.Adapter<MyViewHolder>() {
-
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            return MyViewHolder(LayoutInflater.from(DetailActivity.applicationContext())
-                .inflate(R.layout.gupsik_comment, parent, false))
-        }
-
-        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            val comment = commentList[position]
-            comment?.let {
-                holder.commentText.text = comment.message
-                holder.commentWriteTime.text = Utils.getDiffTimeText(comment.writeTime as Long)
-                holder.commentNickname.text = comment.nickname
-
-            }
-
-            // 본인이 쓴 댓글이면 삭제 버튼이 보이도록 해야함.
-
-            val commentId = comment.commentId
-
-            if(comment.writerId == getMyId()) {
-                holder.deleteTextView.visibility = View.VISIBLE
-            }
-
-            holder.deleteTextView.setOnClickListener {
-
-
-                val intent = Intent(DetailActivity.applicationContext(), PopupButtonActivity::class.java)
-                intent.putExtra("boardKey", boardKey)
-                intent.putExtra("postId", postId)
-                intent.putExtra("commentId", commentId)
-                intent.putExtra("popUpMode", "deleteComment")
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                startActivity(intent)
-
-                finish()
-
-            }
-
-        }
-
-        override fun getItemCount(): Int {
-            return commentList.size
-        }
-
     }
 
     // Share callback function
     private fun onClickShareButton(){
         val bitmap: Bitmap = Bitmap.createBitmap(nestedScrollView.measuredWidth, nestedScrollView.measuredHeight, Bitmap.Config.ARGB_8888)
-        val canvas: Canvas = Canvas(bitmap)
+        val canvas = Canvas(bitmap)
 
         nestedScrollView.draw(canvas)
 
         if (bitmap == null)
             return
 
-        var bitmapURI = Utils.getImageUri(this@DetailActivity, bitmap)
+        val bitmapURI = Utils.getImageUri(applicationContext, bitmap, "게시글")
         //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
         //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
         val shareIntent: Intent = Intent().apply {
@@ -385,6 +329,8 @@ class DetailActivity : AppCompatActivity() {
     // Called before the activity is destroyed
     public override fun onDestroy() {
         adView.destroy()
+        postReference.removeEventListener(postListener)
+        commentReference.removeEventListener(commentListener)
         super.onDestroy()
     }
 

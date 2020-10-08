@@ -2,14 +2,12 @@ package com.example.gupta4_kotlin
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.*
@@ -19,8 +17,6 @@ import kotlinx.android.synthetic.main.activity_my_posts.buttonUpper
 import kotlinx.android.synthetic.main.activity_my_posts.recyclerView
 
 class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
-
-    lateinit var context: Context
 
     init {
         instance = this
@@ -35,7 +31,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     val posts: MutableList<Post> = mutableListOf()
     val boardKeys: MutableList<String> = mutableListOf()
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +40,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         recyclerView.layoutManager?.scrollToPosition(0)
 
         //배너 광고 추가
-        MobileAds.initialize(MyPostsActivity.applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -56,23 +52,23 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         mySettingTab.setOnClickListener {
-            val intent = Intent(MyPostsActivity.applicationContext(), MySettingActivity::class.java)
+            val intent = Intent(applicationContext(), MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
             finish()
         }
 
-        val layoutManager = LinearLayoutManager(MyPostsActivity.applicationContext())
+        val layoutManager = LinearLayoutManager(applicationContext())
 
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
 
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = MyAdapter()
+        recyclerView.adapter = MyPostsAdapter(this@MyPostsActivity, posts, boardKeys)
 
         val myPostIdsStr = preference.getString(Utils.myPostIdsKey, "").toString()
-        var myPostIdsList = myPostIdsStr.split(",")
+        val myPostIdsList = myPostIdsStr.split(",")
 
         // 마지막 index는 "" 이므로 쓰면 안 됨!
         for(i in 0 until myPostIdsList.size - 1) {
@@ -81,7 +77,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val postRef = FirebaseDatabase.getInstance().getReference(myPostIdsList[i])
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot?.let {
+                    snapshot.let {
                         val post = it.getValue(Post::class.java)
                         post?.let {
                             posts.add(it)
@@ -92,7 +88,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 }
 
                 override fun  onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+
                 }
 
             })
@@ -101,45 +97,10 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     }
 
-    inner class MyAdapter: RecyclerView.Adapter<MyPostViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyPostViewHolder {
-            return MyPostViewHolder(
-                LayoutInflater.from(this@MyPostsActivity)
-                    .inflate(R.layout.gupsik_my_post, parent, false))
-        }
-
-        override fun getItemCount(): Int {
-            return posts.size
-        }
-
-        override fun onBindViewHolder(holder: MyPostViewHolder, position: Int) {
-            val post = posts[position]
-            holder.contentsText.text = post.message
-            holder.timeTextView.text = Utils.getDiffTimeText(post.writeTime as Long)
-            holder.commentCountText.text = post.commentCount.toString()
-            holder.hitsCountText.text = post.hitsCount.toString()
-            holder.nicknameText.text = post.nickname
-            holder.likesCountText.text = post.likesCount.toString()
-            holder.boardNameTextView.text = post.board.toString()
-
-            holder.itemView.setOnClickListener {
-                val intent = Intent(MyPostsActivity.applicationContext(), DetailActivity::class.java)
-                var boardKey = boardKeys[position]
-
-                intent.putExtra("boardKey", boardKey)
-                intent.putExtra("postId", post.postId)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                startActivity(intent)
-
-            }
-
-        }
-    }
-
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                val intent = Intent(MyPostsActivity.applicationContext(), MainActivity::class.java)
+                val intent = Intent(applicationContext(), MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -149,7 +110,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.menu_board ->  {
-                val intent = Intent(MyPostsActivity.applicationContext(), CommunityActivity::class.java)
+                val intent = Intent(applicationContext(), CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -164,7 +125,6 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
         return super.onOptionsItemSelected(item!!)
     }
-
 
     // Called when leaving the activity
     public override fun onPause() {

@@ -2,9 +2,9 @@ package com.example.gupta4_kotlin
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -14,8 +14,6 @@ import kotlinx.android.synthetic.main.search_bar.view.*
 
 
 class SchoolSearchActivity : AppCompatActivity() {
-
-    lateinit var context: Context
 
     init {
         instance = this
@@ -28,16 +26,16 @@ class SchoolSearchActivity : AppCompatActivity() {
         }
     }
 
-    val schoolCodeMap = mutableMapOf<String, String>()
-    val districtCodeMap = mutableMapOf<String, String>()
+    private val schoolCodeMap = mutableMapOf<String, String>()
+    private val districtCodeMap = mutableMapOf<String, String>()
 
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_school_search)
 
-        var isLanding: Boolean = intent.getBooleanExtra("isLanding", false)
+        val isLanding: Boolean = intent.getBooleanExtra("isLanding", false)
 
         if(isLanding) {
             cancelButton.visibility = View.INVISIBLE
@@ -55,7 +53,7 @@ class SchoolSearchActivity : AppCompatActivity() {
         }
 
         // 자동 완성될 수 있도록 위의 textList를 어댑터로 만들어서 searchBar.autoCompleteTextView에 붙여준다.
-        val adapter = ArrayAdapter<String>(
+        val adapter = ArrayAdapter(
             this@SchoolSearchActivity,
             android.R.layout.simple_dropdown_item_1line, textList
         )
@@ -65,7 +63,7 @@ class SchoolSearchActivity : AppCompatActivity() {
 
         cancelButton.setOnClickListener {
             finish()
-            val intent = Intent(SchoolSearchActivity.applicationContext(), MySettingActivity::class.java)
+            val intent = Intent(applicationContext(), MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
@@ -75,19 +73,19 @@ class SchoolSearchActivity : AppCompatActivity() {
             if(!schoolCodeMap.containsKey(keyword)) {
                 Toast.makeText(applicationContext, "정확한 학교명을 입력해주세요", Toast.LENGTH_SHORT).show()
             } else {
-                preference.edit().putString(Utils.schoolCodeKey, schoolCodeMap.get(keyword)).apply()
-                preference.edit().putString(Utils.districtCodeKey, districtCodeMap.get(keyword)).apply()
+                preference.edit().putString(Utils.schoolCodeKey, schoolCodeMap[keyword]).apply()
+                preference.edit().putString(Utils.districtCodeKey, districtCodeMap[keyword]).apply()
                 preference.edit().putString(Utils.schoolNameKey, keyword).apply()
 
                 finish()
 
                 if(isLanding) {
-                    val intent = Intent(SchoolSearchActivity.applicationContext(), MyAllergyActivity::class.java)
+                    val intent = Intent(applicationContext(), MyAllergyActivity::class.java)
                     intent.putExtra("isLanding", true)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
                 } else {
-                    val intent = Intent(SchoolSearchActivity.applicationContext(), MySettingActivity::class.java)
+                    val intent = Intent(applicationContext(), MySettingActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
                 }
