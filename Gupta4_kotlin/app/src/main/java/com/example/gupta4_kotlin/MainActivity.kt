@@ -1,3 +1,4 @@
+@file:Suppress("NAME_SHADOWING")
 package com.example.gupta4_kotlin
 
 import android.content.Context
@@ -12,14 +13,12 @@ import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
-import android.text.style.ImageSpan
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
-import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.example.gupta4_kotlin.databinding.CalendarHeaderBinding
 import com.example.gupta4_kotlin.databinding.CalendarDayBinding
@@ -39,7 +38,6 @@ import okhttp3.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.*
-import java.lang.Math.abs
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -48,7 +46,6 @@ import java.time.temporal.WeekFields
 import java.util.*
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
-    lateinit var context: Context
 
     init {
         instance = this
@@ -61,18 +58,18 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
-    var serviceUrl: String = ""
-    var serviceKey: String = ""
+    private var serviceUrl: String = ""
+    private var serviceKey: String = ""
     val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
-    var district_code = "J10"
-    var school_code = "7530184"
+    private var districtCode = "J10"
+    private var schoolCode = "7530184"
 
     var result = ""
 
-    var breakfastTextViewList: MutableList<TextView> = mutableListOf()
-    var lunchTextViewList: MutableList<TextView> = mutableListOf()
-    var dinnerTextViewList: MutableList<TextView> = mutableListOf()
+    private var breakfastTextViewList: MutableList<TextView> = mutableListOf()
+    private var lunchTextViewList: MutableList<TextView> = mutableListOf()
+    private var dinnerTextViewList: MutableList<TextView> = mutableListOf()
 
     private var breakfastFamilyViewList: MutableList<View> = mutableListOf()
     private var lunchFamilyViewList: MutableList<View> = mutableListOf()
@@ -81,7 +78,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private val allergyKeyList: MutableList<String> = mutableListOf()
     private val allergyDayList: MutableList<LocalDate> = mutableListOf()
 
-    var date_code = ""
+    private var dateCode = ""
 
     private lateinit var binding: ActivityMainBinding
     private val today = LocalDate.now()
@@ -94,7 +91,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         setContentView(view)
 
         //배너 광고 추가 (원래는 this 였는데, applicationContext()로 바꿨다.)
-        MobileAds.initialize(MainActivity.applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -104,24 +101,31 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         schoolName.text = preference.getString(Utils.schoolNameKey, "")
 
         // shared preference에서 교육청 코드와 학교 코드 불러오는데, 만약에 없으면 그냥 위의 default값(안산동산고등학교 코드) 내뱉음.
-        district_code = preference.getString("districtCode", district_code).toString()
-        school_code = preference.getString("schoolCode", school_code).toString()
+        districtCode = preference.getString("districtCode", districtCode).toString()
+        schoolCode = preference.getString("schoolCode", schoolCode).toString()
 
-        var childCnt: Int = gupsikInfoGroup.childCount
+        val childCnt: Int = gupsikInfoGroup.childCount
         for(i in 0 until childCnt) {
-            var viewId = gupsikInfoGroup.getChildAt(i).resources.getResourceEntryName(gupsikInfoGroup.getChildAt(i).id).toString()
-            if(viewId.startsWith("breakfastTextView_")) {
-                breakfastTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
-            } else if(viewId.startsWith("lunchTextView_")) {
-                lunchTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
-            } else if(viewId.startsWith("dinnerTextView_")) {
-                dinnerTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
-            }  else if(viewId.startsWith("breakfast_family_")) {
-                breakfastFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
-            } else if(viewId.startsWith("lunch_family_")) {
-                lunchFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
-            } else if(viewId.startsWith("dinner_family_")) {
-                dinnerFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
+            val viewId = gupsikInfoGroup.getChildAt(i).resources.getResourceEntryName(gupsikInfoGroup.getChildAt(i).id).toString()
+            when {
+                viewId.startsWith("breakfastTextView_") -> {
+                    breakfastTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
+                }
+                viewId.startsWith("lunchTextView_") -> {
+                    lunchTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
+                }
+                viewId.startsWith("dinnerTextView_") -> {
+                    dinnerTextViewList.add(gupsikInfoGroup.getChildAt(i) as TextView)
+                }
+                viewId.startsWith("breakfast_family_") -> {
+                    breakfastFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
+                }
+                viewId.startsWith("lunch_family_") -> {
+                    lunchFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
+                }
+                viewId.startsWith("dinner_family_") -> {
+                    dinnerFamilyViewList.add(gupsikInfoGroup.getChildAt(i))
+                }
             }
         }
 
@@ -181,7 +185,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             Utils.toggleButton(highlighterPressedButton)
             Utils.toggleButton(highlighterPressedImageView)
 
-            var alphaValue = 0.3F
+            val alphaValue = 0.3F
             calendar_box.alpha = alphaValue
             calendarView.alpha = alphaValue
             todayButton.alpha = alphaValue
@@ -192,7 +196,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             tmpDate = dateTextView.text.toString()
             dateTextView.text = "좋아하는 메뉴를 눌러 하이라이트!"
-            dateTextView.setTextColor(resources.getColor(R.color.windowBlue))
+            dateTextView.setTextColor(ContextCompat.getColor(applicationContext(), R.color.windowBlue))
             schoolName.makeGone()
         }
 
@@ -212,7 +216,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             // Charlie : 토글과 alpha 조절하는 건 함수만들어서 코드 라인 수 줄이면 좋을 것 같아!
 
             dateTextView.text = tmpDate
-            dateTextView.setTextColor(resources.getColor(R.color.black))
+            dateTextView.setTextColor(ContextCompat.getColor(applicationContext(), R.color.black))
             schoolName.makeVisible()
         }
 
@@ -284,8 +288,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         binding.calendarView.monthScrollListener = { month ->
             var monthNum = month.month.toString()
-            if(monthNum.get(0) == '0') {
-                monthNum = monthNum.get(1).toString()
+            if(monthNum[0] == '0') {
+                monthNum = monthNum[1].toString()
             }
             val title = "${monthNum}월"
 
@@ -304,7 +308,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         previousMonthButton.setOnClickListener {
             binding.calendarView.findFirstVisibleMonth()?.let {
                 binding.calendarView.smoothScrollToMonth(it.yearMonth.previous)
-                selectedDate?.let {
+                selectedDate?.let {it ->
                     // Clear selection if we scroll to a new month.
                     selectedDate = null
                     binding.calendarView.notifyDateChanged(it)
@@ -316,7 +320,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         nextMonthButton.setOnClickListener {
             binding.calendarView.findFirstVisibleMonth()?.let {
                 binding.calendarView.smoothScrollToMonth(it.yearMonth.next)
-                selectedDate?.let {
+                selectedDate?.let {it ->
                     // Clear selection if we scroll to a new month.
                     selectedDate = null
                     binding.calendarView.notifyDateChanged(it)
@@ -368,7 +372,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.menu_board -> {
-                val intent = Intent(MainActivity.applicationContext(), CommunityActivity::class.java)
+                val intent = Intent(applicationContext(), CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -378,7 +382,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.menu_myPage -> {
-                val intent = Intent(MainActivity.applicationContext(), MyPostsActivity::class.java)
+                val intent = Intent(applicationContext(), MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -423,21 +427,21 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 todayPressedButton.visibility = View.VISIBLE
             }
 
-            date_code = date.toString().replace("-", "")
-            showMealInfo(date_code)
-            dateTextView.text = date.monthValue.toString() + "월 " + date.dayOfMonth.toString() + "일"
+            dateCode = date.toString().replace("-", "")
+            showMealInfo(dateCode)
+            dateTextView.text = "${date.monthValue}월 ${date.dayOfMonth}일"
 
         }
     }
 
-    private fun showMealInfo(date_code: String) {
-        var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$date_code"
+    private fun showMealInfo(dateCode: String) {
+        val strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$districtCode&SD_SCHUL_CODE=$schoolCode&MMEAL_SC_CODE=&MLSV_YMD=$dateCode"
         run(strUrl, false)
     }
 
     private fun isAlreadyCalledMonthlyMealInfo(yearMonth: YearMonth): Boolean {
         for(i in 0 until allergyDayList.size) {
-            val allergyDay : LocalDate = allergyDayList.get(i)
+            val allergyDay : LocalDate = allergyDayList[i]
             if (allergyDay.year == yearMonth.year && allergyDay.month == yearMonth.month)
                 return true
         }
@@ -452,7 +456,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         val monthCode = yearMonth.toString().replace("-", "")
 
-        var strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$district_code&SD_SCHUL_CODE=$school_code&MMEAL_SC_CODE=&MLSV_YMD=$monthCode"
+        val strUrl = "$serviceUrl?KEY=$serviceKey&ATPT_OFCDC_SC_CODE=$districtCode&SD_SCHUL_CODE=$schoolCode&MMEAL_SC_CODE=&MLSV_YMD=$monthCode"
         run(strUrl, true)
     }
 
@@ -476,7 +480,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         println("$name: $value")
                     }
 
-                    var resStr = response.body!!.string()
+                    val resStr = response.body!!.string()
 
                     result = resStr
 
@@ -495,9 +499,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     fun parseForMonth(result: String) {
         var date = ""
-        var dish = ""
-        var meal_date = false
-        var meal_dish = false
+        var dish: String
+        var isMealDateExist = false
+        var isMealDishExist = false
 
         val factory = XmlPullParserFactory.newInstance()
         val xmlpp = factory.newPullParser()
@@ -510,28 +514,27 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             if (eventType == XmlPullParser.START_DOCUMENT) {
             } else if (eventType == XmlPullParser.START_TAG) {
                 when (xmlpp.name) {
-                    "MLSV_YMD" -> meal_date = true
-                    "DDISH_NM" -> meal_dish = true
+                    "MLSV_YMD" -> isMealDateExist = true
+                    "DDISH_NM" -> isMealDishExist = true
                 }
             } else if (eventType == XmlPullParser.TEXT) {
 
-                if (meal_date) {
+                if (isMealDateExist) {
                     date = xmlpp.text
-                    meal_date = false
+                    isMealDateExist = false
                 }
 
-                if (meal_dish) {
+                if (isMealDishExist) {
                     dish = xmlpp.text
-                    meal_dish = false
-                    dish = dish.replace("*", "")
-                    var dishList: List<String> = dish.split("<br/>")
-                    var isAllergyDay = false;
+                    isMealDishExist = false
+                    val dishList: List<String> = dish.split("<br/>")
+                    var isAllergyDay = false
 
                     for(i in dishList.indices)  {
 
-                        var str = dishList[i]
-                        var allergyNumList = str.split(".")
-                        var firstOne = allergyNumList[0]
+                        val str = dishList[i]
+                        val allergyNumList = str.split(".")
+                        val firstOne = allergyNumList[0]
                         var firstAllergyInfo = ""
                         var digitsInFirstone = ""
 
@@ -545,7 +548,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
 
                         if(firstAllergyInfo != "" && firstAllergyInfo.toInt() > 0 && firstAllergyInfo.toInt() <= 18 && preference.getInt(
-                                allergyKeyList.get(firstAllergyInfo.toInt()), 0) != 0) {
+                                allergyKeyList[firstAllergyInfo.toInt()], 0) != 0) {
                             isAllergyDay = true
                         }
 
@@ -579,16 +582,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         var school = ""
         var date = ""
         var bld = ""
-        var dish = ""
-        var meal_school = false
-        var meal_date = false
-        var meal_bld = false
-        var meal_dish = false
+        var dish: String
+        var isSchoolExist = false
+        var isMealDateExist = false
+        var isMealBldExist = false
+        var isMealDishExist = false
         var isBreakfastExist = false
         var isLunchExist = false
         var isDinnerExist = false
-
-//        schoolName.setText("")
 
         val factory = XmlPullParserFactory.newInstance()
         val xmlpp = factory.newPullParser()
@@ -601,34 +602,32 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             if (eventType == XmlPullParser.START_DOCUMENT) {
             } else if (eventType == XmlPullParser.START_TAG) {
                 when (xmlpp.name) {
-                    "SCHUL_NM" -> meal_school = true
-                    "MLSV_YMD" -> meal_date = true
-                    "MMEAL_SC_NM" -> meal_bld = true
-                    "DDISH_NM" -> meal_dish = true
+                    "SCHUL_NM" -> isSchoolExist = true
+                    "MLSV_YMD" -> isMealDateExist = true
+                    "MMEAL_SC_NM" -> isMealBldExist = true
+                    "DDISH_NM" -> isMealDishExist = true
                 }
             } else if (eventType == XmlPullParser.TEXT) {
-                if (meal_school) {
+                if (isSchoolExist) {
                     school = xmlpp.text
 //                    schoolName.setText(school + "\n")
-                    meal_school = false
+                    isSchoolExist = false
                 }
-                if (meal_date) {
+                if (isMealDateExist) {
                     date = xmlpp.text
 //                    dateTextView.setText(date)
-                    meal_date = false
+                    isMealDateExist = false
                 }
-                if (meal_bld) {
+                if (isMealBldExist) {
                     bld = xmlpp.text
-                    meal_bld = false
+                    isMealBldExist = false
                 }
-                if (meal_dish) {
+                if (isMealDishExist) {
                     dish = xmlpp.text
-                    meal_dish = false
-                    // Charlie : 대박.. 요거 response json이나 정리된건 없었어? <br/>로 구분된거 파싱했다니!
-                    dish = dish.replace("*", "")
-                    var dishList: List<String> = dish.split("<br/>")
+                    isMealDishExist = false
+                    val dishList: List<String> = dish.split("<br/>")
                     var tmpTextViewList: MutableList<TextView> = mutableListOf()
-                    var whichMeal: String = ""
+                    var whichMeal = ""
                     when(bld) {
                         "조식" -> {
                             tmpTextViewList = breakfastTextViewList
@@ -647,15 +646,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
                     }
 
-                    var highlightedTextViews = preference.getString(date_code + whichMeal, "")
+                    val highlightedTextViews = preference.getString(dateCode + whichMeal, "")
                     // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
                     for(i in dishList.indices)  {
-//                        // 하이라이트 저장된 거 불러오기
-//                        if(highlightedTextViews!!.indexOf("$i,", 0) != -1) {
-//                            tmpTextViewList[i].background = resources.getDrawable(R.drawable.highlight)
-//                        } else {
-//                            tmpTextViewList[i].setBackgroundResource(android.R.color.transparent)
-//                        }
 
                         // View.visibility 초기화
                         tmpTextViewList[i].visibility = View.VISIBLE
@@ -663,15 +656,15 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         //View 글자색 초기화
                         tmpTextViewList[i].setTextColor(Color.parseColor("#000000"))
 
-                        var str = dishList[i]
-                        var allergyNumList = str.split(".")
-                        var firstOne = allergyNumList[0]
-                        var menuName: String = ""
+                        val str = dishList[i]
+                        val allergyNumList = str.split(".")
+                        val firstOne = allergyNumList[0]
+                        var menuName = ""
                         var firstAllergyInfo = ""
 
                         var digitsInFirstone = ""
                         // 숫자 있는지부터 확인
-                        if(firstOne.length >= 2 && firstOne.get(firstOne.length - 1) != ')') {
+                        if(firstOne.length >= 2 && firstOne[firstOne.length - 1] != ')') {
                             digitsInFirstone = firstOne.substring(firstOne.length - 2, firstOne.length).filter{it.isDigit()}
                         }
 
@@ -686,10 +679,21 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                             menuName = firstOne
                         }
 
+                        menuName = menuName.trim()
+
+                        // 메뉴 이름 양 끝에 있는 특수문자 삭제. 하지만 시작하는 부분의 '(' 와 끝 부분의 ')'는 남겨둔다.
+                        if(menuName[0].toInt() < 127 && menuName[0].toInt() > 32 && menuName[0].toInt() != 40) {
+                            menuName = menuName.substring(1, menuName.length)
+                        }
+
+                        if(menuName[menuName.length-1].toInt() < 127 && menuName[menuName.length-1].toInt() > 32 && menuName[menuName.length-1].toInt() != 41) {
+                            menuName = menuName.substring(0, menuName.length-1)
+                        }
+
                         var isAllergyFlag = false
 
                         if(firstAllergyInfo != "" && firstAllergyInfo.toInt() > 0 && firstAllergyInfo.toInt() <= 18 && preference.getInt(
-                                allergyKeyList.get(firstAllergyInfo.toInt()), 0) != 0) {
+                                allergyKeyList[firstAllergyInfo.toInt()], 0) != 0) {
                             isAllergyFlag = true
                         }
 
@@ -704,10 +708,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         }
 
                         if(isAllergyFlag) {
-                            tmpTextViewList[i].text = menuName.trim()
-                            tmpTextViewList[i].setTextColor(resources.getColor(R.color.allergy))
+                            tmpTextViewList[i].text = menuName
+                            tmpTextViewList[i].setTextColor(ContextCompat.getColor(applicationContext(), R.color.allergy))
                         } else {
-                            tmpTextViewList[i].text = menuName.trim()
+                            tmpTextViewList[i].text = menuName
                         }
 
                         if(highlightedTextViews!!.indexOf("$i,", 0) != -1) {
@@ -717,7 +721,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
 
                     for(i in dishList.size until 12) {
-                        tmpTextViewList.get(i).visibility = View.GONE
+                        tmpTextViewList[i].visibility = View.GONE
                     }
 
                 }
@@ -806,14 +810,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     // Share callback function
     private fun onClickShareButton(){
         val bitmap: Bitmap = Bitmap.createBitmap(gupsikInfoGroup.measuredWidth, gupsikInfoGroup.measuredHeight, Bitmap.Config.ARGB_8888)
-        val canvas: Canvas = Canvas(bitmap)
+        val canvas = Canvas(bitmap)
 
         gupsikInfoGroup.draw(canvas)
 
         if (bitmap == null)
             return
 
-        var bitmapURI = Utils.getImageUri(this@MainActivity, bitmap)
+        val bitmapURI = Utils.getImageUri(applicationContext(), bitmap, "급식정보")
         //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
         //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
         val shareIntent: Intent = Intent().apply {
@@ -828,7 +832,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private fun highlightString(mTextView: TextView) {
 
         //Get the text from text view and create a spannable string
-        val spannableString = SpannableString(mTextView.getText())
+        val spannableString = SpannableString(mTextView.text)
         //Get the previous spans and remove them
         val backgroundSpans = spannableString.getSpans(
             0, spannableString.length,
@@ -838,31 +842,29 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             spannableString.removeSpan(span)
         }
 
-        spannableString.setSpan(BackgroundColorSpan(resources.getColor(R.color.highlight)), 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(BackgroundColorSpan(ContextCompat.getColor(applicationContext(), R.color.highlight)), 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         //Set the final text on TextView
         mTextView.text = spannableString
     }
 
     private fun setClickListenerWithTextViewList(textViewList: MutableList<TextView>, whichMeal: String) {
-        var highlightedTextViews = ""
+        var highlightedTextViews: String
         for(i in 0 until textViewList.size) {
-            textViewList.get(i).setOnClickListener {it as TextView
+            textViewList[i].setOnClickListener {it as TextView
 
                 if(highlighterPressedButton.visibility == View.VISIBLE) {
-                    highlightedTextViews = preference.getString(date_code + whichMeal, "").toString()
+                    highlightedTextViews = preference.getString(dateCode + whichMeal, "").toString()
 
-                    if(highlightedTextViews!!.indexOf(i.toString()+",", 0) != -1) {
+                    if(highlightedTextViews.indexOf("$i,", 0) != -1) {
 
                         it.text = it.text.toString()
-//                        it.setBackgroundResource(android.R.color.transparent)
-                        highlightedTextViews = highlightedTextViews.replace(i.toString() +",", "")
-                        preference.edit().putString(date_code + whichMeal, highlightedTextViews).apply()
+                        highlightedTextViews = highlightedTextViews.replace("$i,", "")
+                        preference.edit().putString(dateCode + whichMeal, highlightedTextViews).apply()
 
                     } else {
-                        highlightedTextViews = highlightedTextViews + i.toString() + ","
-                        preference.edit().putString(date_code + whichMeal, highlightedTextViews).apply()
-//                        it.background = getResources().getDrawable(R.drawable.highlight)
+                        highlightedTextViews = "$highlightedTextViews$i,"
+                        preference.edit().putString(dateCode + whichMeal, highlightedTextViews).apply()
 
                         highlightString(it)
 

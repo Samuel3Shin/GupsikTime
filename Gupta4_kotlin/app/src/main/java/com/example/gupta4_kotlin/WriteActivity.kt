@@ -1,13 +1,13 @@
 package com.example.gupta4_kotlin
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
-import android.view.MenuItem
-import android.widget.PopupMenu
 import android.widget.Toast
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -16,9 +16,6 @@ import kotlinx.android.synthetic.main.activity_write.*
 import kotlinx.android.synthetic.main.activity_write.adView
 
 class WriteActivity : AppCompatActivity() {
-
-    lateinit var context: Context
-
     init {
         instance = this
     }
@@ -30,10 +27,10 @@ class WriteActivity : AppCompatActivity() {
         }
     }
 
-    var writeMode = "post"
-    var postId = ""
-    var boardKey = ""
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    private var writeMode = "post"
+    private var postId = ""
+    private var boardKey = ""
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -69,19 +66,19 @@ class WriteActivity : AppCompatActivity() {
             }
         }
 
-        var alphaValue = 0.5F
+        val alphaValue = 0.5F
         buttonUpper.alpha = alphaValue
         button_upper_inside.alpha = alphaValue
         downArrowImageView.alpha = alphaValue
         boardNameTextView.alpha = alphaValue
 
         //배너 광고 추가
-        MobileAds.initialize(WriteActivity.applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
         backButton.setOnClickListener {
-            val intent = Intent(WriteActivity.applicationContext(), PopupButtonActivity::class.java)
+            val intent = Intent(applicationContext(), PopupButtonActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("postId", postId)
             intent.putExtra("writeMode", writeMode)
@@ -98,7 +95,7 @@ class WriteActivity : AppCompatActivity() {
 
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -153,7 +150,7 @@ class WriteActivity : AppCompatActivity() {
                 preference.edit().putString(Utils.myPostIdsKey, myPostIdsStr).apply()
 
                 // 여기서 새로 쓰는 글의 postId와 수정을 위해서 가져온 postId는 다르다는 걸 숙지하고 있어야한다.
-                val intent = Intent(WriteActivity.applicationContext(), DetailActivity::class.java)
+                val intent = Intent(applicationContext(), DetailActivity::class.java)
 
                 intent.putExtra("boardKey", boardKey)
                 intent.putExtra("postId", post.postId)
@@ -171,7 +168,7 @@ class WriteActivity : AppCompatActivity() {
                 postRef.child("nickname").setValue(nicknameTextView_write.text.toString())
                 postRef.child("message").setValue(input.text.toString())
 
-                val intent = Intent(WriteActivity.applicationContext(), DetailActivity::class.java)
+                val intent = Intent(applicationContext(), DetailActivity::class.java)
 
                 intent.putExtra("boardKey", boardKey)
                 intent.putExtra("postId", postId)
@@ -184,7 +181,8 @@ class WriteActivity : AppCompatActivity() {
 
     }
 
-    fun getMyId(): String {
+    @SuppressLint("HardwareIds")
+    private fun getMyId(): String {
         return Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
     }
 

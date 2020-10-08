@@ -2,6 +2,7 @@ package com.example.gupta4_kotlin
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -13,7 +14,6 @@ import kotlinx.android.synthetic.main.activity_my_setting.*
 import kotlinx.android.synthetic.main.activity_my_setting.adView
 
 class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
-    lateinit var context: Context
 
     init {
         instance = this
@@ -26,16 +26,16 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         }
     }
 
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
-    val allergyList: MutableList<String> = mutableListOf()
-    val allergyKeyList: MutableList<String> = mutableListOf()
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    private val allergyList: MutableList<String> = mutableListOf()
+    private val allergyKeyList: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_setting)
 
         //배너 광고 추가
-        MobileAds.initialize(MySettingActivity.applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -46,7 +46,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         allergyKeyList.addAll(listOf(Utils.myAllergy1Key, Utils.myAllergy2Key, Utils.myAllergy3Key, Utils.myAllergy4Key, Utils.myAllergy5Key, Utils.myAllergy6Key,
             Utils.myAllergy7Key, Utils.myAllergy8Key, Utils.myAllergy9Key, Utils.myAllergy10Key, Utils.myAllergy11Key, Utils.myAllergy12Key, Utils.myAllergy13Key,
             Utils.myAllergy14Key, Utils.myAllergy15Key, Utils.myAllergy16Key, Utils.myAllergy17Key, Utils.myAllergy18Key))
-        var allergyInfo: String = ""
+        var allergyInfo = ""
 
         for(i in 0 until allergyKeyList.size) {
             allergyList[preference.getInt(allergyKeyList[i], 0)].let {
@@ -63,7 +63,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         myAllergyInfoTextView.text = allergyInfo
 
         myPostsTab.setOnClickListener {
-            val intent = Intent(MySettingActivity.applicationContext(), MyPostsActivity::class.java)
+            val intent = Intent(applicationContext(), MyPostsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -80,16 +80,16 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         }
 
         mySchoolInfoEditButton.setOnClickListener {
-            val intent = Intent(MySettingActivity.applicationContext(), SchoolSearchActivity::class.java)
+            val intent = Intent(applicationContext(), SchoolSearchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            startActivity(intent);
+            startActivity(intent)
 
             finish()
 
         }
 
         myAllergyInfoEditButton.setOnClickListener {
-            val intent = Intent(MySettingActivity.applicationContext(), MyAllergyActivity::class.java)
+            val intent = Intent(applicationContext(), MyAllergyActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 
             startActivity(intent)
@@ -102,7 +102,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                val intent = Intent(MySettingActivity.applicationContext(), MainActivity::class.java)
+                val intent = Intent(applicationContext(), MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -112,7 +112,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             }
 
             R.id.menu_board ->  {
-                val intent = Intent(MySettingActivity.applicationContext(), CommunityActivity::class.java)
+                val intent = Intent(applicationContext(), CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 

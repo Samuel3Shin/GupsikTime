@@ -2,16 +2,14 @@ package com.example.gupta4_kotlin
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_my_allergy.*
-import kotlinx.android.synthetic.main.activity_write.*
 
 class MyAllergyActivity : AppCompatActivity() {
-    lateinit var context: Context
-
     init {
         instance = this
     }
@@ -23,36 +21,37 @@ class MyAllergyActivity : AppCompatActivity() {
         }
     }
 
-
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
-    val allergyKeyList: MutableList<String> = mutableListOf()
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    private val allergyKeyList: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_allergy)
-        var isLanding: Boolean = intent.getBooleanExtra("isLanding", false)
+        val isLanding: Boolean = intent.getBooleanExtra("isLanding", false)
 
         allergyKeyList.addAll(listOf("", Utils.myAllergy1Key, Utils.myAllergy2Key, Utils.myAllergy3Key, Utils.myAllergy4Key, Utils.myAllergy5Key, Utils.myAllergy6Key,
             Utils.myAllergy7Key, Utils.myAllergy8Key, Utils.myAllergy9Key, Utils.myAllergy10Key, Utils.myAllergy11Key, Utils.myAllergy12Key, Utils.myAllergy13Key,
             Utils.myAllergy14Key, Utils.myAllergy15Key, Utils.myAllergy16Key, Utils.myAllergy17Key, Utils.myAllergy18Key))
 
-        var imageCheckboxMap: MutableMap<String, View> = mutableMapOf()
-        var textCheckboxMap: MutableMap<String, View> = mutableMapOf()
-        var checkboxMap: MutableMap<String, View> = mutableMapOf()
+        val imageCheckboxMap: MutableMap<String, View> = mutableMapOf()
+        val textCheckboxMap: MutableMap<String, View> = mutableMapOf()
+        val checkboxMap: MutableMap<String, View> = mutableMapOf()
 
-        var childCnt: Int = allergyFrame.childCount
+        val childCnt: Int = allergyFrame.childCount
         for(i in 0 until childCnt) {
-            var viewId = allergyFrame.getChildAt(i).resources.getResourceEntryName(allergyFrame.getChildAt(i).id).toString()
+            val viewId = allergyFrame.getChildAt(i).resources.getResourceEntryName(allergyFrame.getChildAt(i).id).toString()
 
             when {
                 viewId.startsWith("checkbox_") -> {
-                    checkboxMap.put(allergyKeyList.get(viewId.split("checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
+                    checkboxMap[allergyKeyList[viewId.split("checkbox_")[1].toInt()]] = allergyFrame.getChildAt(i)
                 }
                 viewId.startsWith("image_checkbox_") -> {
-                    imageCheckboxMap.put(allergyKeyList.get(viewId.split("image_checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
+                    imageCheckboxMap[allergyKeyList[viewId.split("image_checkbox_")[1].toInt()]] =
+                        allergyFrame.getChildAt(i)
                 }
                 viewId.startsWith("text_checkbox_") -> {
-                    textCheckboxMap.put(allergyKeyList.get(viewId.split("text_checkbox_").get(1).toInt()), allergyFrame.getChildAt(i))
+                    textCheckboxMap[allergyKeyList[viewId.split("text_checkbox_")[1].toInt()]] =
+                        allergyFrame.getChildAt(i)
                 }
             }
         }
@@ -72,19 +71,19 @@ class MyAllergyActivity : AppCompatActivity() {
             }
 
             //checkbox 클릭되면 토글!
-            checkboxMap.get(allergyKeyList[i])!!.setOnClickListener {
+            checkboxMap[allergyKeyList[i]]!!.setOnClickListener {
                 Utils.toggleButton(imageCheckboxMap[allergyKeyList[i]]!!)
             }
 
             // text_checkbox 클릭되어도 토글!
-            textCheckboxMap.get(allergyKeyList[i])!!.setOnClickListener {
+            textCheckboxMap[allergyKeyList[i]]!!.setOnClickListener {
                 Utils.toggleButton(imageCheckboxMap[allergyKeyList[i]]!!)
             }
         }
 
         cancelButton.setOnClickListener {
             finish()
-            val intent = Intent(MyAllergyActivity.applicationContext(), MySettingActivity::class.java)
+            val intent = Intent(applicationContext(), MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
@@ -102,13 +101,13 @@ class MyAllergyActivity : AppCompatActivity() {
             finish()
 
             if(isLanding) {
-                val intent = Intent(MyAllergyActivity.applicationContext(), MainActivity::class.java)
+                val intent = Intent(applicationContext(), MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 preference.edit().putBoolean(Utils.isSetSchoolKey, true).apply()
 
                 startActivity(intent)
             } else {
-                val intent = Intent(MyAllergyActivity.applicationContext(), MySettingActivity::class.java)
+                val intent = Intent(applicationContext(), MySettingActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
             }
@@ -117,5 +116,9 @@ class MyAllergyActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }

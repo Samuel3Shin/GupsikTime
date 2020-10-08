@@ -1,15 +1,15 @@
 package com.example.gupta4_kotlin
 
 import android.content.Context
-import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_community.*
 
 class CommunityMySchoolActivity : CommunityActivity() {
     override var boardKey = "mySchool"
-    var schoolCode = ""
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    private var schoolCode = ""
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         schoolCode = preference.getString(Utils.schoolCodeKey, "").toString()

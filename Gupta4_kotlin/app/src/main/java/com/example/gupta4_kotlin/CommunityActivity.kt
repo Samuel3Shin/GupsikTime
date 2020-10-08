@@ -16,8 +16,6 @@ import kotlinx.android.synthetic.main.activity_community.buttonUpper
 
 open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
-    lateinit var context: Context
-
     init {
         instance = this
     }
@@ -57,7 +55,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         }
 
         writeButton.setOnClickListener {
-            val intent = Intent(CommunityActivity.applicationContext(), WriteActivity::class.java)
+            val intent = Intent(applicationContext(), WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("writeMode", "post")
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -65,7 +63,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
 
         }
 
-        val layoutManager = LinearLayoutManager(CommunityActivity.applicationContext())
+        val layoutManager = LinearLayoutManager(applicationContext())
 
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
@@ -76,7 +74,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         FirebaseDatabase.getInstance().getReference("$boardKey/Posts")
             .orderByChild("writeTime").addChildEventListener(object: ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    snapshot?.let { snapshot ->
+                    snapshot.let { snapshot ->
                         val post = snapshot.getValue(Post::class.java)
                         post?.let {
                             if(previousChildName == null) {
@@ -92,7 +90,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
                 }
 
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    snapshot?.let{snapshot ->
+                    snapshot.let{snapshot ->
                         val post = snapshot.getValue(Post::class.java)
                         post?.let { post ->
                             val prevIndex = posts.map{it.postId}.indexOf(previousChildName)
@@ -103,7 +101,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
                 }
 
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                    snapshot?.let {
+                    snapshot.let {
                         val post = snapshot.getValue(Post::class.java)
 
                         post?.let {post ->
@@ -124,7 +122,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {
-                    snapshot?.let {
+                    snapshot.let {
                         val post = snapshot.getValue(Post::class.java)
 
                         post?.let {post ->
@@ -136,12 +134,12 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    error?.toException()?.printStackTrace()
+                    error.toException().printStackTrace()
                 }
             })
 
         bambooButton.setOnClickListener {
-            val intent = Intent(CommunityActivity.applicationContext(), CommunityActivity::class.java)
+            val intent = Intent(applicationContext(), CommunityActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -150,7 +148,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         }
 
         careerButton.setOnClickListener {
-            val intent = Intent(CommunityActivity.applicationContext(), CommunityCareerActivity::class.java)
+            val intent = Intent(applicationContext(), CommunityCareerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -159,7 +157,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         }
 
         mySchoolButton.setOnClickListener{
-            val intent = Intent(CommunityActivity.applicationContext(), CommunityMySchoolActivity::class.java)
+            val intent = Intent(applicationContext(), CommunityMySchoolActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -173,7 +171,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                val intent = Intent(CommunityActivity.applicationContext(), MainActivity::class.java)
+                val intent = Intent(applicationContext(), MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -187,7 +185,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             }
 
             R.id.menu_myPage ->  {
-                val intent = Intent(CommunityActivity.applicationContext(), MyPostsActivity::class.java)
+                val intent = Intent(applicationContext(), MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 

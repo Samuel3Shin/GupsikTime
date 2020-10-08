@@ -10,7 +10,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val boardKey: String): RecyclerView.Adapter<CommunityViewHolder>() {
+class CommunityAdapter(val context: Context, private val posts: MutableList<Post>, private val boardKey: String): RecyclerView.Adapter<CommunityViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityViewHolder {
         return CommunityViewHolder(
             LayoutInflater.from(context)
@@ -45,11 +45,11 @@ class CommunityAdapter(val context: Context, val posts: MutableList<Post>, val b
 
             postRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var hitsNum = snapshot.child("hitsCount").value as Long
+                    val hitsNum = snapshot.child("hitsCount").value as Long
                     postRef.child("hitsCount").setValue(hitsNum + 1)
                 }
             })

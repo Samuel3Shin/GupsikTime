@@ -1,6 +1,7 @@
 package com.example.gupta4_kotlin
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
@@ -78,10 +79,10 @@ object Utils {
         }
     }
 
-    fun getImageUri(inContext: Activity, inImage: Bitmap): Uri? {
+    fun getImageUri(inContext: Context, inImage: Bitmap, title: String): Uri? {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "급식정보", null)
+        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, title, null)
         return Uri.parse(path)
     }
 

@@ -3,18 +3,20 @@ package com.example.gupta4_kotlin
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 
 class SplashScrrenActivity: Activity() {
-    val DURATION:Long = 1000
-    val preference by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
+    private val duration:Long = 1000
+    val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
 
             if(!preference.getBoolean(Utils.isSetSchoolKey, false)) {
                 val intent = Intent(this, SchoolSearchActivity::class.java)
@@ -29,7 +31,7 @@ class SplashScrrenActivity: Activity() {
                 finish()
             }
 
-        }, DURATION)
+        }, duration)
     }
 
     override fun onBackPressed() {
