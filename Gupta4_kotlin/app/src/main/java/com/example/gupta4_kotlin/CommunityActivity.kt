@@ -1,5 +1,6 @@
 package com.example.gupta4_kotlin
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +15,20 @@ import kotlinx.android.synthetic.main.activity_community.adView
 import kotlinx.android.synthetic.main.activity_community.buttonUpper
 
 open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+
+    lateinit var context: Context
+
+    init {
+        instance = this
+    }
+
+    companion object {
+        private var instance: CommunityActivity? = null
+        fun applicationContext(): Context {
+            return instance!!.applicationContext
+        }
+    }
+
     val posts: MutableList<Post> = mutableListOf()
     open var boardKey = "bamboo"
 
@@ -42,7 +57,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         }
 
         writeButton.setOnClickListener {
-            val intent = Intent(this@CommunityActivity, WriteActivity::class.java)
+            val intent = Intent(CommunityActivity.applicationContext(), WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("writeMode", "post")
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -50,7 +65,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
 
         }
 
-        val layoutManager = LinearLayoutManager(this@CommunityActivity)
+        val layoutManager = LinearLayoutManager(CommunityActivity.applicationContext())
 
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
@@ -126,7 +141,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             })
 
         bambooButton.setOnClickListener {
-            val intent = Intent(this@CommunityActivity, CommunityActivity::class.java)
+            val intent = Intent(CommunityActivity.applicationContext(), CommunityActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -135,7 +150,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         }
 
         careerButton.setOnClickListener {
-            val intent = Intent(this@CommunityActivity, CommunityCareerActivity::class.java)
+            val intent = Intent(CommunityActivity.applicationContext(), CommunityCareerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -144,7 +159,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
         }
 
         mySchoolButton.setOnClickListener{
-            val intent = Intent(this@CommunityActivity, CommunityMySchoolActivity::class.java)
+            val intent = Intent(CommunityActivity.applicationContext(), CommunityMySchoolActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -158,7 +173,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(CommunityActivity.applicationContext(), MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -172,7 +187,7 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             }
 
             R.id.menu_myPage ->  {
-                val intent = Intent(this, MyPostsActivity::class.java)
+                val intent = Intent(CommunityActivity.applicationContext(), MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 

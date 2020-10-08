@@ -11,6 +11,20 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_popup_button.*
 
 class PopupButtonActivity : AppCompatActivity() {
+
+    lateinit var context: Context
+
+    init {
+        instance = this
+    }
+
+    companion object {
+        private var instance: PopupButtonActivity? = null
+        fun applicationContext(): Context {
+            return instance!!.applicationContext
+        }
+    }
+
     var postId: String? = ""
     var commentId: String? = ""
     var boardKey: String? = ""
@@ -52,13 +66,13 @@ class PopupButtonActivity : AppCompatActivity() {
 
                     when(boardKey) {
                         "bamboo" -> {
-                            intent = Intent(this@PopupButtonActivity, CommunityActivity::class.java)
+                            intent = Intent(PopupButtonActivity.applicationContext(), CommunityActivity::class.java)
                         }
                         "career" -> {
-                            intent = Intent(this@PopupButtonActivity, CommunityCareerActivity::class.java)
+                            intent = Intent(PopupButtonActivity.applicationContext(), CommunityCareerActivity::class.java)
                         }
                         else -> {
-                            intent = Intent(this@PopupButtonActivity, CommunityMySchoolActivity::class.java)
+                            intent = Intent(PopupButtonActivity.applicationContext(), CommunityMySchoolActivity::class.java)
                         }
                     }
 
@@ -75,7 +89,7 @@ class PopupButtonActivity : AppCompatActivity() {
 
                     // 수정 모드였을 때는 그 detail activity로 가줘야함.
                     if(writeMode == "editPost") {
-                        val intent = Intent(this@PopupButtonActivity, DetailActivity::class.java)
+                        val intent = Intent(PopupButtonActivity.applicationContext(), DetailActivity::class.java)
 
                         intent.putExtra("boardKey", boardKey)
                         intent.putExtra("postId", postId)
@@ -87,13 +101,13 @@ class PopupButtonActivity : AppCompatActivity() {
 
                         when(boardKey) {
                             "bamboo" -> {
-                                intent = Intent(this@PopupButtonActivity, CommunityActivity::class.java)
+                                intent = Intent(PopupButtonActivity.applicationContext(), CommunityActivity::class.java)
                             }
                             "career" -> {
-                                intent = Intent(this@PopupButtonActivity, CommunityCareerActivity::class.java)
+                                intent = Intent(PopupButtonActivity.applicationContext(), CommunityCareerActivity::class.java)
                             }
                             else -> {
-                                intent = Intent(this@PopupButtonActivity, CommunityMySchoolActivity::class.java)
+                                intent = Intent(PopupButtonActivity.applicationContext(), CommunityMySchoolActivity::class.java)
                             }
                         }
 
@@ -122,7 +136,7 @@ class PopupButtonActivity : AppCompatActivity() {
                         }
                     })
 
-                    val intent = Intent(this@PopupButtonActivity, DetailActivity::class.java)
+                    val intent = Intent(PopupButtonActivity.applicationContext(), DetailActivity::class.java)
 
                     intent.putExtra("boardKey", boardKey)
                     intent.putExtra("postId", postId)
@@ -138,7 +152,7 @@ class PopupButtonActivity : AppCompatActivity() {
         cancelButton.setOnClickListener {
             when(popUpMode) {
                 "delete", "deleteComment" -> {
-                    val intent = Intent(this@PopupButtonActivity, DetailActivity::class.java)
+                    val intent = Intent(PopupButtonActivity.applicationContext(), DetailActivity::class.java)
 
                     intent.putExtra("boardKey", boardKey)
                     intent.putExtra("postId", postId)

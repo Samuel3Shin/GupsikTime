@@ -15,6 +15,19 @@ import kotlinx.android.synthetic.main.search_bar.view.*
 
 class SchoolSearchActivity : AppCompatActivity() {
 
+    lateinit var context: Context
+
+    init {
+        instance = this
+    }
+
+    companion object {
+        private var instance: SchoolSearchActivity? = null
+        fun applicationContext(): Context {
+            return instance!!.applicationContext
+        }
+    }
+
     val schoolCodeMap = mutableMapOf<String, String>()
     val districtCodeMap = mutableMapOf<String, String>()
 
@@ -52,7 +65,7 @@ class SchoolSearchActivity : AppCompatActivity() {
 
         cancelButton.setOnClickListener {
             finish()
-            val intent = Intent(this, MySettingActivity::class.java)
+            val intent = Intent(SchoolSearchActivity.applicationContext(), MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
@@ -69,12 +82,12 @@ class SchoolSearchActivity : AppCompatActivity() {
                 finish()
 
                 if(isLanding) {
-                    val intent = Intent(this, MyAllergyActivity::class.java)
+                    val intent = Intent(SchoolSearchActivity.applicationContext(), MyAllergyActivity::class.java)
                     intent.putExtra("isLanding", true)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
                 } else {
-                    val intent = Intent(this, MySettingActivity::class.java)
+                    val intent = Intent(SchoolSearchActivity.applicationContext(), MySettingActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
                 }
