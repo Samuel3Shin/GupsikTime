@@ -19,6 +19,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.children
 import com.example.gupta4_kotlin.databinding.CalendarHeaderBinding
 import com.example.gupta4_kotlin.databinding.CalendarDayBinding
@@ -47,6 +48,18 @@ import java.time.temporal.WeekFields
 import java.util.*
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+    lateinit var context: Context
+
+    init {
+        instance = this
+    }
+
+    companion object {
+        private var instance: MainActivity? = null
+        fun applicationContext(): Context {
+            return instance!!.applicationContext
+        }
+    }
 
     var serviceUrl: String = ""
     var serviceKey: String = ""
@@ -80,8 +93,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val view = binding.root
         setContentView(view)
 
-        //배너 광고 추가
-        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        //배너 광고 추가 (원래는 this 였는데, applicationContext()로 바꿨다.)
+        MobileAds.initialize(MainActivity.applicationContext(), getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -355,7 +368,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.menu_board -> {
-                val intent = Intent(this, CommunityActivity::class.java)
+                val intent = Intent(MainActivity.applicationContext(), CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -365,7 +378,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.menu_myPage -> {
-                val intent = Intent(this, MyPostsActivity::class.java)
+                val intent = Intent(MainActivity.applicationContext(), MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 

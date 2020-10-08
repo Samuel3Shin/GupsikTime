@@ -24,6 +24,19 @@ import kotlinx.android.synthetic.main.gupsik_detail.shareButton
 
 class DetailActivity : AppCompatActivity() {
 
+    lateinit var context: Context
+
+    init {
+        instance = this
+    }
+
+    companion object {
+        private var instance: DetailActivity? = null
+        fun applicationContext(): Context {
+            return instance!!.applicationContext
+        }
+    }
+
     val commentList = mutableListOf<Comment>()
     var postId: String? = "";
     var boardKey: String? = ""
@@ -41,7 +54,7 @@ class DetailActivity : AppCompatActivity() {
 
         deleteButton.setOnClickListener {
 
-            val intent = Intent(this@DetailActivity, PopupButtonActivity::class.java)
+            val intent = Intent(DetailActivity.applicationContext(), PopupButtonActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("postId", postId)
             intent.putExtra("popUpMode", "delete")
@@ -54,7 +67,7 @@ class DetailActivity : AppCompatActivity() {
 
         editButton.setOnClickListener {
 
-            val intent = Intent(this@DetailActivity, WriteActivity::class.java)
+            val intent = Intent(DetailActivity.applicationContext(), WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("writeMode", "editPost")
             intent.putExtra("postId", postId)
@@ -69,7 +82,7 @@ class DetailActivity : AppCompatActivity() {
             onClickShareButton()
         }
 
-        val layoutManager = LinearLayoutManager(this@DetailActivity)
+        val layoutManager = LinearLayoutManager(DetailActivity.applicationContext())
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         recycler_view.layoutManager = layoutManager
         recycler_view.adapter = MyAdapter()
@@ -104,7 +117,7 @@ class DetailActivity : AppCompatActivity() {
             })
 
         //배너 광고 추가
-        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        MobileAds.initialize(DetailActivity.applicationContext(), getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -291,7 +304,7 @@ class DetailActivity : AppCompatActivity() {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            return MyViewHolder(LayoutInflater.from(this@DetailActivity)
+            return MyViewHolder(LayoutInflater.from(DetailActivity.applicationContext())
                 .inflate(R.layout.gupsik_comment, parent, false))
         }
 
@@ -315,7 +328,7 @@ class DetailActivity : AppCompatActivity() {
             holder.deleteTextView.setOnClickListener {
 
 
-                val intent = Intent(this@DetailActivity, PopupButtonActivity::class.java)
+                val intent = Intent(DetailActivity.applicationContext(), PopupButtonActivity::class.java)
                 intent.putExtra("boardKey", boardKey)
                 intent.putExtra("postId", postId)
                 intent.putExtra("commentId", commentId)
