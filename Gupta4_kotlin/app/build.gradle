@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.gupta4_kotlin"
+        applicationId "com.gooselab.gupta4_kotlin"
         minSdkVersion 17
         targetSdkVersion 30
         versionCode 1
@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.github.kizitonwose:CalendarView:0.4.4'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.firebase:firebase-ads:18.0.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

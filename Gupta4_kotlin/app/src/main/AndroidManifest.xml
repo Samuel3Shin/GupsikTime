@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.gupta4_kotlin">
+    package="com.gooselab.gupta4_kotlin">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -9,34 +9,34 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_main"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_main_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id"/>
 
-        <activity android:name=".PopupButtonActivity" android:screenOrientation="portrait" />
-        <activity android:name=".MyAllergyActivity" android:screenOrientation="portrait" />
-        <activity android:name=".MyPostsActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
-        <activity android:name=".SchoolSearchActivity" android:screenOrientation="portrait" />
-        <activity android:name=".MySettingActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".SplashScrrenActivity" android:screenOrientation="portrait" >
+        <activity android:name="com.gooselab.gupta4_kotlin.PopupButtonActivity" android:screenOrientation="portrait" />
+        <activity android:name="com.gooselab.gupta4_kotlin.MyAllergyActivity" android:screenOrientation="portrait" />
+        <activity android:name="com.gooselab.gupta4_kotlin.MyPostsActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
+        <activity android:name="com.gooselab.gupta4_kotlin.SchoolSearchActivity" android:screenOrientation="portrait" />
+        <activity android:name="com.gooselab.gupta4_kotlin.MySettingActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.gooselab.gupta4_kotlin.SplashScrrenActivity" android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CommunityActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".CommunityCareerActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".CommunityMySchoolActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".WriteActivity" android:screenOrientation="portrait" />
-        <activity android:name=".DetailActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
-        <activity android:name=".MainActivity" android:screenOrientation="portrait" />
+        <activity android:name="com.gooselab.gupta4_kotlin.CommunityActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.gooselab.gupta4_kotlin.CommunityCareerActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.gooselab.gupta4_kotlin.CommunityMySchoolActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.gooselab.gupta4_kotlin.WriteActivity" android:screenOrientation="portrait" />
+        <activity android:name="com.gooselab.gupta4_kotlin.DetailActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
+        <activity android:name="com.gooselab.gupta4_kotlin.MainActivity" android:screenOrientation="portrait" />
     </application>
 
 </manifest>
