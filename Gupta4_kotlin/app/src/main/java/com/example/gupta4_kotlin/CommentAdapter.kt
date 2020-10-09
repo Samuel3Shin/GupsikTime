@@ -36,7 +36,7 @@ class CommentAdapter(val context: Context, private val commentList: MutableList<
 
         holder.deleteTextView.setOnClickListener {
 
-            val intent = Intent(DetailActivity.applicationContext(), PopupButtonActivity::class.java)
+            val intent = Intent(context.applicationContext, PopupButtonActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("postId", postId)
             intent.putExtra("commentId", commentId)

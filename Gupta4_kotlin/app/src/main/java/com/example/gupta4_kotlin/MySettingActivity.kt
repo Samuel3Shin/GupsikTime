@@ -15,17 +15,6 @@ import kotlinx.android.synthetic.main.activity_my_setting.adView
 
 class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
-    init {
-        instance = this
-    }
-
-    companion object {
-        private var instance: MySettingActivity? = null
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
-
     val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
     private val allergyList: MutableList<String> = mutableListOf()
     private val allergyKeyList: MutableList<String> = mutableListOf()
@@ -35,7 +24,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         setContentView(R.layout.activity_my_setting)
 
         //배너 광고 추가
-        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext, getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -63,7 +52,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         myAllergyInfoTextView.text = allergyInfo
 
         myPostsTab.setOnClickListener {
-            val intent = Intent(applicationContext(), MyPostsActivity::class.java)
+            val intent = Intent(applicationContext, MyPostsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -80,7 +69,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         }
 
         mySchoolInfoEditButton.setOnClickListener {
-            val intent = Intent(applicationContext(), SchoolSearchActivity::class.java)
+            val intent = Intent(applicationContext, SchoolSearchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
@@ -89,7 +78,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
         }
 
         myAllergyInfoEditButton.setOnClickListener {
-            val intent = Intent(applicationContext(), MyAllergyActivity::class.java)
+            val intent = Intent(applicationContext, MyAllergyActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 
             startActivity(intent)
@@ -102,7 +91,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                val intent = Intent(applicationContext(), MainActivity::class.java)
+                val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -112,7 +101,7 @@ class MySettingActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener
             }
 
             R.id.menu_board ->  {
-                val intent = Intent(applicationContext(), CommunityActivity::class.java)
+                val intent = Intent(applicationContext, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 

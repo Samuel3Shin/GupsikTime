@@ -47,17 +47,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
-    init {
-        instance = this
-    }
-
-    companion object {
-        private var instance: MainActivity? = null
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
-
     private var serviceUrl: String = ""
     private var serviceKey: String = ""
     val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
@@ -90,8 +79,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val view = binding.root
         setContentView(view)
 
-        //배너 광고 추가 (원래는 this 였는데, applicationContext()로 바꿨다.)
-        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
+        //배너 광고 추가 (원래는 this 였는데, applicationContext로 바꿨다.)
+        MobileAds.initialize(applicationContext, getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -196,7 +185,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             tmpDate = dateTextView.text.toString()
             dateTextView.text = "좋아하는 메뉴를 눌러 하이라이트!"
-            dateTextView.setTextColor(ContextCompat.getColor(applicationContext(), R.color.windowBlue))
+            dateTextView.setTextColor(ContextCompat.getColor(applicationContext, R.color.windowBlue))
             schoolName.makeGone()
         }
 
@@ -216,7 +205,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             // Charlie : 토글과 alpha 조절하는 건 함수만들어서 코드 라인 수 줄이면 좋을 것 같아!
 
             dateTextView.text = tmpDate
-            dateTextView.setTextColor(ContextCompat.getColor(applicationContext(), R.color.black))
+            dateTextView.setTextColor(ContextCompat.getColor(applicationContext, R.color.black))
             schoolName.makeVisible()
         }
 
@@ -372,7 +361,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.menu_board -> {
-                val intent = Intent(applicationContext(), CommunityActivity::class.java)
+                val intent = Intent(applicationContext, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -382,7 +371,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.menu_myPage -> {
-                val intent = Intent(applicationContext(), MyPostsActivity::class.java)
+                val intent = Intent(applicationContext, MyPostsActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -709,7 +698,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                         if(isAllergyFlag) {
                             tmpTextViewList[i].text = menuName
-                            tmpTextViewList[i].setTextColor(ContextCompat.getColor(applicationContext(), R.color.allergy))
+                            tmpTextViewList[i].setTextColor(ContextCompat.getColor(applicationContext, R.color.allergy))
                         } else {
                             tmpTextViewList[i].text = menuName
                         }
@@ -817,7 +806,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         if (bitmap == null)
             return
 
-        val bitmapURI = Utils.getImageUri(applicationContext(), bitmap, "급식정보")
+        val bitmapURI = Utils.getImageUri(applicationContext, bitmap, "급식정보")
         //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
         //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
         val shareIntent: Intent = Intent().apply {
@@ -842,7 +831,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             spannableString.removeSpan(span)
         }
 
-        spannableString.setSpan(BackgroundColorSpan(ContextCompat.getColor(applicationContext(), R.color.highlight)), 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(BackgroundColorSpan(ContextCompat.getColor(applicationContext, R.color.highlight)), 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         //Set the final text on TextView
         mTextView.text = spannableString

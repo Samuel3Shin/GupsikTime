@@ -13,17 +13,6 @@ import kotlinx.android.synthetic.main.activity_popup_button.*
 
 class PopupButtonActivity : AppCompatActivity() {
 
-    init {
-        instance = this
-    }
-
-    companion object {
-        private var instance: PopupButtonActivity? = null
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
-
     private var postId: String? = ""
     private var commentId: String? = ""
     private var boardKey: String? = ""
@@ -63,13 +52,13 @@ class PopupButtonActivity : AppCompatActivity() {
 
                     val intent: Intent? = when(boardKey) {
                         "bamboo" -> {
-                            Intent(applicationContext(), CommunityActivity::class.java)
+                            Intent(applicationContext, CommunityActivity::class.java)
                         }
                         "career" -> {
-                            Intent(applicationContext(), CommunityCareerActivity::class.java)
+                            Intent(applicationContext, CommunityCareerActivity::class.java)
                         }
                         else -> {
-                            Intent(applicationContext(), CommunityMySchoolActivity::class.java)
+                            Intent(applicationContext, CommunityMySchoolActivity::class.java)
                         }
                     }
 
@@ -86,7 +75,7 @@ class PopupButtonActivity : AppCompatActivity() {
 
                     // 수정 모드였을 때는 그 detail activity로 가줘야함.
                     if(writeMode == "editPost") {
-                        val intent = Intent(applicationContext(), DetailActivity::class.java)
+                        val intent = Intent(applicationContext, DetailActivity::class.java)
 
                         intent.putExtra("boardKey", boardKey)
                         intent.putExtra("postId", postId)
@@ -96,13 +85,13 @@ class PopupButtonActivity : AppCompatActivity() {
                     } else {
                         val intent: Intent? = when(boardKey) {
                                 "bamboo" -> {
-                                    Intent(applicationContext(), CommunityActivity::class.java)
+                                    Intent(applicationContext, CommunityActivity::class.java)
                                 }
                                 "career" -> {
-                                    Intent(applicationContext(), CommunityCareerActivity::class.java)
+                                    Intent(applicationContext, CommunityCareerActivity::class.java)
                                 }
                                 else -> {
-                                    Intent(applicationContext(), CommunityMySchoolActivity::class.java)
+                                    Intent(applicationContext, CommunityMySchoolActivity::class.java)
                                 }
                             }
 
@@ -131,13 +120,6 @@ class PopupButtonActivity : AppCompatActivity() {
                         }
                     })
 
-//                    val intent = Intent(applicationContext(), DetailActivity::class.java)
-//
-//                    intent.putExtra("boardKey", boardKey)
-//                    intent.putExtra("postId", postId)
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-//                    startActivity(intent)
-
                 }
             }
             finish()
@@ -147,7 +129,7 @@ class PopupButtonActivity : AppCompatActivity() {
         cancelButton.setOnClickListener {
             when(popUpMode) {
                 "delete" -> {
-                    val intent = Intent(applicationContext(), DetailActivity::class.java)
+                    val intent = Intent(applicationContext, DetailActivity::class.java)
 
                     intent.putExtra("boardKey", boardKey)
                     intent.putExtra("postId", postId)
