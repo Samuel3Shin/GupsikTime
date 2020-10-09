@@ -18,17 +18,6 @@ import kotlinx.android.synthetic.main.activity_my_posts.recyclerView
 
 class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
-    init {
-        instance = this
-    }
-
-    companion object {
-        private var instance: MyPostsActivity? = null
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
-
     val posts: MutableList<Post> = mutableListOf()
     val boardKeys: MutableList<String> = mutableListOf()
     val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
@@ -37,10 +26,8 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_posts)
 
-        recyclerView.layoutManager?.scrollToPosition(0)
-
         //배너 광고 추가
-        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext, getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -52,19 +39,21 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         mySettingTab.setOnClickListener {
-            val intent = Intent(applicationContext(), MySettingActivity::class.java)
+            val intent = Intent(applicationContext, MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
 
             finish()
         }
 
-        val layoutManager = LinearLayoutManager(applicationContext())
+        val layoutManager = LinearLayoutManager(applicationContext)
 
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
 
         recyclerView.layoutManager = layoutManager
+        recyclerView.layoutManager?.scrollToPosition(0)
+
         recyclerView.adapter = MyPostsAdapter(this@MyPostsActivity, posts, boardKeys)
 
         val myPostIdsStr = preference.getString(Utils.myPostIdsKey, "").toString()
@@ -100,7 +89,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_mealInfo ->  {
-                val intent = Intent(applicationContext(), MainActivity::class.java)
+                val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -110,7 +99,7 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.menu_board ->  {
-                val intent = Intent(applicationContext(), CommunityActivity::class.java)
+                val intent = Intent(applicationContext, CommunityActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
 
@@ -141,6 +130,8 @@ class MyPostsActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     // Called before the activity is destroyed
     public override fun onDestroy() {
         adView.destroy()
+        recyclerView.layoutManager = null
+        recyclerView.adapter = null
         super.onDestroy()
     }
 

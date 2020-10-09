@@ -16,16 +16,6 @@ import kotlinx.android.synthetic.main.activity_write.*
 import kotlinx.android.synthetic.main.activity_write.adView
 
 class WriteActivity : AppCompatActivity() {
-    init {
-        instance = this
-    }
-
-    companion object {
-        private var instance: WriteActivity? = null
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
 
     private var writeMode = "post"
     private var postId = ""
@@ -73,12 +63,12 @@ class WriteActivity : AppCompatActivity() {
         boardNameTextView.alpha = alphaValue
 
         //배너 광고 추가
-        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext, getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
         backButton.setOnClickListener {
-            val intent = Intent(applicationContext(), PopupButtonActivity::class.java)
+            val intent = Intent(applicationContext, PopupButtonActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("postId", postId)
             intent.putExtra("writeMode", writeMode)
@@ -150,7 +140,7 @@ class WriteActivity : AppCompatActivity() {
                 preference.edit().putString(Utils.myPostIdsKey, myPostIdsStr).apply()
 
                 // 여기서 새로 쓰는 글의 postId와 수정을 위해서 가져온 postId는 다르다는 걸 숙지하고 있어야한다.
-                val intent = Intent(applicationContext(), DetailActivity::class.java)
+                val intent = Intent(applicationContext, DetailActivity::class.java)
 
                 intent.putExtra("boardKey", boardKey)
                 intent.putExtra("postId", post.postId)
@@ -168,7 +158,7 @@ class WriteActivity : AppCompatActivity() {
                 postRef.child("nickname").setValue(nicknameTextView_write.text.toString())
                 postRef.child("message").setValue(input.text.toString())
 
-                val intent = Intent(applicationContext(), DetailActivity::class.java)
+                val intent = Intent(applicationContext, DetailActivity::class.java)
 
                 intent.putExtra("boardKey", boardKey)
                 intent.putExtra("postId", postId)
@@ -183,7 +173,7 @@ class WriteActivity : AppCompatActivity() {
 
     @SuppressLint("HardwareIds")
     private fun getMyId(): String {
-        return Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        return Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
     // Called when leaving the activity

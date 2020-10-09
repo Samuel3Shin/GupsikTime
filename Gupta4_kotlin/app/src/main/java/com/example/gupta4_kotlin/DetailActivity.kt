@@ -21,16 +21,6 @@ import kotlinx.android.synthetic.main.gupsik_detail.dateTextView
 import kotlinx.android.synthetic.main.gupsik_detail.shareButton
 
 class DetailActivity : AppCompatActivity() {
-    init {
-        instance = this
-    }
-
-    companion object {
-        private var instance: DetailActivity? = null
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
 
     val commentList = mutableListOf<Comment>()
     var postId: String? = ""
@@ -54,26 +44,24 @@ class DetailActivity : AppCompatActivity() {
 
         deleteButton.setOnClickListener {
 
-            val intent = Intent(applicationContext(), PopupButtonActivity::class.java)
+            val intent = Intent(applicationContext, PopupButtonActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("postId", postId)
             intent.putExtra("popUpMode", "delete")
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
-
             finish()
 
         }
 
         editButton.setOnClickListener {
 
-            val intent = Intent(applicationContext(), WriteActivity::class.java)
+            val intent = Intent(applicationContext, WriteActivity::class.java)
             intent.putExtra("boardKey", boardKey)
             intent.putExtra("writeMode", "editPost")
             intent.putExtra("postId", postId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
-
             finish()
 
         }
@@ -82,13 +70,13 @@ class DetailActivity : AppCompatActivity() {
             onClickShareButton()
         }
 
-        val layoutManager = LinearLayoutManager(applicationContext())
+        val layoutManager = LinearLayoutManager(applicationContext)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         recycler_view.layoutManager = layoutManager
         recycler_view.adapter = CommentAdapter(this@DetailActivity, commentList, boardKey!!, postId!!)
 
         //배너 광고 추가
-        MobileAds.initialize(applicationContext(), getString(R.string.admob_app_id))
+        MobileAds.initialize(applicationContext, getString(R.string.admob_app_id))
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -289,7 +277,7 @@ class DetailActivity : AppCompatActivity() {
 
     @SuppressLint("HardwareIds")
     fun getMyId(): String {
-        return Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        return Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
     // Share callback function
@@ -331,6 +319,8 @@ class DetailActivity : AppCompatActivity() {
         adView.destroy()
         postReference.removeEventListener(postListener)
         commentReference.removeEventListener(commentListener)
+        recycler_view.layoutManager = null
+        recycler_view.adapter = null
         super.onDestroy()
     }
 

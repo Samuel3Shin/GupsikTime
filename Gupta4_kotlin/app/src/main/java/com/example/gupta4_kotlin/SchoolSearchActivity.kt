@@ -15,17 +15,6 @@ import kotlinx.android.synthetic.main.search_bar.view.*
 
 class SchoolSearchActivity : AppCompatActivity() {
 
-    init {
-        instance = this
-    }
-
-    companion object {
-        private var instance: SchoolSearchActivity? = null
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
-
     private val schoolCodeMap = mutableMapOf<String, String>()
     private val districtCodeMap = mutableMapOf<String, String>()
 
@@ -63,7 +52,7 @@ class SchoolSearchActivity : AppCompatActivity() {
 
         cancelButton.setOnClickListener {
             finish()
-            val intent = Intent(applicationContext(), MySettingActivity::class.java)
+            val intent = Intent(applicationContext, MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
@@ -80,12 +69,12 @@ class SchoolSearchActivity : AppCompatActivity() {
                 finish()
 
                 if(isLanding) {
-                    val intent = Intent(applicationContext(), MyAllergyActivity::class.java)
+                    val intent = Intent(applicationContext, MyAllergyActivity::class.java)
                     intent.putExtra("isLanding", true)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
                 } else {
-                    val intent = Intent(applicationContext(), MySettingActivity::class.java)
+                    val intent = Intent(applicationContext, MySettingActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
                 }
@@ -94,5 +83,10 @@ class SchoolSearchActivity : AppCompatActivity() {
 
             Toast.makeText(applicationContext, "힉교 정보가 저장되었습니다!", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onDestroy() {
+        searchBar.autoCompleteTextView.setAdapter(null)
+        super.onDestroy()
     }
 }

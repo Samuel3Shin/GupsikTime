@@ -30,7 +30,7 @@ class MyPostsAdapter(val context: Context, private val posts: MutableList<Post>,
         holder.titleTextView.text = post.title
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(MyPostsActivity.applicationContext(), DetailActivity::class.java)
+            val intent = Intent(context.applicationContext, DetailActivity::class.java)
             val boardKey = boardKeys[position]
 
             intent.putExtra("boardKey", boardKey)

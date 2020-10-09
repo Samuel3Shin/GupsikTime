@@ -10,16 +10,6 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_my_allergy.*
 
 class MyAllergyActivity : AppCompatActivity() {
-    init {
-        instance = this
-    }
-
-    companion object {
-        private var instance: MyAllergyActivity? = null
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
 
     val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
     private val allergyKeyList: MutableList<String> = mutableListOf()
@@ -83,7 +73,7 @@ class MyAllergyActivity : AppCompatActivity() {
 
         cancelButton.setOnClickListener {
             finish()
-            val intent = Intent(applicationContext(), MySettingActivity::class.java)
+            val intent = Intent(applicationContext, MySettingActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
@@ -101,13 +91,13 @@ class MyAllergyActivity : AppCompatActivity() {
             finish()
 
             if(isLanding) {
-                val intent = Intent(applicationContext(), MainActivity::class.java)
+                val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 preference.edit().putBoolean(Utils.isSetSchoolKey, true).apply()
 
                 startActivity(intent)
             } else {
-                val intent = Intent(applicationContext(), MySettingActivity::class.java)
+                val intent = Intent(applicationContext, MySettingActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
             }
