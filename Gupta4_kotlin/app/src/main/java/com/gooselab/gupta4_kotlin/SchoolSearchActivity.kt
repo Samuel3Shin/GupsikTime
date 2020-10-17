@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
@@ -49,6 +51,13 @@ class SchoolSearchActivity : AppCompatActivity() {
         searchBar.autoCompleteTextView.threshold = 1
         searchBar.autoCompleteTextView.setAdapter(adapter)
         searchBar.autoCompleteTextView.setText("")
+
+        // 학교 선택하면 키보드 내리
+        searchBar.autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener {
+                _, _, _, _ ->
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(searchBar.autoCompleteTextView.windowToken, 0)
+        }
 
         cancelButton.setOnClickListener {
             finish()

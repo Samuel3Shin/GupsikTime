@@ -1,15 +1,18 @@
 package com.gooselab.gupta4_kotlin
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
@@ -282,24 +285,29 @@ class DetailActivity : AppCompatActivity() {
 
     // Share callback function
     private fun onClickShareButton(){
-        val bitmap: Bitmap = Bitmap.createBitmap(nestedScrollView.measuredWidth, nestedScrollView.measuredHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
+        try {
+            val bitmap: Bitmap = Bitmap.createBitmap(nestedScrollView.measuredWidth, nestedScrollView.measuredHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
 
-        nestedScrollView.draw(canvas)
+            nestedScrollView.draw(canvas)
 
-        if (bitmap == null)
-            return
+            if (bitmap == null)
+                return
 
-        val bitmapURI = Utils.getImageUri(applicationContext, bitmap, "게시글")
-        //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
-        //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
-        val shareIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "image/jpeg"
-            putExtra(Intent.EXTRA_STREAM, bitmapURI)
-            putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
+            val bitmapURI = Utils.getImageUri(applicationContext, bitmap, "게시글")
+            //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
+            //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "image/jpeg"
+                putExtra(Intent.EXTRA_STREAM, bitmapURI)
+                putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
+            }
+            startActivity(Intent.createChooser(shareIntent, "share image and text!"))
+        } catch (e: Exception) {
+            Toast.makeText(applicationContext, "안드로이드 버전 문제로 인해 공유 버튼을 이용할 수 없습니다!", Toast.LENGTH_SHORT).show()
         }
-        startActivity(Intent.createChooser(shareIntent, "share image and text!"))
+
     }
 
     // Called when leaving the activity
