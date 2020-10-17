@@ -9,7 +9,7 @@ import android.os.Handler
 import android.os.Looper
 
 class SplashScrrenActivity: Activity() {
-    private val duration:Long = 1000
+    private val duration:Long = 300
     val preference: SharedPreferences by lazy {getSharedPreferences("mainActivity", Context.MODE_PRIVATE)}
 
     override fun onCreate(savedInstanceState: Bundle?) {

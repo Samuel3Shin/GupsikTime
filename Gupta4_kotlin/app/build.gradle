@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.gooselab.gupta4_kotlin"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -30,7 +30,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-
 
     buildTypes {
         release {
@@ -62,6 +61,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.firebase:firebase-ads:18.0.0'
 
+    //KAKAO SDK
+    implementation group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION
+
 }
 
 apply plugin: 'com.google.gms.google-services'
+

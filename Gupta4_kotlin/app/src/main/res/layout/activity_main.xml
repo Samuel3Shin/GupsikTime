@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/entire_screen"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -251,16 +252,19 @@
     <include
         android:id="@+id/highlighterButton"
         layout="@layout/button_template_unpressed"
-        android:layout_width="66dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_max="66dp"
         android:layout_height="28dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="2dp"
         app:layout_constraintStart_toEndOf="@+id/calendar_box"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/calendar_box" />
 
     <ImageView
         android:id="@+id/highlighterImageView"
-        android:layout_width="51dp"
-        android:layout_height="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="6dp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="@+id/highlighterButton"
@@ -272,17 +276,18 @@
     <include
         android:id="@+id/highlighterPressedButton"
         layout="@layout/button_template_unpressed"
-        android:layout_width="66dp"
-        android:layout_height="28dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/calendar_box"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/calendar_box" />
+        app:layout_constraintBottom_toBottomOf="@+id/highlighterButton"
+        app:layout_constraintEnd_toEndOf="@+id/highlighterButton"
+        app:layout_constraintStart_toStartOf="@+id/highlighterButton"
+        app:layout_constraintTop_toTopOf="@+id/highlighterButton" />
 
     <ImageView
         android:id="@+id/highlighterPressedImageView"
-        android:layout_width="51dp"
-        android:layout_height="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="6dp"
         android:visibility="invisible"
         android:gravity="center"
@@ -295,9 +300,12 @@
     <include
         android:id="@+id/shareButton"
         layout="@layout/button_template_unpressed"
-        android:layout_width="66dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_max="66dp"
         android:layout_height="28dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="2dp"
         app:layout_constraintStart_toEndOf="@+id/calendar_box"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/highlighterButton" />
@@ -306,31 +314,36 @@
         android:id="@+id/shareImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="6dp"
+        android:layout_margin="4dp"
         android:gravity="center"
-        app:srcCompat="@drawable/ic_share"
-        app:layout_constraintTop_toTopOf="@+id/shareButton"
         app:layout_constraintBottom_toBottomOf="@+id/shareButton"
+        app:layout_constraintEnd_toEndOf="@+id/shareButton"
         app:layout_constraintStart_toStartOf="@+id/shareButton"
-        app:layout_constraintEnd_toEndOf="@+id/shareButton"  />
+        app:layout_constraintTop_toTopOf="@+id/shareButton"
+        app:srcCompat="@drawable/ic_kakaotalk2" />
 
     <include
         android:id="@+id/todayButton"
         layout="@layout/button_template_unpressed"
-        android:layout_width="66dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_max="66dp"
         android:layout_height="28dp"
         android:layout_marginTop="7dp"
-        android:visibility="invisible"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="2dp"
         android:background="@color/colorPrimary"
-        app:layout_constraintStart_toEndOf="@+id/calendar_box"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/shareButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/calendar_box" />
+        app:layout_constraintStart_toEndOf="@+id/calendar_box"
+        app:layout_constraintTop_toTopOf="@id/calendar_box"
+        app:layout_constraintVertical_bias="0.0" />
 
     <include
         android:id="@+id/todayPressedButton"
         layout="@layout/button_template_pressed"
-        android:layout_width="66dp"
-        android:layout_height="28dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="visible"
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="@+id/todayButton"
@@ -340,10 +353,11 @@
 
     <TextView
         android:id="@+id/todayTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="오늘"
         android:textColor="@color/black"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="@+id/todayButton"
         app:layout_constraintBottom_toBottomOf="@+id/todayButton"
         app:layout_constraintStart_toStartOf="@+id/todayButton"

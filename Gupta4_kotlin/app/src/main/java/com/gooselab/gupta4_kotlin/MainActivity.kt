@@ -2,21 +2,25 @@
 package com.gooselab.gupta4_kotlin
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -25,6 +29,15 @@ import com.gooselab.gupta4_kotlin.databinding.CalendarDayBinding
 import com.gooselab.gupta4_kotlin.databinding.ActivityMainBinding
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import com.kakao.kakaolink.v2.KakaoLinkResponse
+import com.kakao.kakaolink.v2.KakaoLinkService
+import com.kakao.message.template.ButtonObject
+import com.kakao.message.template.ContentObject
+import com.kakao.message.template.FeedTemplate
+import com.kakao.message.template.LinkObject
+import com.kakao.network.ErrorResult
+import com.kakao.network.callback.ResponseCallback
+import com.kakao.network.storage.ImageUploadResponse
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -72,6 +85,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private lateinit var binding: ActivityMainBinding
     private val today = LocalDate.now()
     private var selectedDate: LocalDate? = null
+    private var imageUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,7 +164,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         shareButton.setOnClickListener {
-            onClickShareButton()
+
+
+
+
+            kakaoLink()
+//            onClickShareButton()
         }
 
         todayButton.setOnClickListener {
@@ -798,24 +817,28 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     // Share callback function
     private fun onClickShareButton(){
-        val bitmap: Bitmap = Bitmap.createBitmap(gupsikInfoGroup.measuredWidth, gupsikInfoGroup.measuredHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
+        try {
+            val bitmap: Bitmap = Bitmap.createBitmap(gupsikInfoGroup.measuredWidth, gupsikInfoGroup.measuredHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
 
-        gupsikInfoGroup.draw(canvas)
+            gupsikInfoGroup.draw(canvas)
 
-        if (bitmap == null)
-            return
+            if (bitmap == null)
+                return
 
-        val bitmapURI = Utils.getImageUri(applicationContext, bitmap, "급식정보")
-        //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
-        //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
-        val shareIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "image/jpeg"
-            putExtra(Intent.EXTRA_STREAM, bitmapURI)
-            putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
+            val bitmapURI = Utils.getImageUri(applicationContext, bitmap, "급식정보")
+            //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
+            //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "image/jpeg"
+                putExtra(Intent.EXTRA_STREAM, bitmapURI)
+                putExtra(Intent.EXTRA_TEXT, "이것은 공유링크")
+            }
+            startActivity(Intent.createChooser(shareIntent, "share image and text!"))
+        } catch (e: Exception) {
+            Toast.makeText(applicationContext, "안드로이드 버전 문제로 인해 공유 버튼을 이용할 수 없습니다!", Toast.LENGTH_SHORT).show()
         }
-        startActivity(Intent.createChooser(shareIntent, "share image and text!"))
     }
 
     private fun highlightString(mTextView: TextView) {
@@ -861,6 +884,101 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 }
             }
         }
+    }
+
+    fun kakaoLink() {
+        try {
+            val bitmap: Bitmap = Bitmap.createBitmap(entire_screen.measuredWidth, entire_screen.measuredHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+
+            entire_screen.draw(canvas)
+
+            var mealFile = bitmapToFile(bitmap)
+
+            KakaoLinkService.getInstance()
+                .uploadImage(applicationContext, true, mealFile, object : ResponseCallback<ImageUploadResponse?>() {
+                    override fun onFailure(errorResult: ErrorResult) {
+                        Log.e("tkandpf", "이미지 업로드 실패: $errorResult")
+                        mealFile.delete()
+                    }
+
+                    override fun onSuccess(result: ImageUploadResponse?) {
+                        Log.d("tkandpf", "이미지 업로드 성공")
+
+                        imageUrl = result!!.getOriginal().getUrl().toString()
+
+                        Log.d("tkandpf", "이미지 url은" + imageUrl)
+                        val params = FeedTemplate
+                            .newBuilder(
+                                ContentObject.newBuilder(
+                                    "",
+                                    imageUrl,
+                                    LinkObject.newBuilder().setWebUrl("https://developers.kakao.com")
+                                        .setMobileWebUrl("https://developers.kakao.com").build()
+                                )
+                                    .build()
+                            )
+                            .addButton(
+                                ButtonObject(
+                                    "우리학교 급식 메뉴 확인하기", LinkObject.newBuilder()
+                                        .setWebUrl("'https://developers.kakao.com")
+                                        .setMobileWebUrl("https://developers.kakao.com")
+                                        .setAndroidExecutionParams("key1=value1")
+                                        .setIosExecutionParams("key1=value1")
+                                        .build()
+                                )
+                            )
+                            .build()
+
+                        val serverCallbackArgs: MutableMap<String, String> =
+                            HashMap()
+                        serverCallbackArgs["user_id"] = "\${current_user_id}"
+                        serverCallbackArgs["product_id"] = "\${shared_product_id}"
+
+                        KakaoLinkService.getInstance().sendDefault(
+                            applicationContext,
+                            params,
+                            serverCallbackArgs,
+                            object : ResponseCallback<KakaoLinkResponse?>() {
+                                override fun onFailure(errorResult: ErrorResult) {
+                                    //Logger.e(errorResult.toString())
+                                }
+
+                                override fun onSuccess(result: KakaoLinkResponse?) { // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+                                }
+                            })
+
+                        // 임시로 저장한 사진 파일 삭
+                        mealFile.delete()
+                    }
+                })
+
+        } catch (e: Exception) {
+            Toast.makeText(applicationContext, "안드로이드 버전 문제로 인해 공유 버튼을 이용할 수 없습니다!", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    private fun bitmapToFile(bitmap:Bitmap): File {
+        // Get the context wrapper
+        val wrapper = ContextWrapper(applicationContext)
+
+        // Initialize a new file instance to save bitmap object
+        var file = wrapper.getDir("Images",Context.MODE_PRIVATE)
+        file = File(file,"${UUID.randomUUID()}.jpg")
+
+        try{
+            // Compress the bitmap and save in jpg format
+            val stream:OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100, stream)
+            stream.flush()
+            stream.close()
+        }catch (e:IOException){
+            e.printStackTrace()
+        }
+
+        // Return the saved bitmap uri
+        return file
     }
 
     // Called when leaving the activity
