@@ -14,7 +14,6 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.android.synthetic.main.activity_school_search.*
 import kotlinx.android.synthetic.main.search_bar.view.*
 
-
 class SchoolSearchActivity : AppCompatActivity() {
 
     private val schoolCodeMap = mutableMapOf<String, String>()
@@ -33,14 +32,14 @@ class SchoolSearchActivity : AppCompatActivity() {
             cancelButtonTextView.visibility = View.INVISIBLE
         }
 
-        val rows: List<List<String>> = csvReader().readAll(assets.open("school_info.csv"))
+        val rows: List<List<String>> = csvReader().readAll(assets.open("school_info_20200930.csv"))
 
         val textList = mutableListOf<String>()
 
         for (i in rows.indices) {
             schoolCodeMap[rows[i][2].trim()] = rows[i][1].trim()
             districtCodeMap[rows[i][2].trim()] = rows[i][0].trim()
-            textList.add(rows[i][2].trim())
+            textList.add(rows[i][2].trim() + " (" + rows[i][3].trim().split(" ")[0] + ")")
         }
 
         // 자동 완성될 수 있도록 위의 textList를 어댑터로 만들어서 searchBar.autoCompleteTextView에 붙여준다.
@@ -52,11 +51,12 @@ class SchoolSearchActivity : AppCompatActivity() {
         searchBar.autoCompleteTextView.setAdapter(adapter)
         searchBar.autoCompleteTextView.setText("")
 
-        // 학교 선택하면 키보드 내리
+        // 학교 선택하면 키보드 내림
         searchBar.autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener {
                 _, _, _, _ ->
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(searchBar.autoCompleteTextView.windowToken, 0)
+            searchBar.autoCompleteTextView.setText(searchBar.autoCompleteTextView.text.toString().split(" ")[0])
         }
 
         cancelButton.setOnClickListener {
@@ -88,9 +88,8 @@ class SchoolSearchActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
 
+                Toast.makeText(applicationContext, "힉교 정보가 저장되었습니다!", Toast.LENGTH_SHORT).show()
             }
-
-            Toast.makeText(applicationContext, "힉교 정보가 저장되었습니다!", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -128,7 +128,6 @@ open class CommunityActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickLis
             }
         }
         postReference.orderByChild("writeTime").addChildEventListener(postListener)
-
         bambooButton.setOnClickListener {
             val intent = Intent(applicationContext, CommunityActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
