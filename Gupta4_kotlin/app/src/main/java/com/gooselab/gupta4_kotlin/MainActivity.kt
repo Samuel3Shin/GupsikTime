@@ -547,7 +547,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         var digitsInFirstone = ""
 
                         // 숫자 있는지부터 확인
-                        if(firstOne.length >= 2 && firstOne.get(firstOne.length - 1) != ')') {
+                        if(firstOne.length >= 2 && firstOne[firstOne.length - 1] != ')') {
                             digitsInFirstone = firstOne.substring(firstOne.length - 2, firstOne.length).filter{it.isDigit()}
                         }
 
@@ -655,7 +655,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
 
                     val highlightedTextViews = preference.getString(dateCode + whichMeal, "")
-                    // TODO :: Charlie : 요거는 급식메뉴 중간에 변경되면 다른 급식메뉴가 하이라이트 되는 버그 나올 수도 있겠다!
+
                     for(i in dishList.indices)  {
 
                         // View.visibility 초기화
@@ -690,11 +690,11 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         menuName = menuName.trim()
 
                         // 메뉴 이름 양 끝에 있는 특수문자 삭제. 하지만 시작하는 부분의 '(' 와 끝 부분의 ')'는 남겨둔다.
-                        if(menuName[0].toInt() < 127 && menuName[0].toInt() > 32 && menuName[0].toInt() != 40) {
+                        if(menuName[0].toInt() in 33..126 && menuName[0].toInt() != 40) {
                             menuName = menuName.substring(1, menuName.length)
                         }
 
-                        if(menuName[menuName.length-1].toInt() < 127 && menuName[menuName.length-1].toInt() > 32 && menuName[menuName.length-1].toInt() != 41) {
+                        if(menuName[menuName.length-1].toInt() in 33..126 && menuName[menuName.length-1].toInt() != 41) {
                             menuName = menuName.substring(0, menuName.length-1)
                         }
 
@@ -823,9 +823,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             gupsikInfoGroup.draw(canvas)
 
-            if (bitmap == null)
-                return
-
             val bitmapURI = Utils.getImageUri(applicationContext, bitmap, "급식정보")
             //TODO: facebook은 text intent를 허용하지 않는듯?? 앱다운로드 링크를 어떻게 보낼지 생각해봐야함
             //TODO: 사진만 보내는 것은 잘 되는데, 텍스트도 같이 보내는 건 안 될때가 있다. 왜 그런지 살펴봐야함.
@@ -886,28 +883,25 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
-    fun kakaoLink() {
+    private fun kakaoLink() {
         try {
             val bitmap: Bitmap = Bitmap.createBitmap(entire_screen.measuredWidth, entire_screen.measuredHeight, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
 
             entire_screen.draw(canvas)
 
-            var mealFile = bitmapToFile(bitmap)
+            val mealFile = bitmapToFile(bitmap)
 
             KakaoLinkService.getInstance()
                 .uploadImage(applicationContext, true, mealFile, object : ResponseCallback<ImageUploadResponse?>() {
                     override fun onFailure(errorResult: ErrorResult) {
                         Log.e("tkandpf", "이미지 업로드 실패: $errorResult")
+                        // 임시로 저장한 사진 파일 삭제
                         mealFile.delete()
                     }
 
                     override fun onSuccess(result: ImageUploadResponse?) {
-                        Log.d("tkandpf", "이미지 업로드 성공")
-
-                        imageUrl = result!!.getOriginal().getUrl().toString()
-
-                        Log.d("tkandpf", "이미지 url은" + imageUrl)
+                        imageUrl = result!!.original.url.toString()
                         val params = FeedTemplate
                             .newBuilder(
                                 ContentObject.newBuilder(
@@ -948,7 +942,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                                 }
                             })
 
-                        // 임시로 저장한 사진 파일 삭
+                        // 임시로 저장한 사진 파일 삭제
                         mealFile.delete()
                     }
                 })
