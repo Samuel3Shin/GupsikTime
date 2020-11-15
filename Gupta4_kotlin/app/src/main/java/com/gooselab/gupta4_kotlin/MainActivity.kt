@@ -165,9 +165,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         shareButton.setOnClickListener {
 
-
-
-
             kakaoLink()
 //            onClickShareButton()
         }

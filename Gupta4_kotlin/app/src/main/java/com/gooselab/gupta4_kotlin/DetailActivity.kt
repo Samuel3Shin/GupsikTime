@@ -184,6 +184,10 @@ class DetailActivity : AppCompatActivity() {
             val comment = Comment()
             val newRef = FirebaseDatabase.getInstance().getReference("$boardKey/Comments/$postId").push()
 
+            if(comments.text.toString().trim() == "") {
+                Toast.makeText(applicationContext, "댓글 내용을 입력해주세요!", Toast.LENGTH_SHORT).show();
+                return@setOnClickListener;
+            }
             comment.writeTime = ServerValue.TIMESTAMP
             comment.message = comments.text.toString()
             comment.writerId = getMyId()
